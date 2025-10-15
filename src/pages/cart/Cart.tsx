@@ -14,6 +14,7 @@ const Cart = () => {
         dispatch(updateCartItem(productId,quantity))
     }
 
+
     const totalItemInCarts = items.reduce((total,item)=>item?.quantity + total,0)
     const totalPriceInCarts = items.reduce((total,item)=>item?.quantity * item?.Product?.price + total,0)
   return (
@@ -43,8 +44,8 @@ const Cart = () => {
                                 </div>
                                 <div className="flex items-center space-x-4">
                                 <p className="text-sm">${item?.Product?.price}</p>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="h-5 w-5 cursor-pointer duration-150 hover:text-red-500">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" onClick={()=>handleDelete(item?.Product?.id)}/>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" onClick={()=>handleDelete(item?.Product?.id)} className="h-5 w-5 cursor-pointer duration-150 hover:text-red-500">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/>
                                 </svg>
                                 </div>
                             </div>

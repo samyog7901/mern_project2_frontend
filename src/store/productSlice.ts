@@ -22,11 +22,17 @@ const ProductSlice = createSlice({
         },
         setSingleProduct(state:ProductState,action:PayloadAction<Product>){
             state.singleProduct = action.payload
+        },
+        setUpdateProduct(state:ProductState,action:PayloadAction<Product>){
+            const index = state.product.findIndex((prod)=>prod.id === action.payload.id)
+            if(index !== -1){
+                state.product[index] = action.payload
+            }
         }
     }
 })
 
-export const {setProduct,setStatus,setSingleProduct} = ProductSlice.actions
+export const {setProduct,setStatus,setSingleProduct,setUpdateProduct} = ProductSlice.actions
 export default ProductSlice.reducer
 
 
@@ -51,6 +57,31 @@ export function fetchProducts(){
 
 export function fetchByProductId(productId:string){
     return async function fetchByProductIdThunk(dispatch:AppDispatch, getState:()=>RootState){
+        const state = getState()
+        const existingProduct = state.product.product.find((product:Product)=> product.id === productId)
+        if(existingProduct){
+            dispatch(setSingleProduct(existingProduct))
+            dispatch(setStatus(Status.SUCCESS))
+        }else{
+            dispatch(setStatus(Status.LOADING))
+            try{
+                const response = await API.get(`admin/product/${productId}`)
+                if(response.status == 200){
+                    const {data} = response.data
+                    dispatch(setStatus(Status.SUCCESS))
+                    dispatch(setSingleProduct(data))
+                }else{
+                    dispatch(setStatus(Status.ERROR))
+                }
+            }catch(error){
+                dispatch(setStatus(Status.ERROR))
+            }
+        }
+    }
+}
+
+export function updateProductByProductId(productId:string){
+    return async function updateProductByProductId(dispatch:AppDispatch, getState:()=>RootState){
         const state = getState()
         const existingProduct = state.product.product.find((product:Product)=> product.id === productId)
         if(existingProduct){

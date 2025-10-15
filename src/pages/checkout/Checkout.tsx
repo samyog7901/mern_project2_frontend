@@ -1,11 +1,18 @@
-import { useState, type ChangeEvent, type FormEvent } from "react"
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react"
 import Navbar from "../../assets/globals/components/navbar/Navbar"
-import { useAppSelector } from "../../store/hooks"
+import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { PaymentMethod, type ItemDetails, type OrderData } from "../../assets/globals/types/checkoutTypes"
+import { orderItem } from "../../store/checkoutSlice"
+import { Status } from "../../assets/globals/types/types"
+import { useNavigate } from "react-router-dom"
 
 
 const Checkout = () => {
     const {items} = useAppSelector((state)=>state.carts)
+    const {khaltiUrl,status} = useAppSelector((state)=>state.orders)
+    console.log(khaltiUrl)
+    const dispatch = useAppDispatch()
+    const navigate = useNavigate()
     const [paymentMethod,setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.COD)
     const [data,setData] = useState<OrderData>({
         phoneNumber : "",
@@ -34,7 +41,7 @@ const Checkout = () => {
         })
     }
 
-    const handleSubmit = (e:FormEvent<HTMLFormElement>)=>{
+    const handleSubmit = async (e:FormEvent<HTMLFormElement>)=>{
         e.preventDefault()
         const itemDetails:ItemDetails[] = items.map((item)=>{
             return{
@@ -42,14 +49,28 @@ const Checkout = () => {
                 quantity : item?.quantity
             }
         })
-
-        const totalAmount = items.reduce((total,item)=>item?.quantity * item?.Product?.price + total,0)
         const orderData = {
-            ...data,
-            items : itemDetails,
-            totalAmount
+          ...data,
+          items : itemDetails,
+          totalAmount
         }
+        await dispatch(orderItem(orderData))
+        if(status === Status.SUCCESS && paymentMethod === PaymentMethod.COD){
+            navigate('/myOrders')
+        }
+      
     }
+    useEffect(()=>{
+      if(khaltiUrl){
+        window.location.href = khaltiUrl
+        return
+      }
+   
+    },[khaltiUrl])
+    const totalAmount = items.reduce((total,item)=>item?.quantity * item?.Product?.price + total,0)
+  
+   
+    
   return (
     <>
     <Navbar/>
@@ -134,22 +155,22 @@ const Checkout = () => {
       <div className="mt-6 border-t border-b py-2">
         <div className="flex items-center justify-between">
           <p className="text-sm font-medium text-gray-900">Subtotal</p>
-          <p className="font-semibold text-gray-900">Rs pp</p>
+          <p className="font-semibold text-gray-900">Rs. {totalAmount}</p>
         </div>
         <div className="flex items-center justify-between">
           <p className="text-sm font-medium text-gray-900">Shipping</p>
-          <p className="font-semibold text-gray-900">Rs. 50</p>
+          <p className="font-semibold text-gray-900">Rs. 4</p>
         </div>
       </div>
       <div className="mt-6 flex items-center justify-between">
         <p className="text-sm font-medium text-gray-900">Total</p>
-        <p className="text-2xl font-semibold text-gray-900">Rs. {50}</p>
+        <p className="text-2xl font-semibold text-gray-900">Rs. {totalAmount+4}</p>
       </div>
     </div>
 
-      <button type="submit" className="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white">Place Order</button>
+      <button type="submit" className="mt-4 mb-8 w-full rounded-md bg-gray-900 hover:cursor-pointer hover:bg-gray-800 px-6 py-3 font-medium text-white">Place Order</button>
   
-      <button type="submit" className="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white" style={{backgroundColor:'purple'}}>Pay With Khalti</button>
+      <button type="submit" className="mt-4 mb-8 w-full rounded-md bg-purple-600 hover:bg-purple-700 hover:cursor-pointer px-6 py-3 font-medium text-white">Pay With Khalti</button>
   
   </div>
  </form>

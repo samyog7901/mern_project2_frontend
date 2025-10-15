@@ -100,10 +100,10 @@ const Navbar = () => {
 
                 {isMenuOpen && (
                   <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-2 text-sm z-50">
-                    <MenuItem to="/dashboard" label="Home" />
+                    <MenuItem to="/" label="Home" />
                     <MenuItem to="/profile" label="My Profile" />
                     <MenuItem to="/wishlist" label="Wishlist" />
-                    <MenuItem to="/orders" label="Track Orders" />
+                    <MenuItem to="/myOrders" label="Track Orders" />
                     <MenuItem to="/returns" label="Manage Returns" />
                     <MenuItem to="/packages" label="Your Packages" />
                     <button
