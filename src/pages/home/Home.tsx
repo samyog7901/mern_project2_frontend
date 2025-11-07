@@ -4,18 +4,31 @@ import Footer from "../../assets/globals/components/footer/Footer";
 import Navbar from "../../assets/globals/components/navbar/Navbar";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchProducts } from "../../store/productSlice";
+import { useLocation } from "react-router-dom";
 
 const Home = () => {
   const {user} = useAppSelector((state)=>state.auth)
   const token = localStorage.getItem("token");
   const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
   const dispatch = useAppDispatch()
-  const {product,status} = useAppSelector((state)=>state.product)
+  const {product} = useAppSelector((state)=>state.product)
+  const location = useLocation()
  
 
   useEffect(()=>{
     dispatch(fetchProducts())
   },[dispatch])
+  useEffect(() => {
+    if (location.state?.scrollTo) {
+      const el = document.getElementById(location.state.scrollTo);
+      if (el) el.scrollIntoView({ behavior: "auto",block: "start" }); // instant jump
+    }
+  }, [location]);
+  const scrollToFeaturedProducts = ()=>{
+    const product = document.getElementById("featured-products")
+    if(product) product.scrollIntoView({behavior: "smooth", block: "start"})
+
+  }
   return (
     <>
       <div className="min-h-screen flex flex-col">
@@ -30,7 +43,7 @@ const Home = () => {
                  <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800">
                  Welcome to <span className="text-purple-600">ShopNest</span>
                </h1>
-               <p className="text-gray-600 text-lg md:text-xl">
+               <p className="text-gray-600 text-lg md:text-xl hover:underline hover:cursor-pointer"  onClick={scrollToFeaturedProducts}>
                  Discover the best products at unbeatable prices. Fast shipping. Easy returns.
                </p>
                 </>
@@ -39,7 +52,7 @@ const Home = () => {
                     <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800">
                  Welcome to <span className="text-purple-600">ShopNest!</span>
                </h1>
-               <p className="text-gray-600 text-lg md:text-xl">
+               <p className="text-gray-600 text-lg md:text-xl hover:underline hover:cursor-pointer" onClick={scrollToFeaturedProducts}>
                  Discover the best products at unbeatable prices. Fast shipping. Easy returns.
                </p>
    
@@ -63,13 +76,13 @@ const Home = () => {
             <img
               src="https://media.istockphoto.com/id/2190128714/photo/young-woman-preparing-shipping-boxes-is-talking-on-the-phone.webp?a=1&b=1&s=612x612&w=0&k=20&c=o4DxNImQUTqN99dRVila3bJ3NywBb-_oPyH9MalYm9A="
               alt="E-commerce illustration"
-              className="max-w-xs sm:max-w-md mx-auto mt-10 rounded-xl shadow-lg"
+              className="max-w-xs sm:max-w-md mx-auto mt-10 rounded-xl shadow-lg hover:transition-transform hover:scale-105 duration-500"
             />
           </div>
         </section>
 
         {/* Card Section */}
-        <section className="w-full bg-white py-16 px-4 sm:px-8">
+        <section className="w-full bg-white py-20 px-4 sm:px-8 scroll-mt-19" id="featured-products">
           <div className="max-w-7xl mx-auto text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-800">Featured Products</h2>
             <p className="text-gray-600 mt-2">

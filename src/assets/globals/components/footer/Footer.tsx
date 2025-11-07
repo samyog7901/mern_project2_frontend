@@ -33,7 +33,7 @@ const Footer = () => {
             <div>
               <h3 className="text-lg font-semibold mb-4">Newsletter</h3>
               <p className="mb-4">Subscribe to our newsletter for exclusive offers and updates.</p>
-              <form>
+              <form className="">
                 <input type="email" placeholder="Your email" className="px-4 py-2 border rounded-md mb-2" />
                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Subscribe</button>
               </form>

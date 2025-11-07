@@ -21,6 +21,7 @@ const cartSlice = createSlice({
     reducers : {
         setItems(state:CartState,action:PayloadAction<CartItem[]>){
             state.items = action.payload
+            
         },
         setStatus(state:CartState,action:PayloadAction<Status>){
             state.status = action.payload
@@ -28,17 +29,22 @@ const cartSlice = createSlice({
         setDeleteItem(state:CartState,action:PayloadAction<DeleteAction>){
             const index = state.items.findIndex((item)=>item.Product.id === action.payload.productId)
             state.items.splice(index,1)
+            
+
         },
         setUpdateItem(state:CartState,action:PayloadAction<UpdateAction>){
             const index = state.items.findIndex((item)=>item.Product.id === action.payload.productId)
             if(index !== -1){
                 state.items[index].quantity = action.payload.quantity
             }
+        },
+        setClearCart(state){
+            state.items = []
         }
     }
 })
 
-export const {setItems,setStatus,setDeleteItem,setUpdateItem} = cartSlice.actions
+export const {setItems,setStatus,setDeleteItem,setUpdateItem,setClearCart} = cartSlice.actions
 export default cartSlice.reducer
 
 export function addToCart(productId:string){

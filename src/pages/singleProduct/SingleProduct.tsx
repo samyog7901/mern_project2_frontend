@@ -1,41 +1,64 @@
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import Navbar from "../../assets/globals/components/navbar/Navbar"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { useEffect } from "react"
 import { fetchByProductId } from "../../store/productSlice"
 import { addToCart } from "../../store/cartSlice"
+import ProductDescription from "./ProductDescription"
 
 
 const SingleProduct = () => {
   const {id} = useParams()
+  const {user} = useAppSelector((state)=>state.auth)
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const {singleProduct,status} = useAppSelector((state)=>state.product)
+  const {singleProduct} = useAppSelector((state)=>state.product)
   useEffect(()=>{
     if(id){
       dispatch(fetchByProductId(id))
     }
   },[dispatch,id])
   const handleAddToCart = async ()=>{
-    if(id){
+    if(id && isLoggedIn){
       await dispatch(addToCart(id))
+    }else{
+      navigate("/login")
     }
   }
+  const handleRedirect = () => {
+    navigate("/", { state: { scrollTo: "featured-products" } });
+}
+  const token = localStorage.getItem("token")
+  const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
+
+  
   return (
    <>
     <header className="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-blue-600 to-indigo-600 shadow-lg">
         <Navbar /> 
         
       </header>
-    <div className="bg-gray-100 dark:bg-gray-800 py-8 mt-15">
+      <button onClick={handleRedirect} className="bg-gray-300 p-1 ml-2 shadow-blue-300 hover:shadow-blue-500 shadow-xl transition-transform duration-300 hover:scale-105 top-30 left-5 fixed">
+        <i className="fa-solid fa-arrow-left text-lg"></i>
+        <span className="font-medium ml-2">Go Back</span></button>
+    <div className="bg-gray-100 dark:bg-gray-800 py-8  mt-35 rounded-2xl transition-transform duration-300 hover:scale-102 hover:shadow-xl w-250 m-auto">
   <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div className="flex flex-col md:flex-row -mx-4">
       <div className="md:flex-1 px-4">
-        <div className="h-[460px] rounded-lg bg-gray-300 dark:bg-gray-700 mb-4">
-          <img className="w-full h-full object-cover" src={singleProduct?.imageUrl} alt="Product Image" />
-        </div>
+      <div
+        className="bg-gray-300 dark:bg-gray-700 mb-4 rounded-2xl overflow-y-auto custom-scrollbar scrollbar-hide"
+        style={{ maxHeight: '460px' }}
+      >
+        <img
+          className="w-full object-contain rounded-2xl"
+          src={singleProduct?.imageUrl}
+          alt="Product Image"
+        />
+      </div>
+
         <div className="flex -mx-2 mb-4">
           <div className="w-1/2 px-2">
-            <button onClick={handleAddToCart} className="w-full bg-gray-900 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700">Add to Cart</button>
+            <button onClick={handleAddToCart} className="w-full bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 text-white py-2 px-4 rounded-full font-bold dark:hover:bg-gray-700">Add to Cart</button>
           </div>
           <div className="w-1/2 px-2">
             <button className="w-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white py-2 px-4 rounded-full font-bold hover:bg-gray-300 dark:hover:bg-gray-600">Add to Wishlist</button>
@@ -49,7 +72,7 @@ const SingleProduct = () => {
         <div className="flex mb-4">
           <div className="mr-4">
             <span className="font-bold text-gray-700 dark:text-gray-300 mr-2">Price:</span>
-            <span className="text-gray-600 dark:text-gray-300">${singleProduct?.price}</span>
+            <span className="text-gray-600 dark:text-gray-300">Rs.{singleProduct?.price}</span>
           </div>
           <div>
             <span className="font-bold text-gray-700 dark:text-gray-300 mr-2">Stock Qty:</span>
@@ -75,12 +98,11 @@ const SingleProduct = () => {
             <button className="bg-gray-300 dark:bg-gray-700 text-gray-700 dark:text-white py-2 px-4 rounded-full font-bold mr-2 hover:bg-gray-400 dark:hover:bg-gray-600">XXL</button>
           </div>
         </div>
-        <div>
-          <span className="font-bold text-gray-700 dark:text-gray-300">Product Description:</span>
-          <p className="text-gray-600 dark:text-gray-300 text-sm mt-2">
-          {singleProduct?.description}
-          </p>
-        </div>
+        <ProductDescription description={singleProduct?.description || ""} />
+
+
+
+
       </div>
     </div>
   </div>

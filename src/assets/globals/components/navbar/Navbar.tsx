@@ -47,7 +47,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md fixed top-0 z-50">
+    <header className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md fixed top-0 z-1 bg-transparent">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-4 sm:px-6 relative">
         {/* Logo */}
      <Link to="/">

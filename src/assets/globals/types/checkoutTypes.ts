@@ -6,18 +6,19 @@ export enum PaymentMethod{
     KHALTI = 'khalti'
 }
 
-enum OrderStatus{
-    Pending = 'pending',
-    Delivered = 'delivered',
-    OnTheWay = 'ontheway',
-    Cancelled = 'cancelled',
-    Preparation = 'preparation'
+export enum OrderStatus{
+    Pending = '🕔 pending',
+    Delivered = '✅ delivered',
+    Ontheway = '🚍🚚 ontheway',
+    Cancelled = '❌ cancelled',
+    Preparation = '📦 preparation',
+    All = 'all'
 }
 
-enum PaymentStatus{
-    Paid = 'paid',
-    Unpaid = 'unpaid',
-    Pending = 'pending'
+export enum PaymentStatus{
+    Paid = '✅ paid',
+    Unpaid = '❌ unpaid',
+    Pending = '🕔 pending'
 }
 export interface ItemDetails{
     productId : string,
@@ -30,7 +31,6 @@ export interface OrderResponseItem extends ItemDetails{
 interface Payment {
     paymentMethod : PaymentMethod
 }
-
 interface OrderPaymentData extends Payment{
     paymentStatus : PaymentStatus
 }
@@ -53,6 +53,10 @@ export interface OrderResponseData{
     orderDetails : OrderDetails[]
 }
 
+interface UserData{
+    username : string,
+    email : string
+}
 export interface MyOrdersData{
     id : string,
     phoneNumber : string,
@@ -61,6 +65,8 @@ export interface MyOrdersData{
     orderStatus : OrderStatus,
     quantity : number,
     createdAt : string,
+    paymentId : string,
+    userId  : UserData
     Payment : OrderPaymentData
     
 }
@@ -70,8 +76,8 @@ export interface OrderDetails{
     orderId : string,
     Product : Product,
     createdAt : string,
-    Order : MyOrdersData,
-    Payment : OrderPaymentData
+    Order : MyOrdersData
+    // Payment : OrderPaymentData
 
 
 }

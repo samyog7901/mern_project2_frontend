@@ -2,6 +2,7 @@ import React, { useState, type ChangeEvent, type FormEvent } from "react";
 import Navbar from "../navbar/Navbar";
 import { Link } from "react-router-dom";
 import type { FormProps, UserDataTypes } from "../../../../pages/auth/type";
+import GoogleLoginButton from "../GoogleLoginButton";
 
 
 
@@ -30,6 +31,10 @@ const Form: React.FC<FormProps> = ({ formType, fields, onSubmit }) => {
     onSubmit(formData)
   
    
+  };
+  const handleGoogleLogin = () => {
+    // Trigger your OAuth route here
+    window.location.href = "http://localhost:5000/auth/google";
   };
 
   return (
@@ -98,26 +103,43 @@ const Form: React.FC<FormProps> = ({ formType, fields, onSubmit }) => {
               >
                 {formType === "Register" ? "REGISTER NOW" : "LOGIN NOW"}
               </button>
+              <GoogleLoginButton onClick={handleGoogleLogin}/>
               <p>{}</p>
             </form>
 
-            <div className="mt-6 text-center text-sm">
-              {formType === "Login" ? (
-                <Link
-                  to="/register"
-                  className="text-indigo-600 hover:text-indigo-700 font-medium"
-                >
-                  Don't have an account? Register here
-                </Link>
-              ) : (
-                <Link
-                  to="/login"
-                  className="text-indigo-600 hover:text-indigo-700 font-medium"
-                >
-                  Already have an account? Login to dashboard
-                </Link>
-              )}
-            </div>
+            <div className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400 space-y-3">
+  {formType === "Login" ? (
+    <>
+      <Link
+        to="http://localhost:5174/login"
+        className="inline-block w-full sm:w-auto px-4 py-2 rounded-lg border border-blue-600 text-blue-600 font-medium hover:bg-blue-600 hover:text-white transition-all duration-200 mb-4"
+      >
+        Login as Admin
+      </Link>
+
+      <p>
+        Don't have an account?{" "}
+        <Link
+          to="/register"
+          className="text-indigo-600 hover:text-indigo-700 font-semibold transition-all"
+        >
+          Register here
+        </Link>
+      </p>
+    </>
+  ) : (
+    <p>
+      Already have an account?{" "}
+      <Link
+        to="/login"
+        className="text-indigo-600 hover:text-indigo-700 font-semibold transition-all"
+      >
+        Login to Dashboard
+      </Link>
+    </p>
+  )}
+</div>
+
           </div>
         </div>
       </main>
