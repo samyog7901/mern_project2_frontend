@@ -46,7 +46,7 @@ const SingleProduct = () => {
     <div className="flex flex-col md:flex-row -mx-4">
       <div className="md:flex-1 px-4">
       <div
-        className="bg-gray-300 dark:bg-gray-700 mb-4 rounded-2xl overflow-y-auto custom-scrollbar scrollbar-hide"
+        className="bg-gray-300 dark:bg-gray-700 mb-4 rounded-2xl overflow-y-auto custom-scrollbar scrollbar-hide  hover:transition-transform duration-300  hover:scale-102"
         style={{ maxHeight: '460px' }}
       >
         <img

@@ -3,6 +3,7 @@ import Navbar from "../navbar/Navbar";
 import { Link } from "react-router-dom";
 import type { FormProps, UserDataTypes } from "../../../../pages/auth/type";
 import GoogleLoginButton from "../GoogleLoginButton";
+import toast from "react-hot-toast";
 
 
 
@@ -28,13 +29,14 @@ const Form: React.FC<FormProps> = ({ formType, fields, onSubmit }) => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if( !formData.email || !formData.password) return toast.error("All the fields should be filled!")
     onSubmit(formData)
   
    
   };
   const handleGoogleLogin = () => {
     // Trigger your OAuth route here
-    window.location.href = "http://localhost:5000/auth/google";
+    window.location.href = "http://localhost:3000/auth/google";
   };
 
   return (
@@ -90,7 +92,6 @@ const Form: React.FC<FormProps> = ({ formType, fields, onSubmit }) => {
                       type={field.type}
                       placeholder={field.placeholder}
                       onChange={handleChange}
-                      required
                       className="w-full pl-10 pr-3 py-2 rounded-lg border-2 border-gray-300 focus:border-indigo-500 outline-none transition"
                     />
                   </div>

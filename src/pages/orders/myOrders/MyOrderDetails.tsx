@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Navbar from "../../../assets/globals/components/navbar/Navbar";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { deleteOrderById, fetchMyOrderDetails, updateOrderDetailsStatusInStore, updateOrderStatus, updateOrderStatusInOrderDetails, updateOrderStatusInStore, updatePaymentStatus, updatePaymentStatusInStore } from "../../../store/checkoutSlice";
+import { deleteOrderById, fetchMyOrderDetails, updateOrderDetailsStatusInStore, updatePaymentStatusInStore } from "../../../store/checkoutSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { OrderStatus, PaymentStatus } from "../../../assets/globals/types/checkoutTypes";
 import { socket } from "../../../App";
@@ -100,7 +100,7 @@ const MyOrderDetails = () => {
                         alt={order.Product?.productName}
                       />
                     </div>
-                    <div className="flex flex-col md:flex-row justify-between w-full md:items-center mt-4 md:mt-0 space-y-2 md:space-y-0">
+                    <div className="flex md:flex-row justify-between items-baseline-last w-full md:items-center mt-4 md:mt-0 space-y-2 md:space-y-0 ">
                       <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
                         {order.Product?.productName}
                       </h3>

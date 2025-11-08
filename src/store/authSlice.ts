@@ -2,6 +2,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 import API from "../http"
 import { Status } from "../assets/globals/types/types"
 import type { AppDispatch } from "./store"
+import toast from "react-hot-toast"
 
 // Types
 export interface RegisterData {
@@ -63,11 +64,10 @@ export function register(data: RegisterData) {
       const response = await API.post("register", data)
       if (response.status === 200) {
         dispatch(setStatus(Status.SUCCESS))
-      } else {
-        dispatch(setStatus(Status.ERROR))
       }
     } catch {
       dispatch(setStatus(Status.ERROR))
+      toast.error("User already exists!")
     }
   }
 }
@@ -86,11 +86,10 @@ export function login(data: LoginData) {
         localStorage.setItem("user", JSON.stringify(fullUser))
 
         dispatch(setStatus(Status.SUCCESS))
-      } else {
-        dispatch(setStatus(Status.ERROR))
       }
     } catch {
       dispatch(setStatus(Status.ERROR))
+      toast.error("Invalid login credentials!")
     }
   }
 }

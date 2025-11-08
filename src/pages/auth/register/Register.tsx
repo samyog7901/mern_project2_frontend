@@ -6,6 +6,7 @@ import { register, resetStatus, type RegisterData } from "../../../store/authSli
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { Status } from "../../../assets/globals/types/types";
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 
 
@@ -44,10 +45,12 @@ const Register = () => {
 
   const handleRegister = async(formData: RegisterData) => {
     // console.log("Register data:", data);
+    
     dispatch(register(formData))
   };
   useEffect(()=>{
     if(status == Status.SUCCESS){
+      toast.success("User registered successfully, Please login with your credentials" );
       dispatch(resetStatus())
       navigate("/login")
     }

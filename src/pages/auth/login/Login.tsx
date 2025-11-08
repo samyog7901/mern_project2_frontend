@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { Status } from "../../../assets/globals/types/types";
 import { useEffect } from "react";
 import type { userLoginType } from "../type";
+import toast from "react-hot-toast";
 
 
 
@@ -43,6 +44,10 @@ const Login = () => {
 
   useEffect(()=>{
     if(status == Status.SUCCESS){
+      toast.success("Logged in successfully, welcome User! 😊🙏🏻",{duration:2000} )
+      setTimeout(() => {
+        toast.success("Enjoy Shopping");
+      }, 2000);
       dispatch(resetStatus())
       navigate("/")
     }

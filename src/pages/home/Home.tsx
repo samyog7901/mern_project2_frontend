@@ -35,8 +35,8 @@ const Home = () => {
         {/* Navbar Section */}
         <Navbar />
 
-        {/* Hero Section */}
-        <section className="flex items-center justify-center h-screen bg-gradient-to-tr from-purple-100 via-white to-teal-100 pt-40 px-4">
+        {/* Hero Section */}<section className="flex items-center justify-center min-h-[90vh] bg-gradient-to-tr from-purple-100 via-white to-teal-100 pt-40 px-4 sm:px-6 md:px-12 lg:px-20">
+        
           <div className="max-w-4xl w-full text-center space-y-8">
            {isLoggedIn ?(
                  <>
@@ -76,7 +76,7 @@ const Home = () => {
             <img
               src="https://media.istockphoto.com/id/2190128714/photo/young-woman-preparing-shipping-boxes-is-talking-on-the-phone.webp?a=1&b=1&s=612x612&w=0&k=20&c=o4DxNImQUTqN99dRVila3bJ3NywBb-_oPyH9MalYm9A="
               alt="E-commerce illustration"
-              className="max-w-xs sm:max-w-md mx-auto mt-10 rounded-xl shadow-lg hover:transition-transform hover:scale-105 duration-500"
+              className="w-full max-w-[250px] sm:max-w-[350px] md:max-w-[450px] lg:max-w-[550px] mx-auto mt-10 rounded-xl shadow-lg hover:transition-transform hover:scale-105 duration-500"
             />
           </div>
         </section>
@@ -90,14 +90,14 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 place-items-center">
-            {product.length > 0 && product.map((pd)=>{
-              return(
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-2 sm:px-4 lg:px-0 place-items-center">
+            {product.length > 0 &&
+              product.map((pd) => (
                 <Card key={pd.id} data={pd} />
-              )
-            })}
-           
+              ))
+            }
           </div>
+
         </section>
       </div>
 
