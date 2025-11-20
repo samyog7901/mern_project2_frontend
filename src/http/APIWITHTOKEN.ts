@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const APIWITHTOKEN = axios.create({
-  baseURL: "http://localhost:3000/",
+  baseURL: "https://ecommerce-platform-2sjj.onrender.com/",
   headers: {
     "Content-Type": "application/json",
     "Accept": "application/json"

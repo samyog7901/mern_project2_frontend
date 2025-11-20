@@ -18,15 +18,15 @@ import ProtectedRoute from './assets/globals/components/ProtectedRoute';
 import {io} from 'socket.io-client'
 import AnimatedRoutes from './assets/globals/components/AnimatedRoutes.tsx';
 // import Navbar from './assets/globals/components/navbar/Navbar.tsx';
-import Register from './pages/auth/register/Register.tsx';
-import LoginProtectedRoute from './pages/auth/login/LoginProtectedRoute.tsx';
+// import Register from './pages/auth/register/Register.tsx';
+// import LoginProtectedRoute from './pages/auth/login/LoginProtectedRoute.tsx';
 
 // import LoginProtectedRoute from './pages/auth/login/LoginProtectedRoute';
 
 
 
 
-export const socket = io("http://localhost:3000",{
+export const socket = io("https://ecommerce-platform-2sjj.onrender.com/",{
   auth : {
     token : localStorage.getItem('token')
   }
