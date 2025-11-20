@@ -15,8 +15,9 @@ interface ProductDescriptionProps {
     return (
       <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md mt-6">
         <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-3">
-          Product Description
+           Description :
         </h3>
+        <div className="overflow-y-auto max-h-[300px] scrollbar-hide">
         <p className="text-gray-700 dark:text-gray-300 text-sm mb-4">
           {mainText?.trim()}
         </p>
@@ -41,6 +42,7 @@ interface ProductDescriptionProps {
             </ul>
           </>
         )}
+        </div>
       </div>
     );
   };

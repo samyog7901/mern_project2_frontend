@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react"
-import Navbar from "../../../assets/globals/components/navbar/Navbar"
+// import Navbar from "../../../assets/globals/components/navbar/Navbar"
 import { useAppDispatch, useAppSelector } from "../../../store/hooks"
-import { fetchMyOrders, updateOrderStatusInStore } from "../../../store/checkoutSlice"
+import { fetchMyOrders, setDeleteOrderById, updateOrderStatusInStore, updatePaymentStatusInStore } from "../../../store/checkoutSlice"
 import { useNavigate } from "react-router-dom"
-import { OrderStatus } from "../../../assets/globals/types/checkoutTypes"
+import { OrderStatus, PaymentStatus } from "../../../assets/globals/types/checkoutTypes"
 import { socket } from "../../../App"
+import toast from "react-hot-toast"
 
 
 const MyOrders = () => {
@@ -13,15 +14,86 @@ const MyOrders = () => {
     const navigate = useNavigate()
     const {myOrders} = useAppSelector((state)=>state.orders)
     const [selectedItem,setSelectedItem] = useState<OrderStatus>(OrderStatus.All)
+    const [selectedPayment,setSelectedPayment] = useState<PaymentStatus>(PaymentStatus.All)
     const [searchTerm,setSearchTerm] = useState<string>('')
     const [date,setDate] = useState<string>('')
+    const getStatusColor = (status: OrderStatus | undefined) => {
+        const normalized = status?.toLowerCase();
+        if (normalized === 'delivered') return 'bg-green-600';
+        if (normalized === 'cancelled') return 'bg-red-600';
+        if(normalized === 'pending') return 'bg-gray-500'
+        if(normalized === "preparation") return 'bg-orange-400'
+        return 'bg-yellow-400 ';
+      }
     
     useEffect(()=>{     
         dispatch(fetchMyOrders())
     },[dispatch])
-    const filteredOrders = myOrders.filter((order)=>selectedItem === OrderStatus.All || order.orderStatus === selectedItem).
-    filter((order)=>order.id.toLowerCase().includes(searchTerm) || order.Payment.paymentMethod.toLowerCase().includes(searchTerm) || order.totalAmount.toString().includes(searchTerm))
-    .filter((order)=>date ==='' || new Date(order.createdAt).toLocaleDateString() === new Date(date).toLocaleDateString())
+
+    useEffect(() => {
+        const handleOrderDeleted = (orderId: string) => {
+          dispatch(setDeleteOrderById({ orderId }));
+          toast.error("Your order has been deleted by admin!");
+        };
+      
+        socket.on("orderDeleted", handleOrderDeleted);
+      
+        return () => {
+          socket.off("orderDeleted", handleOrderDeleted);
+        };
+      }, [dispatch]);
+      
+    const paymentMap: Record<string, PaymentStatus> = {
+        paid: PaymentStatus.Paid,
+        unpaid: PaymentStatus.Unpaid,
+        pending: PaymentStatus.Pending,
+        all : PaymentStatus.All
+      };
+      const enumToRawPayment: Record<PaymentStatus, string> = {
+        [PaymentStatus.Paid]: "paid",
+        [PaymentStatus.Unpaid]: "unpaid",
+        [PaymentStatus.Pending]: "pending",
+        [PaymentStatus.All]: "all",
+      };
+    
+      const orderMap: Record<string, OrderStatus> = {
+        pending: OrderStatus.Pending,
+        delivered: OrderStatus.Delivered,
+        ontheway: OrderStatus.Ontheway,
+        preparation: OrderStatus.Preparation,
+        cancelled: OrderStatus.Cancelled,
+        all : OrderStatus.All,
+      };
+      const enumToRaw: Record<OrderStatus, string> = {
+        [OrderStatus.Pending]: "pending",
+        [OrderStatus.Delivered]: "delivered",
+        [OrderStatus.Ontheway]: "ontheway",
+        [OrderStatus.Preparation]: "preparation",
+        [OrderStatus.Cancelled]: "cancelled",
+        [OrderStatus.All]: "all",
+      };
+    
+    const filteredOrders = myOrders
+    .filter((order)=>selectedItem === OrderStatus.All || enumToRaw[selectedItem] === order.orderStatus.toLowerCase())
+    .filter(order => {
+        const searchLower = searchTerm.toLowerCase();
+      
+        // Search filter: id, payment method, payment status, total amount
+        const searchMatch =
+          order.id.toLowerCase().includes(searchLower) ||
+          order.Payment.paymentMethod.toLowerCase().includes(searchLower) ||
+          order.Payment.paymentStatus.toLowerCase().includes(searchLower) ||
+          order.totalAmount.toString().includes(searchLower);
+      
+        // Payment status filter
+        const paymentMatch =
+          selectedPayment === PaymentStatus.All ||
+          enumToRawPayment[selectedPayment] === order.Payment.paymentStatus.toLowerCase();
+      
+        return searchMatch && paymentMatch;
+      })
+      .filter((order)=>date ==='' || new Date(order.createdAt).toLocaleDateString() === new Date(date).toLocaleDateString())
+      
 
     const handleRedirect = () => {
         navigate("/", { state: { scrollTo: "featured-products" } });
@@ -33,7 +105,9 @@ const MyOrders = () => {
           if (type === "ORDER_STATUS") {
             dispatch(updateOrderStatusInStore({ orderId, status }));
           }
-          
+          if (type === "PAYMENT_STATUS") {
+            dispatch(updatePaymentStatusInStore({ orderId, status }));
+          }
         };
       
         socket.on("statusUpdated", handler);
@@ -41,12 +115,12 @@ const MyOrders = () => {
         return () => {
           socket.off("statusUpdated", handler);
         };
-      }, []);
+      }, [socket,dispatch]);
       
       
   return (
    <>
-    <Navbar/>
+    {/* <Navbar/> */}
     <div className="antialiased font-sans bg-gray-200 pt-30 ">
     {myOrders.length !== 0 ? (
         <div className="container mx-auto px-4 sm:px-8">
@@ -64,7 +138,7 @@ const MyOrders = () => {
                                 <option value={OrderStatus.All}>all</option>
                                 <option value={OrderStatus.Pending}>pending</option>
                                 <option value={OrderStatus.Delivered}>delivered</option>
-                                <option value={OrderStatus.Delivered}>ontheway</option>
+                                <option value={OrderStatus.Ontheway}>ontheway</option>
                                 <option value={OrderStatus.Cancelled}>cancelled</option>
                                 <option value={OrderStatus.Preparation}>preparation</option>
                             </select>
@@ -131,26 +205,26 @@ const MyOrders = () => {
                                 {
                                     filteredOrders.length > 0 && filteredOrders.map((order)=>{
                                         return(
-                                            <tr>
+                                            <tr key={order.id}>
                                         
                                             <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <p onClick={()=>navigate(`/myOrders/${order.id}`)} className="text-blue-900 whitespace-no-wrap" style={{textDecoration:'underline'}} >{order.id}</p>
+                                            <p onClick={()=>navigate(`/myOrders/${order.id}`)} className="text-blue-900 whitespace-no-wrap hover:underline hover:cursor-pointer"  >{order.id}</p>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{order.totalAmount}</p>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">
-                                                {order.Payment.paymentStatus}({order.Payment.paymentMethod}) 
+                                                {order.Payment?.paymentStatus}({order.Payment.paymentMethod}) 
                                             </p>
                                         </td>
                                     
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <span
-                                                className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+                                                className="relative inline-block px-3 py-1 font-semibold  leading-tight">
                                                 <span aria-hidden
-                                                    className="absolute inset-0 bg-green-200 opacity-50 rounded-full"></span>
-                                                <span className="relative">{order.orderStatus}</span>
+                                                    className={`absolute inset-0  rounded-full ${getStatusColor(order.orderStatus)}`}></span>
+                                                <span className="relative text-amber-50">{order.orderStatus}</span>
                                             </span>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">

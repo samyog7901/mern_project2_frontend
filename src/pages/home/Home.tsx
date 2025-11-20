@@ -1,61 +1,107 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Card from "../../assets/globals/components/card/Card";
 import Footer from "../../assets/globals/components/footer/Footer";
-import Navbar from "../../assets/globals/components/navbar/Navbar";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchProducts } from "../../store/productSlice";
 import { useLocation } from "react-router-dom";
+import { fetchCategories } from "../../store/categorySlice";
+import CategoryDropdown from "../../assets/globals/components/CategoryDropDown";
 
 const Home = () => {
-  const {user} = useAppSelector((state)=>state.auth)
+  const { user } = useAppSelector((state) => state.auth);
   const token = localStorage.getItem("token");
   const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
-  const dispatch = useAppDispatch()
-  const {product} = useAppSelector((state)=>state.product)
-  const location = useLocation()
- 
+  const dispatch = useAppDispatch();
+  const { product } = useAppSelector((state) => state.product);
+  const [searchTerm,setSearchTerm] = useState<string>('')
 
-  useEffect(()=>{
-    dispatch(fetchProducts())
-  },[dispatch])
+  const location = useLocation();
+
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [filteredProducts, setFilteredProducts] = useState(product);
+
+
+  // Extract unique categories from products
+
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+    dispatch(fetchCategories())
+  
+  }, [dispatch]);
+
   useEffect(() => {
     if (location.state?.scrollTo) {
       const el = document.getElementById(location.state.scrollTo);
-      if (el) el.scrollIntoView({ behavior: "auto",block: "start" }); // instant jump
+      if (el) el.scrollIntoView({ behavior: "auto", block: "start" });
     }
   }, [location]);
-  const scrollToFeaturedProducts = ()=>{
-    const product = document.getElementById("featured-products")
-    if(product) product.scrollIntoView({behavior: "smooth", block: "start"})
 
-  }
+  useEffect(() => {
+    if (selectedCategory === "All") setFilteredProducts(product);
+    else
+      setFilteredProducts(
+        product.filter((p) => p.Category.categoryName === selectedCategory)
+      );
+  }, [selectedCategory, product]);
+
+  const scrollToFeaturedProducts = () => {
+    const el = document.getElementById("featured-products");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+// COMBINED FILTER: Category + Search
+const finalProducts = product
+  // 1. Category filter
+  .filter((p) =>
+    selectedCategory === "All"
+      ? true
+      : p.Category.categoryName === selectedCategory
+  )
+  // 2. Search filter
+  .filter((p) => {
+    const s = searchTerm.toLowerCase();
+    if (!s) return true;
+
+    return (
+      p.id.toString().toLowerCase().includes(s) ||
+      p.productName.toLowerCase().includes(s) ||
+      p.description.toLowerCase().includes(s) ||
+      p.price.toString().includes(s) ||
+      p.Category.categoryName.toLowerCase().includes(s)
+    );
+  }); 
+
   return (
     <>
       <div className="min-h-screen flex flex-col">
-        {/* Navbar Section */}
-        <Navbar />
-
-        {/* Hero Section */}<section className="flex items-center justify-center min-h-[90vh] bg-gradient-to-tr from-purple-100 via-white to-teal-100 pt-40 px-4 sm:px-6 md:px-12 lg:px-20">
-        
+        {/* Hero Section */}
+        <section className="flex items-center justify-center min-h-[90vh] bg-gradient-to-tr from-purple-100 via-white to-teal-100 pt-40 px-4 sm:px-6 md:px-12 lg:px-20">
           <div className="max-w-4xl w-full text-center space-y-8">
-           {isLoggedIn ?(
-                 <>
-                 <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800">
-                 Welcome to <span className="text-purple-600">ShopNest</span>
-               </h1>
-               <p className="text-gray-600 text-lg md:text-xl hover:underline hover:cursor-pointer"  onClick={scrollToFeaturedProducts}>
-                 Discover the best products at unbeatable prices. Fast shipping. Easy returns.
-               </p>
-                </>
-                ):(
-                  <>
-                    <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800">
-                 Welcome to <span className="text-purple-600">ShopNest!</span>
-               </h1>
-               <p className="text-gray-600 text-lg md:text-xl hover:underline hover:cursor-pointer" onClick={scrollToFeaturedProducts}>
-                 Discover the best products at unbeatable prices. Fast shipping. Easy returns.
-               </p>
-   
+            {isLoggedIn ? (
+              <>
+                <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800">
+                  Welcome to <span className="text-purple-600">ShopNest</span>
+                </h1>
+                <p
+                  className="text-gray-600 text-lg md:text-xl hover:underline hover:cursor-pointer"
+                  onClick={scrollToFeaturedProducts}
+                >
+                  Discover the best products at unbeatable prices. Fast shipping. Easy returns.
+                </p>
+              </>
+            ) : (
+              <>
+                <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800">
+                  Welcome to <span className="text-purple-600">ShopNest!</span>
+                </h1>
+                <p
+                  className="text-gray-600 text-lg md:text-xl hover:underline hover:cursor-pointer"
+                  onClick={scrollToFeaturedProducts}
+                >
+                  Discover the best products at unbeatable prices. Fast shipping. Easy returns.
+                </p>
+
                 <div className="flex justify-center gap-4 flex-wrap">
                   <a href="/login">
                     <button className="px-6 py-3 text-lg bg-purple-600 hover:bg-purple-700 text-white rounded-2xl shadow-md transition">
@@ -67,11 +113,9 @@ const Home = () => {
                       Sign Up
                     </button>
                   </a>
-                  </div>
-                  
-                  </>
-                )}
-            
+                </div>
+              </>
+            )}
 
             <img
               src="https://media.istockphoto.com/id/2190128714/photo/young-woman-preparing-shipping-boxes-is-talking-on-the-phone.webp?a=1&b=1&s=612x612&w=0&k=20&c=o4DxNImQUTqN99dRVila3bJ3NywBb-_oPyH9MalYm9A="
@@ -81,21 +125,55 @@ const Home = () => {
           </div>
         </section>
 
-        {/* Card Section */}
-        <section className="w-full bg-white py-20 px-4 sm:px-8 scroll-mt-19" id="featured-products">
-          <div className="max-w-7xl mx-auto text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-800">Featured Products</h2>
-            <p className="text-gray-600 mt-2">
-              Explore our exclusive range of products tailored just for you.
-            </p>
-          </div>
+        {/* Featured Products Section with Filter */}
+        <section
+          className="w-full bg-white py-20 px-4 sm:px-8 scroll-mt-19"
+          id="featured-products"
+        >
+          <div className="max-w-7xl mx-auto mb-12 flex flex-col lg:flex-row gap-8 overflow-visible">
+            {/* Sidebar */}
+            <aside className="w-full lg:w-1/5 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow-md overflow-visible h-fit">
+              <h3 className="font-bold text-gray-800 dark:text-white mb-4">
+                Filter by Category
+              </h3>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-2 sm:px-4 lg:px-0 place-items-center">
-            {product.length > 0 &&
-              product.map((pd) => (
-                <Card key={pd.id} data={pd} />
-              ))
-            }
+              <CategoryDropdown
+                selected={selectedCategory}
+                onSelect={setSelectedCategory}
+              />
+
+            </aside>
+
+            {/* Products Grid */}
+            <div className="flex flex-col gap-10">
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 text-center">
+                Featured Products
+              </h2>
+              <div className=" relative bottom-15 left-160">
+                  <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2">
+                      <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current text-gray-500">
+                          <path
+                              d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z">
+                          </path>
+                      </svg>
+                  </span>
+                  <input placeholder="Search your findings.."
+                  value={searchTerm}
+                  onChange={(e)=>setSearchTerm(e.target.value)}
+                  className="rounded-full  border border-gray-400 border-b block pl-8 pr-6 py-2 w-1/3 bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
+              </div>
+              <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 place-items-center">
+              {finalProducts.length > 0 ? (
+                finalProducts.map((pd) => <Card key={pd.id} data={pd} />)
+              ) : (
+                <p className="text-gray-500 col-span-full text-center">
+                  No products found.
+                </p>
+              )}
+
+
+              </div>
+            </div>
           </div>
 
         </section>

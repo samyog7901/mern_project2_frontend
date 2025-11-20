@@ -3,6 +3,7 @@
  export enum Status{
     SUCCESS = 'success',
     LOADING = 'loading',
-    ERROR = 'error'
+    ERROR = 'error',
+    IDLE = 'idle'
     
 }

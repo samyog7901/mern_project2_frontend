@@ -10,7 +10,7 @@ interface User{
 
 export interface Category{
     id : string,
-    categoryname : string
+    categoryName : string
 }
 
 export interface Product{

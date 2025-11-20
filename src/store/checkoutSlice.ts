@@ -35,33 +35,47 @@ const orderSlice = createSlice({
         setKhaltiUrl(state:OrderResponseData,action:PayloadAction<OrderResponseData['khaltiUrl']>){
             state.khaltiUrl = action.payload
         },
-        setDeleteOrderById(state:OrderResponseData,action:PayloadAction<DeleteOrderById>){
-            const index = state.items.findIndex((item)=>item.orderId === action.payload.orderId)
-            state.items.splice(index,1)
-            state.myOrders = state.myOrders.filter(myOrder => myOrder.id !== action.payload.orderId)
-        
+        // checkoutSlice.ts
+        setDeleteOrderById: (state, action: PayloadAction<{ orderId: string }>) => {
+            state.myOrders = state.myOrders.filter(order => order.id !== action.payload.orderId);
         },
+
         updateOrderStatus(state:OrderResponseData, action:PayloadAction<{status:OrderStatus,orderId:string}>){
             const {status, orderId} = action.payload
             const updatedOrder = state.myOrders.map(order=>order.id == orderId ? {...order, orderStatus :status} : order)
             state.myOrders = updatedOrder
         },
-        updatePaymentStatus(state:OrderResponseData, action:PayloadAction<{status:PaymentStatus,orderId:string}>){
-            const {status, orderId} = action.payload
-            if (state.orderDetails.length > 0 && state.orderDetails[0].Order.id === orderId) {
-                state.orderDetails[0].Order.Payment.paymentStatus = status;
-              }
+        updatePaymentStatus(state: OrderResponseData, action: PayloadAction<{status: PaymentStatus, orderId: string}>) {
+            const { status, orderId } = action.payload;
+            state.myOrders = state.myOrders.map(order =>
+                order.id === orderId
+                    ? { ...order, Payment: { ...order.Payment, paymentStatus: status } }
+                    : order
+            );
         },
-        updateOrderStatusInOrderDetails(state:OrderResponseData, action:PayloadAction<{status:OrderStatus,orderId:string}>){
-            const {status, orderId} = action.payload
-            if (state.orderDetails.length > 0 && state.orderDetails[0].Order.id === orderId) {
-                state.orderDetails[0].Order.orderStatus = status;
-              }
+        
+        updatePaymentStatusInOrderDetails(state, action: PayloadAction<{ status: PaymentStatus, orderId: string }>) {
+            const { status, orderId } = action.payload;
+            state.orderDetails = state.orderDetails.map(detail =>
+                detail.Order.id === orderId
+                    ? { ...detail, Order: { ...detail.Order, Payment: { ...detail.Order.Payment, paymentStatus: status } } }
+                    : detail
+            );
+        },
+        
+        updateOrderStatusInOrderDetails(state, action: PayloadAction<{ status: OrderStatus, orderId: string }>) {
+            const { status, orderId } = action.payload;
+            state.orderDetails = state.orderDetails.map(detail =>
+                detail.Order.id === orderId
+                    ? { ...detail, Order: { ...detail.Order, orderStatus: status } }
+                    : detail
+            );
         }
+        
     }
 })
 
-export const {setItems,setStatus,setKhaltiUrl,setMyOrders,setOrderDetails,setDeleteOrderById, updateOrderStatus, updatePaymentStatus,updateOrderStatusInOrderDetails} = orderSlice.actions
+export const {setItems,setStatus,setKhaltiUrl,setMyOrders,setOrderDetails,setDeleteOrderById, updateOrderStatus, updatePaymentStatus,updateOrderStatusInOrderDetails,updatePaymentStatusInOrderDetails} = orderSlice.actions
 export default orderSlice.reducer
 
 
@@ -146,12 +160,19 @@ export function updateOrderStatusInStore(data:any){
         dispatch(updateOrderStatus(data))
     }
 }
-
 export function updatePaymentStatusInStore(data:any){
     return function updatePaymentStatusInStoreThunk(dispatch:AppDispatch){
         dispatch(updatePaymentStatus(data))
     }
 }
+
+export function updateOrderDetailsPaymentStatusInStore(data:any){
+    return function updatePaymentStatusInStoreThunk(dispatch:AppDispatch){
+        dispatch(updatePaymentStatusInOrderDetails(data))
+    }
+}
+
+
 export const updateOrderDetailsStatusInStore = (data:any) => (dispatch:AppDispatch) => {
     dispatch(updateOrderStatusInOrderDetails(data));
   };

@@ -26,6 +26,25 @@ const Navbar = () => {
     dispatch(fetchCartItems())
   },[dispatch])
 
+  const MenuItem = ({
+    to,
+    label,
+    closeMenu,
+  }: {
+    to: string;
+    label: string;
+    closeMenu?: () => void;
+  }) => (
+    <Link
+      to={to}
+      onClick={() => closeMenu?.()} // close menu on click
+      className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600"
+    >
+      {label}
+    </Link>
+  );
+  
+
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -47,10 +66,10 @@ const Navbar = () => {
   };
 
   return (
-    <header className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md fixed top-0 z-1 bg-transparent">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-4 sm:px-6 relative">
+    <header className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md fixed top-0 z-1000 h-16">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 relative h-full">
         {/* Logo */}
-     <Link to="/">
+        <Link to="/">
         <div className="flex items-center space-x-2 text-white">
           <svg
             className="h-7 w-7 text-green-300"
@@ -62,7 +81,7 @@ const Navbar = () => {
           </svg>
           <span className="text-xl font-bold tracking-wide">ShopNest</span>
         </div>
-     </Link>
+        </Link>
 
         {/* Centered Text for Profile Page */}
         {isProfile && (
@@ -85,7 +104,7 @@ const Navbar = () => {
               {/* Badge (optional) */}
               <p className="text-white text-sm">Cart</p>
               <span className="absolute -top-2 -right-2 bg-purple-600 text-white text-xs px-2 py-0.5 rounded-full">
-                {items.length }
+                {items?.length }
               </span>
             </Link>
 
@@ -100,14 +119,17 @@ const Navbar = () => {
 
                 {isMenuOpen && (
                   <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-2 text-sm z-50">
-                    <MenuItem to="/" label="Home" />
-                    <MenuItem to="/profile" label="My Profile" />
-                    <MenuItem to="/wishlist" label="Wishlist" />
-                    <MenuItem to="/myOrders" label="Track Orders" />
-                    <MenuItem to="/returns" label="Manage Returns" />
-                    <MenuItem to="/packages" label="Your Packages" />
+                    <MenuItem to="/" label="Home" closeMenu={() => setIsMenuOpen(false)}/>
+                    <MenuItem to="/profile" label="My Profile"closeMenu={() => setIsMenuOpen(false)} />
+                    <MenuItem to="/wishlist" label="Wishlist" closeMenu={() => setIsMenuOpen(false)}/>
+                    <MenuItem to="/myOrders" label="Track Orders" closeMenu={() => setIsMenuOpen(false)}/>
+                    <MenuItem to="/returns" label="Manage Returns" closeMenu={() => setIsMenuOpen(false)}/>
+                    <MenuItem to="/packages" label="Your Packages" closeMenu={() => setIsMenuOpen(false)} />
                     <button
-                      onClick={handleLogout}
+                      onClick={() => {
+                        handleLogout();
+                        setIsMenuOpen(false); // also close on logout
+                      }}
                       className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-red-500"
                     >
                       Logout
@@ -141,13 +163,6 @@ const Navbar = () => {
   );
 };
 
-const MenuItem = ({ to, label }: { to: string; label: string }) => (
-  <Link
-    to={to}
-    className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600"
-  >
-    {label}
-  </Link>
-);
+
 
 export default Navbar;

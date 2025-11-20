@@ -20,8 +20,11 @@ function PaymentVerify() {
 
         const res = await APIWITHTOKEN.post("/order/verify", { pidx });
         if (res.status === 200) {
-            toast.success("Payment verified successfully!");
+            toast.success("Payment verified successfully!",{duration:2000});
             navigate("/myOrders");
+            setTimeout(()=>{
+              toast.success("Order placed successfully!")
+            },2000)
         } else {
           navigate("/");
           alert("❌ Payment verification failed!");

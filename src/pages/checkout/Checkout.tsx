@@ -1,5 +1,5 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react"
-import Navbar from "../../assets/globals/components/navbar/Navbar"
+// import Navbar from "../../assets/globals/components/navbar/Navbar"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { PaymentMethod, type ItemDetails, type OrderData } from "../../assets/globals/types/checkoutTypes"
 import { orderItem, setStatus } from "../../store/checkoutSlice"
@@ -101,7 +101,7 @@ const Checkout = () => {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
 
       <div className="grid sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32 mt-20 max-h-fit">
         {/* Order Summary */}

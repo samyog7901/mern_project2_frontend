@@ -1,13 +1,19 @@
 import { Link, useNavigate } from "react-router-dom"
-import Navbar from "../../assets/globals/components/navbar/Navbar"
-import { deleteCartItem, updateCartItem } from "../../store/cartSlice"
+// import Navbar from "../../assets/globals/components/navbar/Navbar"
+import { deleteCartItem, fetchCartItems, updateCartItem } from "../../store/cartSlice"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
+import { useEffect } from "react";
 
 
 const Cart = () => {
-    const {items = []} = useAppSelector((state)=>state.carts)
+    const { items } = useAppSelector((state) => state.carts);
+    const cartItems = Array.isArray(items) ? items : [];
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
+
+    useEffect(() => {
+        dispatch(fetchCartItems());
+      }, [dispatch]);
     const handleDelete = (productId:string)=>{
         dispatch(deleteCartItem(productId))
     }
@@ -22,48 +28,85 @@ const Cart = () => {
       
 
 
-    const totalItemInCarts = items.reduce((total,item)=>item?.quantity + total,0)
-    const totalPriceInCarts = items.reduce((total,item)=>item?.quantity * item?.Product?.price + total,0)
+    const totalItemInCarts = cartItems.reduce((total,item)=>item?.quantity + total,0)
+    const totalPriceInCarts = cartItems.reduce((total,item)=>item?.quantity * item?.Product?.price + total,0)
   return (
     <>
    
-    <Navbar />     
+    {/* <Navbar />      */}
     
     <div className="h-auto bg-gray-100 pt-20 mt-15">
-        {items.length !== 0 ? (
+        {cartItems.length !== 0 ? (
         <>
         <button onClick={handleRedirect} className="bg-gray-300 p-1 ml-2 shadow-blue-300 hover:shadow-blue-500 shadow-xl transition-transform duration-300 hover:scale-105 top-30 left-5 fixed">add more items</button>
           <h1 className="mb-10 text-center text-2xl font-bold">Cart Items</h1>
         <div className="mx-auto max-w-5xl justify-center px-6 md:flex md:space-x-6 xl:px-0 overflow-y-auto scroll-auto max-h-135">
             <div className="rounded-lg md:w-2/3 overflow-y-auto custom-scrollbar scroll-smooth scrollbar-hide max-h-145">
-            {
-                items.length > 0 && items.map((item)=>{
-                    return(
-                        <div key={item.Product?.id} className="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start">
-                            <img src={item?.Product?.imageUrl} alt="product-image" className="h-[100px]" />
-                            <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
-                            <div className="mt-5 sm:mt-0">
-                                <h2 className="text-lg font-bold text-gray-900">{item?.Product?.productName}</h2>
-                                {/* <h4 className="mt-1 text-xs text-gray-700">{item?.Product?.Category?.categoryname}</h4> */}
-                            </div>
-                            <div className="mt-4 flex justify-between sm:space-y-6 sm:mt-0 sm:block sm:space-x-6">
-                                <div className="flex items-center border-gray-100">
-                                <span className="cursor-pointer rounded-l bg-gray-100 py-1 px-3.5 duration-100 hover:bg-blue-500 hover:text-blue-50" onClick={()=>{handleUpdate(item?.Product?.id,item.quantity-1)}}> - </span>
-                                <input className="h-8 w-8 border bg-white text-center text-xs outline-none" type="number" value={item.quantity} min={1} />
-                                <span className="cursor-pointer rounded-r bg-gray-100 py-1 px-3 duration-100 hover:bg-blue-500 hover:text-blue-50" onClick={()=>{handleUpdate(item?.Product?.id,item.quantity+1)}}> + </span>
-                                </div>
-                                <div className="flex items-center justify-end">
-                                <p className="text-sm mx-5">Rs.{item?.Product?.price}</p>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" onClick={()=>handleDelete(item?.Product?.id)} className="h-5 w-5 cursor-pointer duration-150 hover:text-red-500">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/>
-                                </svg>
-                                </div>
-                            </div>
-                        </div>
-                        </div>
-                    )
-                })
-            }
+            {cartItems.length > 0 &&
+  cartItems.map((item, index) => (
+    <div
+      key={item?.Product?.id ?? `cart-item-${index}`}
+      className="justify-between mb-6 rounded-lg bg-white p-6 shadow-md sm:flex sm:justify-start"
+    >
+      <img
+        src={item?.Product?.imageUrl}
+        alt={item?.Product?.productName ?? "product"}
+        className="h-[100px]"
+      />
+      <div className="sm:ml-4 sm:flex sm:w-full sm:justify-between">
+        <div className="mt-5 sm:mt-0">
+          <h2 className="text-lg font-bold text-gray-900">
+            {item?.Product?.productName}
+          </h2>
+        </div>
+        <div className="mt-4 flex justify-between sm:space-y-6 sm:mt-0 sm:block sm:space-x-6">
+          <div className="flex items-center border-gray-100">
+            <span
+              className="cursor-pointer rounded-l bg-gray-100 py-1 px-3.5 duration-100 hover:bg-blue-500 hover:text-blue-50"
+              onClick={() => {
+                if (item.quantity > 1)
+                  handleUpdate(item.Product.id, item.quantity - 1);
+              }}
+            >
+              -
+            </span>
+            <input
+              className="h-8 w-8 border bg-white text-center text-xs outline-none"
+              type="number"
+              value={item.quantity}
+              onChange={(e) =>
+                handleUpdate(item.Product.id, Number(e.target.value))
+              }
+              min={1}
+            />
+            <span
+              className="cursor-pointer rounded-r bg-gray-100 py-1 px-3 duration-100 hover:bg-blue-500 hover:text-blue-50"
+              onClick={() =>
+                handleUpdate(item.Product.id, item.quantity + 1)
+              }
+            >
+              +
+            </span>
+          </div>
+          <div className="flex items-center justify-end">
+            <p className="text-sm mx-5">Rs.{item?.Product?.price}</p>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              onClick={() => handleDelete(item.Product.id)}
+              className="h-5 w-5 cursor-pointer duration-150 hover:text-red-500"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  ))}
+
            
             
             </div>

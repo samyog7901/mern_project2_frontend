@@ -42,17 +42,22 @@ const Login = () => {
     dispatch(login(formData))
   }
 
-  useEffect(()=>{
-    if(status == Status.SUCCESS){
-      toast.success("Logged in successfully, welcome User! 😊🙏🏻",{duration:2000} )
-      setTimeout(() => {
-        toast.success("Enjoy Shopping");
-      }, 2000);
-      dispatch(resetStatus())
-      navigate("/")
+  useEffect(() => {
+    if (status === Status.SUCCESS) {
+      // Show first toast
+      toast.success("Logged in successfully, welcome User! 😊🙏🏻", { duration: 2000 });
+  
+      // Navigate after a small delay to let toast appear
+      const timer = setTimeout(() => {
+        navigate("/");
+        toast.success("Enjoy Shopping!")
+        dispatch(resetStatus());
+      }, 2100);
+  
+      return () => clearTimeout(timer);
     }
-    
-  },[status,navigate,dispatch])
+  }, [status, dispatch, navigate]);
+  
 
   return (
   <Form formType="Login" fields={LoginFields} onSubmit={handleLogin} />

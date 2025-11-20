@@ -1,16 +1,23 @@
-import { useEffect } from "react";
-import Navbar from "../../../assets/globals/components/navbar/Navbar";
+import { useEffect, useState } from "react";
+// import Navbar from "../../../assets/globals/components/navbar/Navbar";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { deleteOrderById, fetchMyOrderDetails, updateOrderDetailsStatusInStore, updatePaymentStatusInStore } from "../../../store/checkoutSlice";
+import {  fetchMyOrderDetails, updateOrderDetailsStatusInStore, updateOrderDetailsPaymentStatusInStore, setDeleteOrderById } from "../../../store/checkoutSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { OrderStatus, PaymentStatus } from "../../../assets/globals/types/checkoutTypes";
 import { socket } from "../../../App";
+import toast from "react-hot-toast";
+// import { useAnimation } from "framer-motion";
+
+// import SlidePageWrapper from "../../../assets/globals/components/SlidePageWrapper";
 
 const MyOrderDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate()
   const { orderDetails } = useAppSelector((state) => state.orders);
   const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+  // const controls = useAnimation()
+
 
   // @ts-ignore
   useEffect(() => {
@@ -18,10 +25,30 @@ const MyOrderDetails = () => {
   }, [id])
   
 
-  const handleDeleteOrder = (orderId:string)=>{
-    dispatch(deleteOrderById(orderId))
-    navigate("/myOrders")
-  }
+  const handleDeleteOrder = (orderId: string) => {
+    socket.emit("deleteOrder", { orderId });
+  };
+
+  useEffect(() => {
+    const handleOrderDeleted = (orderId: string) => {
+      setIsLoading(true)
+      dispatch(setDeleteOrderById({ orderId }));
+      toast.error("Your Order have been deleted!")
+      setTimeout(() => {
+        navigate("/myOrders");
+        setIsLoading(false);
+      }, 2000); // 2 seconds delay
+    };
+    
+  
+    socket.on("orderDeleted", handleOrderDeleted);
+  
+    return () => {
+      socket.off("orderDeleted", handleOrderDeleted);
+    }
+  }, [dispatch,navigate]);
+
+
 
   const paymentMap: Record<string, PaymentStatus> = {
     paid: PaymentStatus.Paid,
@@ -45,7 +72,7 @@ const MyOrderDetails = () => {
         dispatch(updateOrderDetailsStatusInStore({ orderId, status }));
       }
       if (type === "PAYMENT_STATUS") {
-        dispatch(updatePaymentStatusInStore({ orderId, status }));
+        dispatch(updateOrderDetailsPaymentStatusInStore({ orderId, status }));
       }
     };
   
@@ -54,14 +81,41 @@ const MyOrderDetails = () => {
     return () => {
       socket.off("statusUpdated", handler);
     };
-  }, []);
-  
+  }, [dispatch]);
+
+  if (isLoading || !orderDetails || orderDetails.length === 0) {
+    return (
+      <div className="py-20 text-center text-gray-500">
+        Loading order details...
+      </div>
+    );
+  }
+
+ 
+
+
+  const handleClick = async () => {
+    
+    navigate("/myOrders");
+  };
   
 
   return (
     <>
-      <Navbar />
-      <div className="py-20 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
+      {/* <Navbar /> */}
+      
+       
+      <div
+      className="flex items-center justify-center gap-2 mt-25 cursor-pointer  w-fit hover:translate-x-1.5 fixed ml-2"
+      onClick={handleClick}
+    >
+      <span className="text-2xl">👈🏿</span>
+      <p className="text-lg text-gray-700">Explore more orders</p>
+    </div>
+        
+      
+
+      <div className="py-40 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto ml-50 ">
         {/* ---------- Header ---------- */}
         <div className="flex flex-col space-y-2 my-2">
           <h1 className="text-2xl font-semibold text-gray-700">

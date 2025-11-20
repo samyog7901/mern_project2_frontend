@@ -18,7 +18,8 @@ export enum OrderStatus{
 export enum PaymentStatus{
     Paid = '✅ paid',
     Unpaid = '❌ unpaid',
-    Pending = '🕔 pending'
+    Pending = '🕔 pending',
+    All = 'all'
 }
 export interface ItemDetails{
     productId : string,
