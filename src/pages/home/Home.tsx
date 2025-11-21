@@ -3,7 +3,7 @@ import Card from "../../assets/globals/components/card/Card";
 import Footer from "../../assets/globals/components/footer/Footer";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchProducts } from "../../store/productSlice";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { fetchCategories } from "../../store/categorySlice";
 import CategoryDropdown from "../../assets/globals/components/CategoryDropDown";
 
@@ -14,6 +14,7 @@ const Home = () => {
   const dispatch = useAppDispatch();
   const { product } = useAppSelector((state) => state.product);
   const [searchTerm,setSearchTerm] = useState<string>('')
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const location = useLocation();
 
@@ -103,16 +104,16 @@ const finalProducts = product
                 </p>
 
                 <div className="flex justify-center gap-4 flex-wrap">
-                  <a href="/login">
+                  <Link to="/login">
                     <button className="px-6 py-3 text-lg bg-purple-600 hover:bg-purple-700 text-white rounded-2xl shadow-md transition">
                       Login
                     </button>
-                  </a>
-                  <a href="/register">
+                  </Link>
+                  <Link to="/register">
                     <button className="px-6 py-3 text-lg bg-white border border-purple-600 text-purple-600 hover:bg-purple-100 rounded-2xl shadow-md transition">
                       Sign Up
                     </button>
-                  </a>
+                  </Link>
                 </div>
               </>
             )}
@@ -126,66 +127,60 @@ const finalProducts = product
         </section>
 
         {/* Featured Products Section with Filter */}
-        <section
-          className="w-full bg-white py-20 px-4 sm:px-8 scroll-mt-19"
-          id="featured-products"
-        >
-          <div className="max-w-7xl mx-auto mb-12 flex flex-col lg:flex-row gap-8 overflow-visible">
+        <section className="w-full bg-white py-20 px-4 sm:px-8" id="featured-products">
+          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
+            {/* Mobile Sidebar Toggle */}
+            <div className="flex justify-between items-center lg:hidden mb-4">
+              <h3 className="font-bold text-gray-800 dark:text-white">Filter by Category</h3>
+              <button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="px-4 py-2 bg-purple-600 text-white rounded-lg"
+              >
+                {sidebarOpen ? "Hide" : "Show"}
+              </button>
+            </div>
+
             {/* Sidebar */}
-            <aside className="w-full lg:w-1/5 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow-md overflow-visible h-fit">
-              <h3 className="font-bold text-gray-800 dark:text-white mb-4">
-                Filter by Category
-              </h3>
-
-              <CategoryDropdown
-                selected={selectedCategory}
-                onSelect={setSelectedCategory}
-              />
-
+            <aside
+              className={`w-full lg:w-1/5 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow-md h-fit mb-6 lg:mb-0 transition-all duration-300 ${
+                sidebarOpen ? "block" : "hidden lg:block"
+              }`}
+            >
+              <CategoryDropdown selected={selectedCategory} onSelect={setSelectedCategory} />
             </aside>
 
-            {/* Products Grid */}
-           
-          <div className="flex flex-col gap-6 w-full">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 text-center">
-              Featured Products
-            </h2>
+            {/* Products + Search */}
+            <div className="flex-1 flex flex-col gap-6">
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 text-center">Featured Products</h2>
 
-            {/* Search Bar */}
-            <div className="flex justify-center mb-6">
-              <div className="w-full sm:w-1/2 md:w-1/3 relative">
-                <span className="h-full absolute inset-y-0 left-0 flex items-center pl-3">
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-4 w-4 fill-current text-gray-500"
-                  >
-                    <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
-                  </svg>
-                </span>
-                <input
-                  type="text"
-                  placeholder="Search your findings.."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="rounded-full border border-gray-400 block pl-10 pr-4 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
-                />
+              {/* Search Bar */}
+              <div className="flex justify-center mb-6">
+                <div className="w-full sm:w-3/4 md:w-1/2 relative">
+                  <span className="h-full absolute inset-y-0 left-0 flex items-center pl-3">
+                    <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current text-gray-500">
+                      <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
+                    </svg>
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Search your findings.."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="rounded-full border border-gray-400 block pl-10 pr-4 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Product Cards Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 place-items-center">
+                {finalProducts.length > 0 ? (
+                  finalProducts.map((pd) => <Card key={pd.id} data={pd} />)
+                ) : (
+                  <p className="text-gray-500 col-span-full text-center">No products found.</p>
+                )}
               </div>
             </div>
-
-            {/* Product Cards Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 place-items-center">
-              {finalProducts.length > 0 ? (
-                finalProducts.map((pd) => <Card key={pd.id} data={pd} />)
-              ) : (
-                <p className="text-gray-500 col-span-full text-center">
-                  No products found.
-                </p>
-              )}
-            </div>
           </div>
-
-          </div>
-
         </section>
       </div>
 
