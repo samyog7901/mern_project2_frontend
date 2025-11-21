@@ -157,7 +157,7 @@ const finalProducts = product
                   </span>
                   <input
                     type="text"
-                    placeholder="Search your findings.."
+                    placeholder="Find products shortly.. "
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="rounded-full border border-gray-400 block pl-10 pr-4 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
