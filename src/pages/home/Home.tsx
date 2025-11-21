@@ -130,7 +130,7 @@ const finalProducts = product
         <section className="w-full bg-white py-20 px-4 sm:px-8" id="featured-products">
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-col gap-8">
             {/* Mobile Sidebar Toggle */}
-            <h3 className="font-bold text-gray-800 dark:text-white" onClick={() => setSidebarOpen(!sidebarOpen)}>Filter by Category</h3>
+            <h3 className="font-bold text-gray-800" onClick={() => setSidebarOpen(!sidebarOpen)}>Filter by Category</h3>
             <div className="flex justify-between items-center lg:hidden mb-4">
             </div>
 
