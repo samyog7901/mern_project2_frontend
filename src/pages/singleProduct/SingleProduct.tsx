@@ -96,16 +96,24 @@ const SingleProduct = () => {
               </div>
             </div> */}
             <ProductDescription description={singleProduct?.description || ""} />
-            <div className="flex text-2xl justify-between mt-4 gap-12">
-              <div className="bg-green-200 w-fit">
-                <span className="font-bold text-gray-700 dark:text-gray-300 mr-2">Price:</span>
-                <span className="text-gray-600 dark:text-gray-300">Rs.{singleProduct?.price}</span>
-              </div>
-              <div className="bg-green-200 w-fit rounded-b-full">
-                <span className="font-bold text-gray-700 dark:text-gray-300 mr-2">Stock Qty:</span>
-                <span className="text-gray-600 dark:text-gray-300">{singleProduct?.stockQty}</span>
-              </div>
-            </div>
+            <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
+  {/* Price */}
+  <div className="bg-green-100 dark:bg-green-800 px-4 py-2 rounded-lg shadow-md">
+    <span className="font-semibold text-gray-700 dark:text-gray-200">Price: </span>
+    <span className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+      Rs.{singleProduct?.price}
+    </span>
+  </div>
+
+  {/* Stock Qty */}
+  <div className="bg-yellow-100 dark:bg-yellow-700 px-4 py-2 rounded-lg shadow-md">
+    <span className="font-semibold text-gray-700 dark:text-gray-200">Stock: </span>
+    <span className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
+      {singleProduct?.stockQty}
+    </span>
+  </div>
+</div>
+
           </div>
         </div>
       </div>
