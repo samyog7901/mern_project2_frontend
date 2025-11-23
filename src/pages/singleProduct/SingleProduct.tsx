@@ -96,12 +96,12 @@ const SingleProduct = () => {
               </div>
             </div> */}
             <ProductDescription description={singleProduct?.description || ""} />
-            <div className="flex text-2xl justify-between mt-4">
-              <div className="ml-35">
+            <div className="flex text-2xl justify-between mt-4 gap-12">
+              <div className="bg-green-200 w-fit">
                 <span className="font-bold text-gray-700 dark:text-gray-300 mr-2">Price:</span>
                 <span className="text-gray-600 dark:text-gray-300">Rs.{singleProduct?.price}</span>
               </div>
-              <div>
+              <div className="bg-green-200 w-fit rounded-b-full">
                 <span className="font-bold text-gray-700 dark:text-gray-300 mr-2">Stock Qty:</span>
                 <span className="text-gray-600 dark:text-gray-300">{singleProduct?.stockQty}</span>
               </div>
