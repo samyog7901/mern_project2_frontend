@@ -7,6 +7,7 @@ import { Link, useLocation } from "react-router-dom";
 import { fetchCategories } from "../../store/categorySlice";
 import CategoryDropdown from "../../assets/globals/components/CategoryDropDown";
 
+
 const Home = () => {
   const { user } = useAppSelector((state) => state.auth);
   const token = localStorage.getItem("token");

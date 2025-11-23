@@ -5,6 +5,7 @@ import { useEffect } from "react"
 import { fetchByProductId } from "../../store/productSlice"
 import { addToCart } from "../../store/cartSlice"
 import ProductDescription from "./ProductDescription"
+import { Helmet } from "react-helmet"
 
 
 const SingleProduct = () => {
@@ -31,9 +32,16 @@ const SingleProduct = () => {
   const token = localStorage.getItem("token")
   const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
 
-  
+  const metaDescription = singleProduct?.description
+    ? singleProduct.description.split("Highlights:")[0].trim().substring(0, 157) + "..."
+    : "Explore this product on ShopNest!";
   return (
    <>
+   {/* Helmet for SEO */}
+    <Helmet>
+      <title>{singleProduct?.productName} | ShopNest</title>
+      <meta name="description" content={metaDescription} />
+    </Helmet>
     
     <button onClick={handleRedirect} className="bg-gray-300 p-1 ml-2 shadow-blue-300 hover:shadow-blue-500 shadow-xl transition-transform duration-300 hover:scale-105 top-30 left-5 fixed">
       <i className="fa-solid fa-arrow-left text-lg"></i>
