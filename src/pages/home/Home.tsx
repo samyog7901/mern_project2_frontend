@@ -212,9 +212,9 @@ const Home: React.FC = () => {
 
         {/* Greeting (for logged-in users) — normal scrolling block, 15vh height */}
         {isLoggedIn && !showHero && (
-          <div className="relative h-[15vh] bg-white shadow-sm flex flex-col items-center justify-center px-4 animate-fade-slide mt-8">
+          <div className="relative h-[15vh] bg-white shadow-sm flex flex-col items-center justify-center px-4 animate-fade-slide mt-12">
             <h1 className="text-2xl md:text-3xl font-semibold text-gray-800">
-              Welcome back, <span className="text-purple-600">{user?.username ?? "there"}</span> 👋
+              Welcome back, <span className="text-purple-600">{user?.username || "there"}</span> 👋
             </h1>
             <p className="text-gray-600 mt-1 text-sm md:text-base">Explore today’s best deals</p>
           </div>
