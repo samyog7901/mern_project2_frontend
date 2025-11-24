@@ -155,84 +155,55 @@ const Home: React.FC = () => {
     <>
       <div className="min-h-screen flex flex-col">
         {/* HERO (full ecommerce style) */}
-        {showHero && (
-          <header
-            className={`w-full hero-no-scroll ${heroAnimateOut ? "animate-fade-out-up" : "animate-fade-slide"}`}
-            aria-hidden={!showHero}
-          >
-            <div className="relative bg-white mt-16">
-              {/* Carousel container */}
-              <div className="relative max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-8 max-h-[60vh]">
-                <div className="relative overflow-hidden rounded-2xl shadow-xl">
-                  {/* Slides wrapper */}
-                  <div
-                    ref={carouselRef}
-                    className="flex carousel-transition max-h-[60vh]"
-                    style={{ width: `${heroImages.length * 100}%`, transform: `translateX(-${currentSlide * (100 / heroImages.length)}%)` }}
-                  >
-                    {heroImages.map((slide, idx) => (
-                      <div key={idx} style={{ width: `${100 / heroImages.length}%` }} className="relative">
-                        <img
-                          src={slide.src}
-                          alt={slide.title}
-                          className="w-full h-[420px] md:h-[520px] object-cover"
-                        />
-                        {/* overlay gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/10 to-transparent"></div>
-                        {/* Text overlay */}
-                        <div className="absolute inset-0 flex items-center">
-                          <div className="max-w-2xl px-6 md:px-12 lg:px-16 text-left">
-                            <h3 className="text-white text-3xl md:text-4xl lg:text-5xl font-extrabold drop-shadow-lg">
-                              {slide.title}
-                            </h3>
-                            <p className="mt-3 text-white text-sm md:text-base lg:text-lg drop-shadow">
-                              {slide.subtitle}
-                            </p>
-                            <div className="mt-6">
-                              <Link to={slide.cta.to} className="inline-block">
-                                <button className="px-6 py-3 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-semibold shadow-lg">
-                                  {slide.cta.text}
-                                </button>
-                              </Link>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Prev / Next Arrows */}
-                  <button
-                    aria-label="Previous slide"
-                    onClick={prev}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white px-3 py-2 rounded-full shadow-md hidden md:inline-flex"
-                  >
-                    ‹
-                  </button>
-                  <button
-                    aria-label="Next slide"
-                    onClick={next}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white px-3 py-2 rounded-full shadow-md hidden md:inline-flex"
-                  >
-                    ›
-                  </button>
-
-                  {/* Dots */}
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                    {heroImages.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => goTo(i)}
-                        className={`w-3 h-3 rounded-full ${i === currentSlide ? "bg-white" : "bg-white/60"}`}
-                        aria-label={`Go to slide ${i + 1}`}
-                      />
-                    ))}
+        {/* HERO (continuous sliding) */}
+{showHero && (
+  <header
+    className={`w-full hero-no-scroll ${heroAnimateOut ? "animate-fade-out-up" : "animate-fade-slide"}`}
+    aria-hidden={!showHero}
+  >
+    <div className="relative bg-white mt-16 overflow-hidden">
+      <div className="relative max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-8 max-h-[60vh]">
+        <div
+          ref={carouselRef}
+          className="flex gap-0 animate-slide-left"
+          style={{ width: `${heroImages.length * 100}%` }}
+        >
+          {/* Repeat images twice for seamless looping */}
+          {[...heroImages, ...heroImages].map((slide, idx) => (
+            <div key={idx} className="relative w-[calc(100%/3)] flex-shrink-0">
+              <img
+                src={slide.src}
+                alt={slide.title}
+                className="w-full h-[420px] md:h-[520px] object-cover"
+              />
+              {/* Overlay gradient */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/10 to-transparent"></div>
+              {/* Text overlay */}
+              <div className="absolute inset-0 flex items-center">
+                <div className="max-w-2xl px-6 md:px-12 lg:px-16 text-left">
+                  <h3 className="text-white text-3xl md:text-4xl lg:text-5xl font-extrabold drop-shadow-lg">
+                    {slide.title}
+                  </h3>
+                  <p className="mt-3 text-white text-sm md:text-base lg:text-lg drop-shadow">
+                    {slide.subtitle}
+                  </p>
+                  <div className="mt-6">
+                    <Link to={slide.cta.to}>
+                      <button className="px-6 py-3 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-semibold shadow-lg">
+                        {slide.cta.text}
+                      </button>
+                    </Link>
                   </div>
                 </div>
               </div>
             </div>
-          </header>
-        )}
+          ))}
+        </div>
+      </div>
+    </div>
+  </header>
+)}
+
 
         {/* Greeting (for logged-in users) — normal scrolling block, 15vh height */}
         {isLoggedIn && !showHero && (
