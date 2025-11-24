@@ -1,37 +1,127 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import Card from "../../assets/globals/components/card/Card";
 import Footer from "../../assets/globals/components/footer/Footer";
+import CategoryDropdown from "../../assets/globals/components/CategoryDropDown";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { fetchProducts } from "../../store/productSlice";
-import { Link, useLocation } from "react-router-dom";
 import { fetchCategories } from "../../store/categorySlice";
-import CategoryDropdown from "../../assets/globals/components/CategoryDropDown";
 
-const Home = () => {
-  const { user } = useAppSelector((state) => state.auth);
-  console.log(user?.username)
-  const token = localStorage.getItem("token");
-  const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
+/**
+ * Home page - cleaned, responsive, hero banner slider (Full ecommerce style),
+ * greeting for logged-in users, sticky left sidebar, product grid.
+ */
+
+const Home: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { product } = useAppSelector((state) => state.product);
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
+  // redux state
+  const { user } = useAppSelector((s) => s.auth);
+  const { product } = useAppSelector((s) => s.product);
+
+  // login detection
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
+
+  // local UI state
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
-  const [filteredProducts, setFilteredProducts] = useState(product);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Hero animation control
-  const [showHero, setShowHero] = useState(!isLoggedIn);
-  const [animateOut, setAnimateOut] = useState(false);
+  // hero show/animation control
+  const [showHero, setShowHero] = useState<boolean>(() => !isLoggedIn);
+  const [heroAnimateOut, setHeroAnimateOut] = useState(false);
 
-  // Fetch products & categories
+  // carousel state
+  const heroImages = useMemo(
+    () => [
+      {
+        src: "/images/hero-1.jpg",
+        title: "New Arrivals — Must-have picks",
+        subtitle: "Fresh products just for you. Free shipping over Rs. 2000",
+        cta: { text: "Shop New", to: "/?filter=new" },
+      },
+      {
+        src: "/images/hero-2.jpg",
+        title: "Festive Sale: Up to 40% Off",
+        subtitle: "Limited time deals across categories.",
+        cta: { text: "View Offers", to: "/?filter=sale" },
+      },
+      {
+        src: "/images/hero-3.jpg",
+        title: "Quality Essentials",
+        subtitle: "Best sellers curated for daily life.",
+        cta: { text: "Browse Bestsellers", to: "/?filter=bestseller" },
+      },
+    ],
+    []
+  );
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const slideIntervalRef = useRef<number | null>(null);
+  const carouselRef = useRef<HTMLDivElement | null>(null);
+  const AUTO_PLAY_MS = 4000;
+
+  // Fetch products & categories on mount
   useEffect(() => {
     dispatch(fetchProducts());
     dispatch(fetchCategories());
   }, [dispatch]);
 
-  // Scroll to specific section if passed in location state
+  // Preserve hero show behaviour when login changes:
+  useEffect(() => {
+    if (isLoggedIn && showHero) {
+      setHeroAnimateOut(true);
+      const t = window.setTimeout(() => {
+        setShowHero(false);
+        setHeroAnimateOut(false);
+      }, 500);
+      return () => clearTimeout(t);
+    }
+    // if user logs out, re-show hero
+    if (!isLoggedIn) {
+      setShowHero(true);
+    }
+  }, [isLoggedIn, showHero]);
+
+  // Automatic slide (only while hero is visible)
+  useEffect(() => {
+    if (!showHero) return;
+    slideIntervalRef.current = window.setInterval(() => {
+      setCurrentSlide((s) => (s + 1) % heroImages.length);
+    }, AUTO_PLAY_MS);
+    return () => {
+      if (slideIntervalRef.current) window.clearInterval(slideIntervalRef.current);
+    };
+  }, [showHero, heroImages.length]);
+
+  // Pause on hover
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const handleMouseEnter = () => {
+      if (slideIntervalRef.current) {
+        window.clearInterval(slideIntervalRef.current);
+        slideIntervalRef.current = null;
+      }
+    };
+    const handleMouseLeave = () => {
+      if (!slideIntervalRef.current && showHero) {
+        slideIntervalRef.current = window.setInterval(() => {
+          setCurrentSlide((s) => (s + 1) % heroImages.length);
+        }, AUTO_PLAY_MS);
+      }
+    };
+    el.addEventListener("mouseenter", handleMouseEnter);
+    el.addEventListener("mouseleave", handleMouseLeave);
+    return () => {
+      el.removeEventListener("mouseenter", handleMouseEnter);
+      el.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, [showHero, heroImages.length]);
+
+  // Jump to featured section if navigation state asks for it
   useEffect(() => {
     if (location.state?.scrollTo) {
       const el = document.getElementById(location.state.scrollTo);
@@ -39,188 +129,183 @@ const Home = () => {
     }
   }, [location]);
 
-  // Filter products by category
-  useEffect(() => {
-    if (selectedCategory === "All") setFilteredProducts(product);
-    else
-      setFilteredProducts(
-        product.filter((p) => p.Category.categoryName === selectedCategory)
-      );
-  }, [selectedCategory, product]);
+  // Filtered & searched products (memoized)
+  const finalProducts = useMemo(() => {
+    const q = (searchTerm || "").trim().toLowerCase();
+    return product
+      .filter((p) => (selectedCategory === "All" ? true : p.Category.categoryName === selectedCategory))
+      .filter((p) => {
+        if (!q) return true;
+        return (
+          p.id.toString().toLowerCase().includes(q) ||
+          p.productName.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q) ||
+          p.price.toString().includes(q) ||
+          p.Category.categoryName.toLowerCase().includes(q)
+        );
+      });
+  }, [product, selectedCategory, searchTerm]);
 
-  // Handle hero fade-out when user logs in
-  useEffect(() => {
-    if (isLoggedIn && showHero) {
-      setAnimateOut(true);
-      const timeout = setTimeout(() => setShowHero(false), 500); // duration matches CSS animation
-      return () => clearTimeout(timeout);
-    }
-  }, [isLoggedIn, showHero]);
-
-  const scrollToFeaturedProducts = () => {
-    const el = document.getElementById("featured-products");
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
-  // Combined filter: Category + Search
-  const finalProducts = product
-    .filter((p) =>
-      selectedCategory === "All"
-        ? true
-        : p.Category.categoryName === selectedCategory
-    )
-    .filter((p) => {
-      const s = searchTerm.toLowerCase();
-      if (!s) return true;
-      return (
-        p.id.toString().toLowerCase().includes(s) ||
-        p.productName.toLowerCase().includes(s) ||
-        p.description.toLowerCase().includes(s) ||
-        p.price.toString().includes(s) ||
-        p.Category.categoryName.toLowerCase().includes(s)
-      );
-    });
+  // helpers for slider controls
+  const goTo = (index: number) => setCurrentSlide(((index % heroImages.length) + heroImages.length) % heroImages.length);
+  const prev = () => setCurrentSlide((s) => (s - 1 + heroImages.length) % heroImages.length);
+  const next = () => setCurrentSlide((s) => (s + 1) % heroImages.length);
 
   return (
     <>
       <div className="min-h-screen flex flex-col">
-        {/* HERO — Hidden after login */}
+        {/* HERO (full ecommerce style) */}
         {showHero && (
-          <section
-            className={`
-              sticky top-0 z-10 
-              flex items-center justify-center 
-              min-h-[40vh]
-              bg-gradient-to-tr from-purple-100 via-white to-teal-100 
-              px-4 sm:px-6 md:px-12 lg:px-20
-              ${animateOut ? "animate-fade-out-slide" : "animate-fade-slide"}
-            `}
+          <header
+            className={`w-full hero-no-scroll ${heroAnimateOut ? "animate-fade-out-up" : "animate-fade-slide"}`}
+            aria-hidden={!showHero}
           >
-            <div className="max-w-4xl w-full text-center space-y-6">
-              <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800">
-                Welcome to <span className="text-purple-600">ShopNest!</span>
-              </h1>
+            <div className="relative bg-white">
+              {/* Carousel container */}
+              <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div className="relative overflow-hidden rounded-2xl shadow-xl">
+                  {/* Slides wrapper */}
+                  <div
+                    ref={carouselRef}
+                    className="flex carousel-transition"
+                    style={{ width: `${heroImages.length * 100}%`, transform: `translateX(-${currentSlide * (100 / heroImages.length)}%)` }}
+                  >
+                    {heroImages.map((slide, idx) => (
+                      <div key={idx} style={{ width: `${100 / heroImages.length}%` }} className="relative">
+                        <img
+                          src={slide.src}
+                          alt={slide.title}
+                          className="w-full h-[420px] md:h-[520px] object-cover"
+                        />
+                        {/* overlay gradient */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/10 to-transparent"></div>
+                        {/* Text overlay */}
+                        <div className="absolute inset-0 flex items-center">
+                          <div className="max-w-2xl px-6 md:px-12 lg:px-16 text-left">
+                            <h3 className="text-white text-3xl md:text-4xl lg:text-5xl font-extrabold drop-shadow-lg">
+                              {slide.title}
+                            </h3>
+                            <p className="mt-3 text-white text-sm md:text-base lg:text-lg drop-shadow">
+                              {slide.subtitle}
+                            </p>
+                            <div className="mt-6">
+                              <Link to={slide.cta.to} className="inline-block">
+                                <button className="px-6 py-3 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-semibold shadow-lg">
+                                  {slide.cta.text}
+                                </button>
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
 
-              <p
-                className="text-gray-600 text-lg md:text-xl hover:underline cursor-pointer"
-                onClick={scrollToFeaturedProducts}
-              >
-                Discover the best products at unbeatable prices.
-              </p>
-
-              <div className="flex justify-center gap-4 flex-wrap">
-                <Link to="/login">
-                  <button className="px-6 py-3 text-lg bg-purple-600 hover:bg-purple-700 text-white rounded-2xl shadow-md transition">
-                    Login
+                  {/* Prev / Next Arrows */}
+                  <button
+                    aria-label="Previous slide"
+                    onClick={prev}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white px-3 py-2 rounded-full shadow-md hidden md:inline-flex"
+                  >
+                    ‹
                   </button>
-                </Link>
-
-                <Link to="/register">
-                  <button className="px-6 py-3 text-lg bg-white border border-purple-600 text-purple-600 hover:bg-purple-100 rounded-2xl shadow-md transition">
-                    Sign Up
+                  <button
+                    aria-label="Next slide"
+                    onClick={next}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white px-3 py-2 rounded-full shadow-md hidden md:inline-flex"
+                  >
+                    ›
                   </button>
-                </Link>
+
+                  {/* Dots */}
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                    {heroImages.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => goTo(i)}
+                        className={`w-3 h-3 rounded-full ${i === currentSlide ? "bg-white" : "bg-white/60"}`}
+                        aria-label={`Go to slide ${i + 1}`}
+                      />
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
-          </section>
+          </header>
         )}
 
-        {/* Logged-in Greeting */}
-        {isLoggedIn && (
-          <div
-            className="
-              sticky top-15 z-1000
-              min-h-[20vh]
-              bg-white shadow-md 
-              flex flex-col items-center justify-center
-              animate-fade-slide px-4
-            "
-          >
-            <h1 className="text-3xl font-bold text-gray-800">
-              Welcome back, <span className="text-purple-600">{user?.username || 'there'}</span> 👋
+        {/* Greeting (for logged-in users) — normal scrolling block, 15vh height */}
+        {isLoggedIn && !showHero && (
+          <div className="relative h-[15vh] bg-white shadow-sm flex flex-col items-center justify-center px-4 animate-fade-slide">
+            <h1 className="text-2xl md:text-3xl font-semibold text-gray-800">
+              Welcome back, <span className="text-purple-600">{user?.username ?? "there"}</span> 👋
             </h1>
-
-            <p
-              className="text-gray-600 text-lg mt-2 hover:underline cursor-pointer"
-              onClick={scrollToFeaturedProducts}
-            >
-              Scroll to explore today’s best deals!
-            </p>
+            <p className="text-gray-600 mt-1 text-sm md:text-base">Explore today’s best deals</p>
           </div>
         )}
 
-        {/* Featured Products Section */}
-        {/* Featured Products Section */}
-<section
-  className="w-full bg-white py-20 px-4 sm:px-8"
-  id="featured-products"
->
-  <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
-    {/* Sidebar (Sticky Left) */}
-    <aside
-      className={`
-        w-full lg:w-1/5 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow-md
-        h-fit lg:sticky lg:top-[8vh] transition-all duration-300
-        ${sidebarOpen ? "block" : "hidden lg:block"}
-      `}
-    >
-      <h3
-        className="font-bold text-gray-800 mb-4 cursor-pointer"
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-      >
-        Filter by Category
-      </h3>
-      <CategoryDropdown
-        selected={selectedCategory}
-        onSelect={setSelectedCategory}
-      />
-    </aside>
+        {/* Main / Featured section */}
+        <main id="featured-products" className="w-full bg-white py-12 md:py-20 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col lg:flex-row gap-8">
+              {/* Sidebar */}
+              <aside
+                className={`w-full lg:w-1/5 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow-sm lg:sticky lg:top-[8vh] transition-all duration-200 ${
+                  sidebarOpen ? "block" : "hidden lg:block"
+                }`}
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-gray-800 dark:text-gray-200">Filter by Category</h3>
+                  <button
+                    className="lg:hidden text-sm text-gray-600"
+                    onClick={() => setSidebarOpen((s) => !s)}
+                  >
+                    {sidebarOpen ? "Close" : "Open"}
+                  </button>
+                </div>
+                <CategoryDropdown selected={selectedCategory} onSelect={setSelectedCategory} />
+              </aside>
 
-    {/* Products + Search */}
-    <div className="flex-1 flex flex-col gap-6">
-      <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 text-center lg:text-left">
-        Featured Products
-      </h2>
+              {/* Products area */}
+              <section className="flex-1">
+                {/* Header row: title + search */}
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-800">Featured Products</h2>
 
-      {/* Search Bar */}
-      <div className="flex justify-center lg:justify-start mb-6">
-        <div className="w-full sm:w-3/4 md:w-1/2 lg:w-full relative">
-          <span className="h-full absolute inset-y-0 left-0 flex items-center pl-3">
-            <svg
-              viewBox="0 0 24 24"
-              className="h-4 w-4 fill-current text-gray-500"
-            >
-              <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
-            </svg>
-          </span>
-          <input
-            type="text"
-            placeholder="Find products shortly.. "
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="rounded-full border border-gray-400 block pl-10 pr-4 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
-          />
-        </div>
-      </div>
+                  <div className="w-full md:w-1/3 lg:w-1/4">
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                        <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
+                          <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
+                        </svg>
+                      </span>
+                      <input
+                        type="text"
+                        className="pl-10 pr-4 py-2 w-full rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-200"
+                        placeholder="Find products..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
 
-      {/* Product Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 place-items-center">
-        {finalProducts.length > 0 ? (
-          finalProducts.map((pd) => <Card key={pd.id} data={pd} />)
-        ) : (
-          <p className="text-gray-500 col-span-full text-center">
-            No products found.
-          </p>
-        )}
-      </div>
-    </div>
-  </div>
-</section>
-
+                {/* Product grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                  {finalProducts.length > 0 ? (
+                    finalProducts.map((pd) => <Card key={pd.id} data={pd} />)
+                  ) : (
+                    <p className="text-gray-500">No products found.</p>
+                  )}
+                </div>
+              </section>
+            </div>
+          </div>
+        </main>
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-100">
+      <footer className="bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 py-10">
           <Footer />
         </div>

@@ -38,6 +38,38 @@
     animation: fadeSlide 0.7s ease-out;
   }
   
+  /* Add these to your global CSS (index.css) alongside your existing animations */
+
+/* Slide in / out */
+@keyframes fadeSlide {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-slide {
+  animation: fadeSlide 0.7s ease-out;
+}
+
+/* Fade out + slide up for hero removal */
+@keyframes fadeOutUp {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+.animate-fade-out-up {
+  animation: fadeOutUp 0.5s forwards;
+}
+
+/* Carousel helpers */
+.carousel-transition {
+  transition: transform 0.8s cubic-bezier(.2,.9,.2,1);
+}
+
+/* Small visibility transition for dots/arrows */
+.fade-in-fast { transition: opacity 0.25s ease; opacity: 1; }
+.fade-out-fast { transition: opacity 0.25s ease; opacity: 0.6; }
+
+/* ensure no scrollbar on hero overflow */
+.hero-no-scroll { overflow: hidden; }
+
   
 
  

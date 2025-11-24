@@ -118,7 +118,7 @@ const Navbar = () => {
                 </button>
 
                 {isMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-2 text-sm z-50">
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-2 text-sm z-10000">
                     <MenuItem to="/" label="Home" closeMenu={() => setIsMenuOpen(false)}/>
                     <MenuItem to="/profile" label="My Profile"closeMenu={() => setIsMenuOpen(false)} />
                     <MenuItem to="/wishlist" label="Wishlist" closeMenu={() => setIsMenuOpen(false)}/>
