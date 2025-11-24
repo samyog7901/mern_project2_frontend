@@ -7,31 +7,30 @@ import { Link, useLocation } from "react-router-dom";
 import { fetchCategories } from "../../store/categorySlice";
 import CategoryDropdown from "../../assets/globals/components/CategoryDropDown";
 
-
 const Home = () => {
   const { user } = useAppSelector((state) => state.auth);
   const token = localStorage.getItem("token");
   const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
   const dispatch = useAppDispatch();
   const { product } = useAppSelector((state) => state.product);
-  const [searchTerm,setSearchTerm] = useState<string>('')
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
   const location = useLocation();
 
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [filteredProducts, setFilteredProducts] = useState(product);
 
+  // Hero animation control
+  const [showHero, setShowHero] = useState(!isLoggedIn);
+  const [animateOut, setAnimateOut] = useState(false);
 
-  // Extract unique categories from products
-
-
+  // Fetch products & categories
   useEffect(() => {
     dispatch(fetchProducts());
-    dispatch(fetchCategories())
-  
+    dispatch(fetchCategories());
   }, [dispatch]);
 
+  // Scroll to specific section if passed in location state
   useEffect(() => {
     if (location.state?.scrollTo) {
       const el = document.getElementById(location.state.scrollTo);
@@ -39,6 +38,7 @@ const Home = () => {
     }
   }, [location]);
 
+  // Filter products by category
   useEffect(() => {
     if (selectedCategory === "All") setFilteredProducts(product);
     else
@@ -47,104 +47,112 @@ const Home = () => {
       );
   }, [selectedCategory, product]);
 
+  // Handle hero fade-out when user logs in
+  useEffect(() => {
+    if (isLoggedIn && showHero) {
+      setAnimateOut(true);
+      const timeout = setTimeout(() => setShowHero(false), 500); // duration matches CSS animation
+      return () => clearTimeout(timeout);
+    }
+  }, [isLoggedIn, showHero]);
+
   const scrollToFeaturedProducts = () => {
     const el = document.getElementById("featured-products");
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-// COMBINED FILTER: Category + Search
-const finalProducts = product
-  // 1. Category filter
-  .filter((p) =>
-    selectedCategory === "All"
-      ? true
-      : p.Category.categoryName === selectedCategory
-  )
-  // 2. Search filter
-  .filter((p) => {
-    const s = searchTerm.toLowerCase();
-    if (!s) return true;
-
-    return (
-      p.id.toString().toLowerCase().includes(s) ||
-      p.productName.toLowerCase().includes(s) ||
-      p.description.toLowerCase().includes(s) ||
-      p.price.toString().includes(s) ||
-      p.Category.categoryName.toLowerCase().includes(s)
-    );
-  }); 
+  // Combined filter: Category + Search
+  const finalProducts = product
+    .filter((p) =>
+      selectedCategory === "All"
+        ? true
+        : p.Category.categoryName === selectedCategory
+    )
+    .filter((p) => {
+      const s = searchTerm.toLowerCase();
+      if (!s) return true;
+      return (
+        p.id.toString().toLowerCase().includes(s) ||
+        p.productName.toLowerCase().includes(s) ||
+        p.description.toLowerCase().includes(s) ||
+        p.price.toString().includes(s) ||
+        p.Category.categoryName.toLowerCase().includes(s)
+      );
+    });
 
   return (
     <>
       <div className="min-h-screen flex flex-col">
-        {/* Hero Section */}
-        <section
-  className={`flex items-center justify-center 
-  ${isLoggedIn ? "min-h-[40vh]" : "min-h-[55vh]"} 
-  bg-gradient-to-tr from-purple-100 via-white to-teal-100 
-  pt-32 px-4 sm:px-6 md:px-12 lg:px-20 transition-all duration-300`}
->
-  <div className="max-w-4xl w-full text-center space-y-6">
-    {isLoggedIn ? (
-      <>
-        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800">
-          Welcome to <span className="text-purple-600">ShopNest</span>
-        </h1>
+        {/* HERO — Hidden after login */}
+        {showHero && (
+          <section
+            className={`
+              sticky top-0 z-10 
+              flex items-center justify-center 
+              min-h-[40vh]
+              bg-gradient-to-tr from-purple-100 via-white to-teal-100 
+              px-4 sm:px-6 md:px-12 lg:px-20
+              ${animateOut ? "animate-fade-out-slide" : "animate-fade-slide"}
+            `}
+          >
+            <div className="max-w-4xl w-full text-center space-y-6">
+              <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800">
+                Welcome to <span className="text-purple-600">ShopNest!</span>
+              </h1>
 
-        <p
-          className="text-gray-600 text-lg md:text-xl hover:underline hover:cursor-pointer"
-          onClick={scrollToFeaturedProducts}
-        >
-          Explore top products with fast delivery and easy returns.
-        </p>
-      </>
-    ) : (
-      <>
-        <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800">
-          Welcome to <span className="text-purple-600">ShopNest!</span>
-        </h1>
+              <p
+                className="text-gray-600 text-lg md:text-xl hover:underline cursor-pointer"
+                onClick={scrollToFeaturedProducts}
+              >
+                Discover the best products at unbeatable prices.
+              </p>
 
-        <p
-          className="text-gray-600 text-lg md:text-xl hover:underline hover:cursor-pointer"
-          onClick={scrollToFeaturedProducts}
-        >
-          Discover the best products at unbeatable prices.
-        </p>
+              <div className="flex justify-center gap-4 flex-wrap">
+                <Link to="/login">
+                  <button className="px-6 py-3 text-lg bg-purple-600 hover:bg-purple-700 text-white rounded-2xl shadow-md transition">
+                    Login
+                  </button>
+                </Link>
 
-        <div className="flex justify-center gap-4 flex-wrap">
-          <Link to="/login">
-            <button className="px-6 py-3 text-lg bg-purple-600 hover:bg-purple-700 text-white rounded-2xl shadow-md transition">
-              Login
-            </button>
-          </Link>
+                <Link to="/register">
+                  <button className="px-6 py-3 text-lg bg-white border border-purple-600 text-purple-600 hover:bg-purple-100 rounded-2xl shadow-md transition">
+                    Sign Up
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
 
-          <Link to="/register">
-            <button className="px-6 py-3 text-lg bg-white border border-purple-600 text-purple-600 hover:bg-purple-100 rounded-2xl shadow-md transition">
-              Sign Up
-            </button>
-          </Link>
-        </div>
-      </>
-    )}
+        {/* Logged-in Greeting */}
+        {isLoggedIn && (
+          <div
+            className="
+              sticky top-0 z-10
+              min-h-[20vh]
+              bg-white shadow-md 
+              flex flex-col items-center justify-center
+              animate-fade-slide px-4
+            "
+          >
+            <h1 className="text-3xl font-bold text-gray-800">
+              Welcome back, <span className="text-purple-600">{user?.username}</span> 👋
+            </h1>
 
-    <img
-      src="https://media.istockphoto.com/id/2190128714/photo/young-woman-preparing-shipping-boxes-is-talking-on-the-phone.webp?a=1&b=1&s=612x612&w=0&k=20&c=o4DxNImQUTqN99dRVila3bJ3NywBb-_oPyH9MalYm9A="
-      alt="E-commerce illustration"
-      className={`w-full mx-auto mt-8 rounded-xl shadow-lg 
-      hover:transition-transform hover:scale-105 duration-500
-      ${isLoggedIn ? "max-w-[350px]" : "max-w-[550px]"}`}
-    />
-  </div>
-</section>
+            <p
+              className="text-gray-600 text-lg mt-2 hover:underline cursor-pointer"
+              onClick={scrollToFeaturedProducts}
+            >
+              Scroll to explore today’s best deals!
+            </p>
+          </div>
+        )}
 
-
-        {/* Featured Products Section with Filter */}
+        {/* Featured Products Section */}
         <section className="w-full bg-white py-20 px-4 sm:px-8" id="featured-products">
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-col gap-8">
             {/* Mobile Sidebar Toggle */}
             <h3 className="font-bold text-gray-800" onClick={() => setSidebarOpen(!sidebarOpen)}>Filter by Category</h3>
-            <div className="flex justify-between items-center lg:hidden mb-4">
-            </div>
 
             {/* Sidebar */}
             <aside
