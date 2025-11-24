@@ -162,7 +162,7 @@ const Home: React.FC = () => {
           >
             <div className="relative bg-white">
               {/* Carousel container */}
-              <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              <div className="relative max-w-[800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 max-h-[30vh]">
                 <div className="relative overflow-hidden rounded-2xl shadow-xl">
                   {/* Slides wrapper */}
                   <div

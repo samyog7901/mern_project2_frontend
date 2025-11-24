@@ -1,46 +1,26 @@
-
 @import "tailwindcss";
-
-
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-  
-  /* Hide scrollbar for IE, Edge and Firefox */
-  .scrollbar-hide {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none;    /* Firefox */
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-4px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  .animate-fadeIn {
-    animation: fadeIn 0.15s ease-out;
-  }
+  display: none;
+}
 
-  @keyframes fadeSlide {
-    0% {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  .animate-fade-slide {
-    animation: fadeSlide 0.7s ease-out;
-  }
-  
-  /* Add these to your global CSS (index.css) alongside your existing animations */
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
-/* Slide in / out */
+/* Fade In (simple) */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.15s ease-out;
+}
+
+/* Slide + Fade */
 @keyframes fadeSlide {
   0% { opacity: 0; transform: translateY(20px); }
   100% { opacity: 1; transform: translateY(0); }
@@ -49,7 +29,7 @@
   animation: fadeSlide 0.7s ease-out;
 }
 
-/* Fade out + slide up for hero removal */
+/* Fade out + slide up */
 @keyframes fadeOutUp {
   0% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(-20px); }
@@ -58,20 +38,14 @@
   animation: fadeOutUp 0.5s forwards;
 }
 
-/* Carousel helpers */
+/* Carousel transition */
 .carousel-transition {
-  transition: transform 0.8s cubic-bezier(.2,.9,.2,1);
+  transition: transform 0.8s cubic-bezier(.2, .9, .2, 1);
 }
 
-/* Small visibility transition for dots/arrows */
+/* Dot/arrow fading */
 .fade-in-fast { transition: opacity 0.25s ease; opacity: 1; }
 .fade-out-fast { transition: opacity 0.25s ease; opacity: 0.6; }
 
-/* ensure no scrollbar on hero overflow */
+/* Prevent scroll on hero carousel */
 .hero-no-scroll { overflow: hidden; }
-
-  
-
- 
-  
-  
