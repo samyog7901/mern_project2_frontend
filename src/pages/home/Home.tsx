@@ -167,7 +167,7 @@ const Home: React.FC = () => {
                   {/* Slides wrapper */}
                   <div
                     ref={carouselRef}
-                    className="flex carousel-transition"
+                    className="flex carousel-transition max-h-[60vh] mt-12"
                     style={{ width: `${heroImages.length * 100}%`, transform: `translateX(-${currentSlide * (100 / heroImages.length)}%)` }}
                   >
                     {heroImages.map((slide, idx) => (
