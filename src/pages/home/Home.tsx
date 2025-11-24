@@ -9,6 +9,7 @@ import CategoryDropdown from "../../assets/globals/components/CategoryDropDown";
 
 const Home = () => {
   const { user } = useAppSelector((state) => state.auth);
+  console.log(user?.username)
   const token = localStorage.getItem("token");
   const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
   const dispatch = useAppDispatch();
@@ -128,7 +129,7 @@ const Home = () => {
         {isLoggedIn && (
           <div
             className="
-              sticky top-20 z-10
+              sticky top-20 z-1000
               min-h-[20vh]
               bg-white shadow-md 
               flex flex-col items-center justify-center
