@@ -154,13 +154,12 @@ const Home: React.FC = () => {
   return (
     <>
       <div className="min-h-screen flex flex-col">
-{/* HERO (fade transition) */}
-{showHero && (
+      {showHero && (
   <header
     className={`w-full hero-no-scroll ${heroAnimateOut ? "animate-fade-out-up" : "animate-fade-slide"}`}
     aria-hidden={!showHero}
   >
-    <div className="relative bg-white mt-16 max-h-[60vh] overflow-hidden rounded-2xl shadow-xl">
+    <div className="relative mt-16 w-full h-[520px] md:h-[520px] overflow-hidden rounded-2xl shadow-xl">
       {heroImages.map((slide, idx) => (
         <div
           key={idx}
@@ -169,7 +168,7 @@ const Home: React.FC = () => {
           <img
             src={slide.src}
             alt={slide.title}
-            className="w-full h-[420px] md:h-[520px] object-cover"
+            className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/10 to-transparent"></div>
           <div className="absolute inset-0 flex items-center">
@@ -206,6 +205,7 @@ const Home: React.FC = () => {
     </div>
   </header>
 )}
+
 
 
 
