@@ -155,56 +155,56 @@ const Home: React.FC = () => {
     <>
       <div className="min-h-screen flex flex-col">
       {showHero && (
-  <header
-    className={`w-full hero-no-scroll ${heroAnimateOut ? "animate-fade-out-up" : "animate-fade-slide"}`}
-    aria-hidden={!showHero}
-  >
-    <div className="relative mt-16 w-full h-[520px] md:h-[520px] overflow-hidden rounded-2xl shadow-xl">
-      {heroImages.map((slide, idx) => (
-        <div
-          key={idx}
-          className={`hero-slide ${idx === currentSlide ? "active" : ""}`}
+        <header
+          className={`w-full hero-no-scroll ${heroAnimateOut ? "animate-fade-out-up" : "animate-fade-slide"}`}
+          aria-hidden={!showHero}
         >
-          <img
-            src={slide.src}
-            alt={slide.title}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/10 to-transparent"></div>
-          <div className="absolute inset-0 flex items-center">
-            <div className="max-w-2xl px-6 md:px-12 lg:px-16 text-left">
-              <h3 className="text-white text-3xl md:text-4xl lg:text-5xl font-extrabold drop-shadow-lg">
-                {slide.title}
-              </h3>
-              <p className="mt-3 text-white text-sm md:text-base lg:text-lg drop-shadow">
-                {slide.subtitle}
-              </p>
-              <div className="mt-6">
-                <Link to={slide.cta.to}>
-                  <button className="px-6 py-3 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-semibold shadow-lg">
-                    {slide.cta.text}
-                  </button>
-                </Link>
+          <div className="relative mt-16 w-full h-[520px] md:h-[520px] overflow-hidden rounded-2xl shadow-xl">
+            {heroImages.map((slide, idx) => (
+              <div
+                key={idx}
+                className={`hero-slide ${idx === currentSlide ? "active" : ""}`}
+              >
+                <img
+                  src={slide.src}
+                  alt={slide.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/10 to-transparent"></div>
+                <div className="absolute inset-0 flex items-center">
+                  <div className="max-w-2xl px-6 md:px-12 lg:px-16 text-left">
+                    <h3 className="text-white text-3xl md:text-4xl lg:text-5xl font-extrabold drop-shadow-lg">
+                      {slide.title}
+                    </h3>
+                    <p className="mt-3 text-white text-sm md:text-base lg:text-lg drop-shadow">
+                      {slide.subtitle}
+                    </p>
+                    <div className="mt-6">
+                      <Link to={slide.cta.to}>
+                        <button className="px-6 py-3 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-semibold shadow-lg">
+                          {slide.cta.text}
+                        </button>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
               </div>
+            ))}
+
+            {/* Dots */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+              {heroImages.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentSlide(i)}
+                  className={`w-3 h-3 rounded-full ${i === currentSlide ? "bg-white" : "bg-white/60"}`}
+                  aria-label={`Go to slide ${i + 1}`}
+                />
+              ))}
             </div>
           </div>
-        </div>
-      ))}
-
-      {/* Dots */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-        {heroImages.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrentSlide(i)}
-            className={`w-3 h-3 rounded-full ${i === currentSlide ? "bg-white" : "bg-white/60"}`}
-            aria-label={`Go to slide ${i + 1}`}
-          />
-        ))}
-      </div>
-    </div>
-  </header>
-)}
+        </header>
+      )}
 
 
 
@@ -212,7 +212,7 @@ const Home: React.FC = () => {
 
         {/* Greeting (for logged-in users) — normal scrolling block, 15vh height */}
         {isLoggedIn && !showHero && (
-          <div className="relative h-[15vh] bg-white shadow-sm flex flex-col items-center justify-center px-4 animate-fade-slide">
+          <div className="relative h-[15vh] bg-white shadow-sm flex flex-col items-center justify-center px-4 animate-fade-slide mt-8">
             <h1 className="text-2xl md:text-3xl font-semibold text-gray-800">
               Welcome back, <span className="text-purple-600">{user?.username ?? "there"}</span> 👋
             </h1>
