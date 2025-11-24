@@ -160,14 +160,14 @@ const Home: React.FC = () => {
             className={`w-full hero-no-scroll ${heroAnimateOut ? "animate-fade-out-up" : "animate-fade-slide"}`}
             aria-hidden={!showHero}
           >
-            <div className="relative bg-white">
+            <div className="relative bg-white mt-16">
               {/* Carousel container */}
               <div className="relative max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-8 max-h-[60vh]">
                 <div className="relative overflow-hidden rounded-2xl shadow-xl">
                   {/* Slides wrapper */}
                   <div
                     ref={carouselRef}
-                    className="flex carousel-transition max-h-[60vh] mt-12"
+                    className="flex carousel-transition max-h-[60vh]"
                     style={{ width: `${heroImages.length * 100}%`, transform: `translateX(-${currentSlide * (100 / heroImages.length)}%)` }}
                   >
                     {heroImages.map((slide, idx) => (
