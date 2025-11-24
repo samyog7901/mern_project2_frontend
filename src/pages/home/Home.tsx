@@ -245,26 +245,34 @@ const Home: React.FC = () => {
               {/* Products area */}
               <section className="flex-1">
                 {/* Header row: title + search */}
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-                  <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center">Featured Products</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-4 mb-6">
+  {/* Heading - centered horizontally in its column */}
+  <h2 className="text-2xl md:text-3xl font-bold text-gray-800 justify-self-center md:justify-self-start">
+    Featured Products
+  </h2>
 
-                  <div className="w-full md:w-1/3 lg:w-1/4">
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                        <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
-                          <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
-                        </svg>
-                      </span>
-                      <input
-                        type="text"
-                        className="pl-10 pr-4 py-2 w-full rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-200"
-                        placeholder="Find products..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
+  {/* empty middle column on md+ screens to balance spacing */}
+  <div className="hidden md:block"></div>
+
+  {/* Search box */}
+  <div className="w-full md:w-full lg:w-1/4 justify-self-end">
+    <div className="relative">
+      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+        <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
+          <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
+        </svg>
+      </span>
+      <input
+        type="text"
+        className="pl-10 pr-4 py-2 w-full rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-200"
+        placeholder="Find products..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+    </div>
+  </div>
+</div>
+
 
                 {/* Product grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
