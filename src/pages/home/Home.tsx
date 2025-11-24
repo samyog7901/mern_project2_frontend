@@ -245,9 +245,9 @@ const Home: React.FC = () => {
               {/* Products area */}
               <section className="flex-1">
                 {/* Header row: title + search */}
-                <div className="relative flex items-center gap-4 mb-6">
+                <div className="relative flex items-center gap-4 mb-20">
   {/* Heading */}
-  <h2 className="absolute left-1/2 transform -translate-x-1/2 text-2xl md:text-3xl font-bold text-gray-800">
+  <h2 className="absolute left-1/3 transform -translate-x-1/2 text-2xl md:text-3xl font-bold text-gray-800">
     Featured Products
   </h2>
 
