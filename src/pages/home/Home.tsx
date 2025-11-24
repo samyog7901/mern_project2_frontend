@@ -246,7 +246,7 @@ const Home: React.FC = () => {
               <section className="flex-1">
                 {/* Header row: title + search */}
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-                  <h2 className="text-2xl md:text-3xl font-bold text-gray-800">Featured Products</h2>
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center">Featured Products</h2>
 
                   <div className="w-full md:w-1/3 lg:w-1/4">
                     <div className="relative">
