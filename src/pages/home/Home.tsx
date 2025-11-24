@@ -245,17 +245,14 @@ const Home: React.FC = () => {
               {/* Products area */}
               <section className="flex-1">
                 {/* Header row: title + search */}
-                <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-4 mb-6">
-  {/* Heading - centered horizontally in its column */}
-  <h2 className="text-2xl md:text-3xl font-bold text-gray-800 justify-self-center md:justify-self-start">
+                <div className="relative flex items-center gap-4 mb-6">
+  {/* Heading */}
+  <h2 className="absolute left-1/2 transform -translate-x-1/2 text-2xl md:text-3xl font-bold text-gray-800">
     Featured Products
   </h2>
 
-  {/* empty middle column on md+ screens to balance spacing */}
-  <div className="hidden md:block"></div>
-
-  {/* Search box */}
-  <div className="w-full md:w-full lg:w-1/4 justify-self-end">
+  {/* Search box aligned to right */}
+  <div className="ml-auto w-full md:w-1/3 lg:w-1/4">
     <div className="relative">
       <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
         <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
@@ -272,6 +269,7 @@ const Home: React.FC = () => {
     </div>
   </div>
 </div>
+
 
 
                 {/* Product grid */}
