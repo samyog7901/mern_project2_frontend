@@ -129,7 +129,7 @@ const Home = () => {
         {isLoggedIn && (
           <div
             className="
-              sticky top-20 z-1000
+              sticky top-15 z-1000
               min-h-[20vh]
               bg-white shadow-md 
               flex flex-col items-center justify-center
@@ -153,11 +153,11 @@ const Home = () => {
         <section className="w-full bg-white py-20 px-4 sm:px-8" id="featured-products">
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-col gap-8">
             {/* Mobile Sidebar Toggle */}
-            <h3 className="font-bold text-gray-800" onClick={() => setSidebarOpen(!sidebarOpen)}>Filter by Category</h3>
+            <h3 className="font-bold text-gray-800 mt-16" onClick={() => setSidebarOpen(!sidebarOpen)}>Filter by Category</h3>
 
             {/* Sidebar */}
             <aside
-              className={`w-full lg:w-1/5 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow-md h-fit mb-6 lg:mb-0 transition-all duration-300 ${
+              className={`w-full lg:w-1/5 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow-md h-fit mb-6 lg:mb-0 transition-all duration-300 mt-6 ${
                 sidebarOpen ? "block" : "hidden lg:block"
               }`}
             >
