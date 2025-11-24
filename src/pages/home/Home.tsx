@@ -78,54 +78,65 @@ const finalProducts = product
     <>
       <div className="min-h-screen flex flex-col">
         {/* Hero Section */}
-        <section className="flex items-center justify-center min-h-[50vh] bg-gradient-to-tr from-purple-100 via-white to-teal-100 pt-40 px-4 sm:px-6 md:px-12 lg:px-20">
-          <div className="max-w-4xl w-full text-center space-y-8">
-            {isLoggedIn ? (
-              <>
-                <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800">
-                  Welcome to <span className="text-purple-600">ShopNest</span>
-                </h1>
-                <p
-                  className="text-gray-600 text-lg md:text-xl hover:underline hover:cursor-pointer"
-                  onClick={scrollToFeaturedProducts}
-                >
-                  Discover the best products at unbeatable prices. Fast shipping. Easy returns.
-                </p>
-              </>
-            ) : (
-              <>
-                <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800">
-                  Welcome to <span className="text-purple-600">ShopNest!</span>
-                </h1>
-                <p
-                  className="text-gray-600 text-lg md:text-xl hover:underline hover:cursor-pointer"
-                  onClick={scrollToFeaturedProducts}
-                >
-                  Discover the best products at unbeatable prices. Fast shipping. Easy returns.
-                </p>
+        <section
+  className={`flex items-center justify-center 
+  ${isLoggedIn ? "min-h-[40vh]" : "min-h-[55vh]"} 
+  bg-gradient-to-tr from-purple-100 via-white to-teal-100 
+  pt-32 px-4 sm:px-6 md:px-12 lg:px-20 transition-all duration-300`}
+>
+  <div className="max-w-4xl w-full text-center space-y-6">
+    {isLoggedIn ? (
+      <>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800">
+          Welcome to <span className="text-purple-600">ShopNest</span>
+        </h1>
 
-                <div className="flex justify-center gap-4 flex-wrap">
-                  <Link to="/login">
-                    <button className="px-6 py-3 text-lg bg-purple-600 hover:bg-purple-700 text-white rounded-2xl shadow-md transition">
-                      Login
-                    </button>
-                  </Link>
-                  <Link to="/register">
-                    <button className="px-6 py-3 text-lg bg-white border border-purple-600 text-purple-600 hover:bg-purple-100 rounded-2xl shadow-md transition">
-                      Sign Up
-                    </button>
-                  </Link>
-                </div>
-              </>
-            )}
+        <p
+          className="text-gray-600 text-lg md:text-xl hover:underline hover:cursor-pointer"
+          onClick={scrollToFeaturedProducts}
+        >
+          Explore top products with fast delivery and easy returns.
+        </p>
+      </>
+    ) : (
+      <>
+        <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800">
+          Welcome to <span className="text-purple-600">ShopNest!</span>
+        </h1>
 
-            <img
-              src="https://media.istockphoto.com/id/2190128714/photo/young-woman-preparing-shipping-boxes-is-talking-on-the-phone.webp?a=1&b=1&s=612x612&w=0&k=20&c=o4DxNImQUTqN99dRVila3bJ3NywBb-_oPyH9MalYm9A="
-              alt="E-commerce illustration"
-              className="w-full max-w-[250px] sm:max-w-[350px] md:max-w-[450px] lg:max-w-[550px] mx-auto mt-10 rounded-xl shadow-lg hover:transition-transform hover:scale-105 duration-500"
-            />
-          </div>
-        </section>
+        <p
+          className="text-gray-600 text-lg md:text-xl hover:underline hover:cursor-pointer"
+          onClick={scrollToFeaturedProducts}
+        >
+          Discover the best products at unbeatable prices.
+        </p>
+
+        <div className="flex justify-center gap-4 flex-wrap">
+          <Link to="/login">
+            <button className="px-6 py-3 text-lg bg-purple-600 hover:bg-purple-700 text-white rounded-2xl shadow-md transition">
+              Login
+            </button>
+          </Link>
+
+          <Link to="/register">
+            <button className="px-6 py-3 text-lg bg-white border border-purple-600 text-purple-600 hover:bg-purple-100 rounded-2xl shadow-md transition">
+              Sign Up
+            </button>
+          </Link>
+        </div>
+      </>
+    )}
+
+    <img
+      src="https://media.istockphoto.com/id/2190128714/photo/young-woman-preparing-shipping-boxes-is-talking-on-the-phone.webp?a=1&b=1&s=612x612&w=0&k=20&c=o4DxNImQUTqN99dRVila3bJ3NywBb-_oPyH9MalYm9A="
+      alt="E-commerce illustration"
+      className={`w-full mx-auto mt-8 rounded-xl shadow-lg 
+      hover:transition-transform hover:scale-105 duration-500
+      ${isLoggedIn ? "max-w-[350px]" : "max-w-[550px]"}`}
+    />
+  </div>
+</section>
+
 
         {/* Featured Products Section with Filter */}
         <section className="w-full bg-white py-20 px-4 sm:px-8" id="featured-products">
