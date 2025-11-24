@@ -128,7 +128,7 @@ const Home = () => {
         {isLoggedIn && (
           <div
             className="
-              sticky top-0 z-10
+              sticky top-20 z-10
               min-h-[20vh]
               bg-white shadow-md 
               flex flex-col items-center justify-center
