@@ -150,53 +150,73 @@ const Home = () => {
         )}
 
         {/* Featured Products Section */}
-        <section className="w-full bg-white py-20 px-4 sm:px-8" id="featured-products">
-          <div className="max-w-7xl mx-auto flex flex-col lg:flex-col gap-8">
-            {/* Mobile Sidebar Toggle */}
-            <h3 className="font-bold text-gray-800 mt-16" onClick={() => setSidebarOpen(!sidebarOpen)}>Filter by Category</h3>
+        {/* Featured Products Section */}
+<section
+  className="w-full bg-white py-20 px-4 sm:px-8"
+  id="featured-products"
+>
+  <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
+    {/* Sidebar (Sticky Left) */}
+    <aside
+      className={`
+        w-full lg:w-1/5 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow-md
+        h-fit lg:sticky lg:top-[8vh] transition-all duration-300
+        ${sidebarOpen ? "block" : "hidden lg:block"}
+      `}
+    >
+      <h3
+        className="font-bold text-gray-800 mb-4 cursor-pointer"
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+      >
+        Filter by Category
+      </h3>
+      <CategoryDropdown
+        selected={selectedCategory}
+        onSelect={setSelectedCategory}
+      />
+    </aside>
 
-            {/* Sidebar */}
-            <aside
-              className={`w-full lg:w-1/5 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow-md h-fit mb-6 lg:mb-0 transition-all duration-300 mt-6 ${
-                sidebarOpen ? "block" : "hidden lg:block"
-              }`}
+    {/* Products + Search */}
+    <div className="flex-1 flex flex-col gap-6">
+      <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 text-center lg:text-left">
+        Featured Products
+      </h2>
+
+      {/* Search Bar */}
+      <div className="flex justify-center lg:justify-start mb-6">
+        <div className="w-full sm:w-3/4 md:w-1/2 lg:w-full relative">
+          <span className="h-full absolute inset-y-0 left-0 flex items-center pl-3">
+            <svg
+              viewBox="0 0 24 24"
+              className="h-4 w-4 fill-current text-gray-500"
             >
-              <CategoryDropdown selected={selectedCategory} onSelect={setSelectedCategory} />
-            </aside>
+              <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
+            </svg>
+          </span>
+          <input
+            type="text"
+            placeholder="Find products shortly.. "
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="rounded-full border border-gray-400 block pl-10 pr-4 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
+          />
+        </div>
+      </div>
 
-            {/* Products + Search */}
-            <div className="flex-1 flex flex-col gap-6">
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 text-center">Featured Products</h2>
+      {/* Product Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 place-items-center">
+        {finalProducts.length > 0 ? (
+          finalProducts.map((pd) => <Card key={pd.id} data={pd} />)
+        ) : (
+          <p className="text-gray-500 col-span-full text-center">
+            No products found.
+          </p>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
 
-              {/* Search Bar */}
-              <div className="flex justify-center mb-6">
-                <div className="w-full sm:w-3/4 md:w-1/2 relative">
-                  <span className="h-full absolute inset-y-0 left-0 flex items-center pl-3">
-                    <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current text-gray-500">
-                      <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
-                    </svg>
-                  </span>
-                  <input
-                    type="text"
-                    placeholder="Find products shortly.. "
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="rounded-full border border-gray-400 block pl-10 pr-4 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              {/* Product Cards Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 place-items-center">
-                {finalProducts.length > 0 ? (
-                  finalProducts.map((pd) => <Card key={pd.id} data={pd} />)
-                ) : (
-                  <p className="text-gray-500 col-span-full text-center">No products found.</p>
-                )}
-              </div>
-            </div>
-          </div>
-        </section>
       </div>
 
       {/* Footer */}
