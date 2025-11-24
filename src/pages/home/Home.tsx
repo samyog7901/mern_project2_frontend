@@ -78,7 +78,7 @@ const finalProducts = product
     <>
       <div className="min-h-screen flex flex-col">
         {/* Hero Section */}
-        <section className="flex items-center justify-center min-h-[90vh] bg-gradient-to-tr from-purple-100 via-white to-teal-100 pt-40 px-4 sm:px-6 md:px-12 lg:px-20">
+        <section className="flex items-center justify-center min-h-[50vh] bg-gradient-to-tr from-purple-100 via-white to-teal-100 pt-40 px-4 sm:px-6 md:px-12 lg:px-20">
           <div className="max-w-4xl w-full text-center space-y-8">
             {isLoggedIn ? (
               <>
