@@ -137,7 +137,7 @@ const Home = () => {
             "
           >
             <h1 className="text-3xl font-bold text-gray-800">
-              Welcome back, <span className="text-purple-600">{user?.username}</span> 👋
+              Welcome back, <span className="text-purple-600">{user?.username || 'there'}</span> 👋
             </h1>
 
             <p
