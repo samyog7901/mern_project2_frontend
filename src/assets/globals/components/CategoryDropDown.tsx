@@ -9,7 +9,7 @@ interface Props {
   className?: string;
 }
 
-const CategoryDropdown = ({ selected, onSelect }: Props) => {
+const CategoryDropdown = ({ selected, onSelect,className }: Props) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch()
@@ -32,7 +32,7 @@ const CategoryDropdown = ({ selected, onSelect }: Props) => {
 
 
   return (
-    <div ref={ref} className="relative w-full z-[99999]">
+    <div ref={ref} className={`relative w-full z-[99999] ${className || ""}`}>
       {/* Button */}
       <button
         onClick={() => setOpen(!open)}
