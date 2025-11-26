@@ -131,7 +131,11 @@ const Navbar = () => {
        )}
 
         {/* ------------------ RIGHT : CART + MENU ------------------ */}
-        <div className="flex items-center justify-end space-x-10 text-white">
+        <div
+          className={`flex items-center space-x-10 text-white ${
+            isauthPage ? "justify-end col-span-3" : "justify-end"
+          }`}
+        >
 
           {!isauthPage && isLoggedIn ? (
             <>
