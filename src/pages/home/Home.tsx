@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Card from "../../assets/globals/components/card/Card";
 import Footer from "../../assets/globals/components/footer/Footer";
 import CategoryDropdown from "../../assets/globals/components/CategoryDropDown";
@@ -10,6 +10,7 @@ import { fetchCategories } from "../../store/categorySlice";
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
+  const navigate = useNavigate()
 
   const { user } = useAppSelector((s) => s.auth);
   const { product } = useAppSelector((s) => s.product);
@@ -162,7 +163,16 @@ const Home: React.FC = () => {
                     {sidebarOpen ? "Close" : "Open"}
                   </button>
                 </div>
-                <CategoryDropdown selected={selectedCategory} onSelect={setSelectedCategory} />
+                <CategoryDropdown
+  selected={selectedCategory}
+  onSelect={(cat) => {
+    setSelectedCategory(cat);
+    navigate(
+      `/?search=${encodeURIComponent(searchTerm)}&category=${encodeURIComponent(cat)}`
+    );
+  }}
+/>
+
               </aside>
 
               <section className="flex-1">

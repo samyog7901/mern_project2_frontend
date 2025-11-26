@@ -118,7 +118,7 @@ const Navbar = () => {
         )}
 
         {/* ------------------ RIGHT : CART + MENU ------------------ */}
-        <div className={`flex items-center space-x-10 text-white ${isauthPage ? "justify-end" : ""}`}>
+        <div className={`flex items-center space-x-10 text-white ${isauthPage ? "ml-44" : "ml-45"}`}>
           {!isauthPage && isLoggedIn ? (
             <>
               <Link to="/cart" className="relative text-gray-100 hover:text-white">
