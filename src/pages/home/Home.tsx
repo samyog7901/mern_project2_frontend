@@ -257,11 +257,11 @@ const Home: React.FC = () => {
             <div className="flex w-full lg:w-1/2 items-stretch rounded-md  border border-gray-300 bg-white shadow-sm hover:shadow-2xl">
 
               {/* Category Selector (Left) */}
-              <div className="bg-gray-100 px-3 flex items-center border-r border-gray-300">
+              <div className="bg-gray-100 px-5 flex items-center border-r border-gray-300">
                 <CategoryDropdown
                   selected={selectedCategory}
                   onSelect={setSelectedCategory}
-                  className="block lg:hidden w-1/2"
+                  className="block lg:hidden w-1/3"
                 />
               </div>
 
