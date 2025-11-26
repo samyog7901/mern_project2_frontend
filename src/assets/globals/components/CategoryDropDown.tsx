@@ -49,10 +49,11 @@ const CategoryDropdown = ({ selected, onSelect,className }: Props) => {
       {/* Dropdown */}
       {open && (
         <div
-          className="absolute top-full left-0 mt-2 w-full bg-white dark:bg-gray-800 
-                     border border-gray-300 dark:border-gray-600 rounded-md shadow-lg 
-                     py-2 max-h-60 overflow-y-auto z-[9999] animate-fadeIn scrollbar-hide"
-        >
+        className="absolute top-full left-0 mt-2 min-w-[180px] w-max max-w-[260px] bg-white dark:bg-gray-800 
+                   border border-gray-300 dark:border-gray-600 rounded-md shadow-lg 
+                   py-2 max-h-60 overflow-y-auto z-[99999]"
+      >
+      
           {/* All Category */}
           <div
             onClick={() => {
