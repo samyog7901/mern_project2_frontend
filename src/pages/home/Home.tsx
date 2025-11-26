@@ -101,20 +101,24 @@ const Home: React.FC = () => {
 
   // Filter products
   const finalProducts = useMemo(() => {
-    const q = searchTerm.toLowerCase().trim();
+    const params = new URLSearchParams(location.search);
+    const search = params.get("search")?.toLowerCase().trim() || "";
+    const category = params.get("category") || "All";
+  
     return product
-      .filter((p) => (selectedCategory === "All" ? true : p.Category.categoryName === selectedCategory))
-      .filter((p) => {
-        if (!q) return true;
+      .filter(p => category === "All" ? true : p.Category.categoryName === category)
+      .filter(p => {
+        if (!search) return true;
         return (
-          p.id.toString().toLowerCase().includes(q) ||
-          p.productName.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q) ||
-          p.price.toString().includes(q) ||
-          p.Category.categoryName.toLowerCase().includes(q)
+          p.id.toString().toLowerCase().includes(search) ||
+          p.productName.toLowerCase().includes(search) ||
+          p.description.toLowerCase().includes(search) ||
+          p.price.toString().includes(search) ||
+          p.Category.categoryName.toLowerCase().includes(search)
         );
       });
-  }, [product, selectedCategory, searchTerm]);
+  }, [product, location.search]);
+  
 
   return (
     <>
