@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Card from "../../assets/globals/components/card/Card";
 import Footer from "../../assets/globals/components/footer/Footer";
 import CategoryDropdown from "../../assets/globals/components/CategoryDropDown";
@@ -10,7 +10,6 @@ import { fetchCategories } from "../../store/categorySlice";
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
   const location = useLocation();
-  const navigate = useNavigate()
 
   const { user } = useAppSelector((s) => s.auth);
   const { product } = useAppSelector((s) => s.product);
@@ -18,26 +17,25 @@ const Home: React.FC = () => {
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
   const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
 
-  // Get search & category from URL
+  // Get initial search from URL (from Navbar)
   const queryParams = new URLSearchParams(location.search);
   const initialSearch = queryParams.get("search") || "";
-  const initialCategory = queryParams.get("category") || "All";
 
   const [searchTerm, setSearchTerm] = useState(initialSearch);
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [sidebarCategory, setSidebarCategory] = useState(initialCategory);
 
+  // Sidebar category filter independent of Navbar
+  const [sidebarCategory, setSidebarCategory] = useState("All");
 
+  // Hero
   const [showHero, setShowHero] = useState(() => !isLoggedIn);
   const [heroAnimateOut, setHeroAnimateOut] = useState(false);
 
-  // Hero carousel
-  const heroImages = useMemo(() => [
+  const heroImages = [
     { src: "/images/hero-1.jpg", title: "New Arrivals", subtitle: "Fresh products just for you.", cta: { text: "Shop New", to: "/?filter=new" } },
     { src: "/images/hero-2.jpg", title: "Festive Sale", subtitle: "Limited time deals.", cta: { text: "View Offers", to: "/?filter=sale" } },
     { src: "/images/hero-3.jpg", title: "Quality Essentials", subtitle: "Best sellers curated.", cta: { text: "Browse Bestsellers", to: "/?filter=bestseller" } },
-  ], []);
+  ];
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const slideIntervalRef = useRef<number | null>(null);
@@ -60,7 +58,7 @@ const Home: React.FC = () => {
     if (!isLoggedIn) setShowHero(true);
   }, [isLoggedIn, showHero]);
 
-  // Automatic slide
+  // Automatic hero slide
   useEffect(() => {
     if (!showHero) return;
     slideIntervalRef.current = window.setInterval(() => {
@@ -69,57 +67,30 @@ const Home: React.FC = () => {
     return () => {
       if (slideIntervalRef.current) window.clearInterval(slideIntervalRef.current);
     };
-  }, [showHero, heroImages.length]);
+  }, [showHero]);
 
-  // Pause on hover
-  const carouselRef = useRef<HTMLDivElement | null>(null);
-  useEffect(() => {
-    const el = carouselRef.current;
-    if (!el) return;
-    const handleMouseEnter = () => {
-      if (slideIntervalRef.current) window.clearInterval(slideIntervalRef.current);
-    };
-    const handleMouseLeave = () => {
-      if (!slideIntervalRef.current && showHero) {
-        slideIntervalRef.current = window.setInterval(() => {
-          setCurrentSlide((s) => (s + 1) % heroImages.length);
-        }, AUTO_PLAY_MS);
-      }
-    };
-    el.addEventListener("mouseenter", handleMouseEnter);
-    el.addEventListener("mouseleave", handleMouseLeave);
-    return () => {
-      el.removeEventListener("mouseenter", handleMouseEnter);
-      el.removeEventListener("mouseleave", handleMouseLeave);
-    };
-  }, [showHero, heroImages.length]);
-
-  // Sync search & category if URL changes
+  // Sync search from Navbar (URL) once
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     setSearchTerm(params.get("search") || "");
-    setSelectedCategory(params.get("category") || "All");
   }, [location.search]);
 
-  // Filter products
+  // Final products filtered
   const finalProducts = useMemo(() => {
-    const q = searchTerm.toLowerCase().trim(); // still optional from navbar
     return product
       .filter(p => sidebarCategory === "All" ? true : p.Category.categoryName === sidebarCategory)
       .filter(p => {
-        if (!q) return true;
+        if (!searchTerm.trim()) return true;
+        const search = searchTerm.toLowerCase().trim();
         return (
-          p.id.toString().toLowerCase().includes(q) ||
-          p.productName.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q) ||
-          p.price.toString().includes(q) ||
-          p.Category.categoryName.toLowerCase().includes(q)
+          p.id.toString().toLowerCase().includes(search) ||
+          p.productName.toLowerCase().includes(search) ||
+          p.description.toLowerCase().includes(search) ||
+          p.price.toString().includes(search) ||
+          p.Category.categoryName.toLowerCase().includes(search)
         );
       });
   }, [product, sidebarCategory, searchTerm]);
-  
-  
-  
 
   return (
     <>
@@ -161,6 +132,8 @@ const Home: React.FC = () => {
         <main id="featured-products" className="w-full bg-white py-12 md:py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col lg:flex-row gap-8">
+
+              {/* Sidebar */}
               <aside className={`w-full lg:w-1/5 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow-sm lg:sticky lg:top-[8vh] transition-all duration-200 ${sidebarOpen ? "block" : "hidden lg:block"}`}>
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold text-gray-800 dark:text-gray-200">Filter by Category</h3>
@@ -168,18 +141,18 @@ const Home: React.FC = () => {
                     {sidebarOpen ? "Close" : "Open"}
                   </button>
                 </div>
-                <CategoryDropdown selected={selectedCategory} onSelect={setSelectedCategory} />
-
+                <CategoryDropdown selected={sidebarCategory} onSelect={setSidebarCategory} />
               </aside>
 
+              {/* Products */}
               <section className="flex-1">
                 <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-4">Featured Products</h2>
-
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                   {finalProducts.length > 0 ? finalProducts.map((pd) => <Card key={pd.id} data={pd} />)
-                    : <p className="text-gray-500">No products found.</p>}
+                    : <p className="text-gray-500 text-center col-span-full">No products found.</p>}
                 </div>
               </section>
+
             </div>
           </div>
         </main>
