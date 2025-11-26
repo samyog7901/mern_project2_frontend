@@ -261,7 +261,7 @@ const Home: React.FC = () => {
                 <CategoryDropdown
                   selected={selectedCategory}
                   onSelect={setSelectedCategory}
-                  className="block lg:hidden w-1/3"
+                  className="block lg:hidden w-1/2"
                 />
               </div>
 
