@@ -18,7 +18,7 @@ const Navbar: React.FC = () => {
 
   const token = localStorage.getItem("token");
   const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
-  const isAuthPage = location.pathname == "/login" || "/register"
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/register"
 
   // Navbar controlled search & category
   const queryParams = new URLSearchParams(location.search);
