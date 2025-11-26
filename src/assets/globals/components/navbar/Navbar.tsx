@@ -35,6 +35,11 @@ const Navbar: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
+  
+
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsMenuOpen(false);
@@ -48,6 +53,7 @@ const Navbar: React.FC = () => {
   const handleLogout = () => {
     dispatch(logout());
     navigate("/login");
+    setIsMenuOpen(false)
   };
 
   // When URL changes externally, sync state
