@@ -6,6 +6,7 @@ import { fetchCategories } from "../../../store/categorySlice";
 interface Props {
   selected: string;
   onSelect: (value: string) => void;
+  className?: string;
 }
 
 const CategoryDropdown = ({ selected, onSelect }: Props) => {
@@ -31,7 +32,7 @@ const CategoryDropdown = ({ selected, onSelect }: Props) => {
 
 
   return (
-    <div ref={ref} className="relative w-full z-[200]">
+    <div ref={ref} className="relative w-full z-[99999]">
       {/* Button */}
       <button
         onClick={() => setOpen(!open)}
