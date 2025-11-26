@@ -3,6 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import { logout } from "../../../../store/authSlice";
 import { fetchCartItems } from "../../../../store/cartSlice";
+import { ChevronDown } from "lucide-react";
+import CategoryDropdown from "../CategoryDropDown";
 
 const Navbar = () => {
   const location = useLocation();
@@ -14,36 +16,20 @@ const Navbar = () => {
 
   const isDashboard = location.pathname.startsWith("/dashboard");
   const isProfile = location.pathname === "/profile";
-  const isauthPage = location.pathname === "/login" || location.pathname === "/register";
+  const isauthPage =
+    location.pathname === "/login" || location.pathname === "/register";
 
   const { user } = useAppSelector((state) => state.auth);
+  const { items } = useAppSelector((state) => state.carts);
 
-  // Check login status
   const token = localStorage.getItem("token");
   const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
-  const {items} = useAppSelector((state) => state.carts);
-  useEffect(()=>{
-    dispatch(fetchCartItems())
-  },[dispatch])
 
-  const MenuItem = ({
-    to,
-    label,
-    closeMenu,
-  }: {
-    to: string;
-    label: string;
-    closeMenu?: () => void;
-  }) => (
-    <Link
-      to={to}
-      onClick={() => closeMenu?.()} // close menu on click
-      className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600"
-    >
-      {label}
-    </Link>
-  );
-  
+  useEffect(() => {
+    dispatch(fetchCartItems());
+  }, [dispatch]);
+
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -58,77 +44,147 @@ const Navbar = () => {
     };
   }, []);
 
- 
-
   const handleLogout = () => {
-    dispatch(logout()); // ✅ uses thunk
+    dispatch(logout());
     navigate("/login");
   };
 
   return (
-    <header className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md fixed top-0 z-100000 h-16">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 relative h-full">
-        {/* Logo */}
-        <Link to="/">
-        <div className="flex items-center space-x-2 text-white">
-          <svg
-            className="h-7 w-7 text-green-300"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path d="M3 3a1 1 0 000 2h1.22l.94 4.68A3 3 0 008.08 12h7.84a3 3 0 002.92-2.32l1.16-5.32A1 1 0 0019 3H6.21l-.2-1H3zm5.08 7L7.2 5h10.6l-.93 4.27A1 1 0 0115.92 10H8.08zM7 16a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4z" />
-          </svg>
-          <span className="text-xl font-bold tracking-wide">ShopNest</span>
+    <header className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md fixed top-0 z-[100000] h-16">
+      <div className="max-w-7xl mx-auto grid grid-cols-3 items-center px-4 sm:px-6 h-full">
+
+        {/* ------------------ LEFT : LOGO ------------------ */}
+        <div className="flex items-center">
+          <Link to="/" className="flex items-center space-x-2 text-white">
+            <svg
+              className="h-7 w-7 text-green-300"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M3 3a1 1 ..." />
+            </svg>
+            <span className="text-xl font-bold tracking-wide">ShopNest</span>
+          </Link>
         </div>
-        </Link>
 
-        {/* Centered Text for Profile Page */}
-        {isProfile && (
-          <div className="absolute left-1/2 transform -translate-x-1/2">
-            <span className="text-white text-2xl font-semibold tracking-wider">
-              My Profile
-            </span>
+        {/* ------------------ CENTER : AMAZON SEARCH BAR ------------------ */}
+        <div className="flex justify-center">
+          <div
+            className="
+              relative w-full max-w-xl 
+              transition-all duration-300 ease-out 
+              focus-within:max-w-2xl 
+              focus-within:shadow-xl
+            "
+          >
+            {/* Search Bar Box */}
+            <div className="flex bg-white rounded-md overflow-hidden">
+
+              {/* -------- Category Dropdown Inside Search Bar -------- */}
+              <div className="relative group">
+                <button
+                  className="
+                    px-3 h-full bg-gray-100 text-gray-700 text-sm 
+                    border-r border-gray-300 flex items-center gap-1
+                  "
+                >
+                  {selectedCategory}
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+
+                <div className="absolute left-0 top-full mt-1 hidden group-hover:block z-[99999]">
+                  <CategoryDropdown
+                    selected={selectedCategory}
+                    onSelect={setSelectedCategory}
+                  />
+                </div>
+              </div>
+
+              {/* --------- Search Input --------- */}
+              <input
+                type="text"
+                placeholder="Search products..."
+                className="
+                  w-full px-4 py-2 outline-none 
+                  transition-all duration-300
+                  focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500
+                "
+              />
+
+              {/* --------- Search Button --------- */}
+              <button
+                className="
+                  px-4 bg-yellow-400 hover:bg-yellow-500 
+                  text-black font-medium transition-colors duration-200
+                "
+              >
+                <i className="fas fa-search"></i>
+              </button>
+            </div>
           </div>
-        )}
+        </div>
 
-        {/* Right Side Controls */}
-        <div className="flex items-center space-x-10 text-white">
+        {/* ------------------ RIGHT : CART + MENU ------------------ */}
+        <div className="flex items-center justify-end space-x-10 text-white">
+
           {!isauthPage && isLoggedIn ? (
             <>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-xh6g9sP9m7tZ5qIV6S0cQ8cz0qZo2Xce3sM1tV9zZP3k4l5Z/7+VvJqNfCeJ/NmZK9l5DYc6MxEkmvN2s4aCzA==" crossOrigin="anonymous" referrerPolicy="no-referrer" />
-
-
-            <Link to="/cart" className="relative text-gray-700 hover:text-white">
-              <i className="fas fa-shopping-cart "></i>
-              {/* Badge (optional) */}
-              <p className="text-white text-sm">Cart</p>
-              <span className="absolute -top-2 -right-2 bg-purple-600 text-white text-xs px-2 py-0.5 rounded-full">
-                {items?.length }
-              </span>
-            </Link>
+              <Link to="/cart" className="relative text-gray-100 hover:text-white">
+                <i className="fas fa-shopping-cart"></i>
+                <p className="text-white text-sm">Cart</p>
+                <span className="absolute -top-2 -right-2 bg-purple-600 text-white text-xs px-2 py-0.5 rounded-full">
+                  {items?.length}
+                </span>
+              </Link>
 
               {/* Hamburger Menu */}
               <div ref={menuRef} className="relative">
                 <button
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  className="text-white text-xl focus:outline-none"
+                  className="text-white text-xl"
                 >
                   ☰
                 </button>
 
                 {isMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-2 text-sm z-10000">
-                    <MenuItem to="/" label="Home" closeMenu={() => setIsMenuOpen(false)}/>
-                    <MenuItem to="/profile" label="My Profile"closeMenu={() => setIsMenuOpen(false)} />
-                    <MenuItem to="/wishlist" label="Wishlist" closeMenu={() => setIsMenuOpen(false)}/>
-                    <MenuItem to="/myOrders" label="Track Orders" closeMenu={() => setIsMenuOpen(false)}/>
-                    <MenuItem to="/returns" label="Manage Returns" closeMenu={() => setIsMenuOpen(false)}/>
-                    <MenuItem to="/packages" label="Your Packages" closeMenu={() => setIsMenuOpen(false)} />
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-2 text-sm z-[10000]">
+                    <Link
+                      to="/"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                    >
+                      Home
+                    </Link>
+
+                    <Link
+                      to="/profile"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                    >
+                      My Profile
+                    </Link>
+
+                    <Link
+                      to="/wishlist"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                    >
+                      Wishlist
+                    </Link>
+
+                    <Link
+                      to="/myOrders"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
+                    >
+                      Track Orders
+                    </Link>
+
                     <button
                       onClick={() => {
                         handleLogout();
-                        setIsMenuOpen(false); // also close on logout
+                        setIsMenuOpen(false);
                       }}
                       className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-red-500"
                     >
@@ -149,20 +205,13 @@ const Navbar = () => {
             </div>
           )}
 
-          {/* Dashboard Welcome */}
           {isDashboard && !isProfile && (
-            <div className="space-x-4 text-sm font-medium">
-              <span className="text-2xl">
-                Welcome {user?.username ?? "Guest"}!
-              </span>
-            </div>
+            <span className="text-2xl">Welcome {user?.username ?? "Guest"}!</span>
           )}
         </div>
       </div>
     </header>
   );
 };
-
-
 
 export default Navbar;
