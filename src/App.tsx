@@ -62,7 +62,7 @@ const App = () => {
     
       <Routes>
       {/* <Route path="/register" element={<LoginProtectedRoute><Register/></LoginProtectedRoute>}/> */}
-      <Route path="/" element={<ProtectedRoute><Home/></ProtectedRoute>}/>
+      <Route path="/" element={<Home/>} />
       <Route path="/payment-verify" element={<ProtectedRoute><PaymentVerify /></ProtectedRoute>} />
       </Routes>
 
