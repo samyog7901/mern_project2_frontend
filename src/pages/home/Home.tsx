@@ -167,15 +167,7 @@ const Home: React.FC = () => {
                     {sidebarOpen ? "Close" : "Open"}
                   </button>
                 </div>
-                <CategoryDropdown
-  selected={selectedCategory}
-  onSelect={(cat) => {
-    setSelectedCategory(cat);
-    navigate(
-      `/?search=${encodeURIComponent(searchTerm)}&category=${encodeURIComponent(cat)}`
-    );
-  }}
-/>
+                <CategoryDropdown selected={selectedCategory} onSelect={setSelectedCategory} />
 
               </aside>
 
