@@ -13,6 +13,7 @@ import Navbar from "./navbar/Navbar";
 import ProtectedRoute from "./ProtectedRoute";
 import LoginProtectedRoute from "../../../pages/auth/login/LoginProtectedRoute"
 import Register from "../../../pages/auth/register/Register";
+import PaymentVerify from "../../../pages/payment/PaymentVerify";
 
 
 
@@ -29,7 +30,7 @@ export default function AnimatedRoutes() {
     <div className="relative min-h-screen">
       <Navbar/>
     <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
+      <Routes location={location} key={location.pathname + location.search}>
         <Route
           path="/"
           element={
@@ -145,6 +146,14 @@ export default function AnimatedRoutes() {
             </motion.div>
           }
         />
+        <Route path="/payment-verify" element={
+          <motion.div
+           variants={pageVariants}
+           initial='initial'
+           animate="in"
+           exit="out"
+           className="min-h-screen"><ProtectedRoute><PaymentVerify /></ProtectedRoute></motion.div>
+        } />
      
       </Routes>
     </AnimatePresence>
