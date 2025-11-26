@@ -245,14 +245,14 @@ const Home: React.FC = () => {
               {/* Products area */}
               <section className="flex-1">
                 {/* Header row: title + search */}
-                <div className="relative flex items-center lg:gap-4 mb-2 md:gap-4 sm:gap-4">
+                <div className="relative flex items-center gap-4 mb-2 sm:flex-col-reverse">
                   {/* Heading */}
                   <h2 className="absolute left-1/3 transform -translate-x-1/2 text-2xl md:text-3xl font-bold text-gray-800">
                     Featured Products
                   </h2>
 
                   {/* Search box aligned to right */}
-                  <div className="ml-auto w-full md:w-1/3 lg:w-1/4 sm:w-1/2">
+                  <div className="ml-auto w-full md:w-1/3 lg:w-1/4">
                     <div className="relative">
                       <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
                         <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
