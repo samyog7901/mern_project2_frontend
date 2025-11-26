@@ -84,25 +84,14 @@ const Navbar = () => {
 
                 {/* -------- Category Dropdown Clickable -------- */}
                 <div className="relative">
-                  <button
-                    onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-                    className="px-3 h-full bg-gray-100 text-gray-700 text-sm border-r border-gray-300 flex items-center gap-1"
-                  >
-                    {selectedCategory}
-                    <span className="ml-1">▼</span>
-                  </button>
-
-                  {isCategoryOpen && (
-                    <div className="absolute left-0 top-full mt-1 w-max bg-white border rounded-md shadow-lg z-[99999]">
-                      <CategoryDropdown
+                 
+                    <CategoryDropdown
                         selected={selectedCategory}
                         onSelect={(cat) => {
                           setSelectedCategory(cat);
                           setIsCategoryOpen(false); // close after selection
                         }}
                       />
-                    </div>
-                  )}
                 </div>
 
                 {/* --------- Search Input --------- */}
