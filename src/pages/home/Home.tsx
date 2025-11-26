@@ -245,30 +245,44 @@ const Home: React.FC = () => {
               {/* Products area */}
               <section className="flex-1">
                 {/* Header row: title + search */}
-                <div className="relative flex items-center gap-4 mb-2 sm:flex-col-reverse">
-                  {/* Heading */}
-                  <h2 className="absolute left-1/3 transform -translate-x-1/2 text-2xl md:text-3xl font-bold text-gray-800">
-                    Featured Products
-                  </h2>
+                {/* FEATURED HEADER + AMAZON SEARCH BAR */}
+<div className="w-full mb-8 space-y-4 lg:space-y-0 lg:flex lg:items-center lg:justify-between">
 
-                  {/* Search box aligned to right */}
-                  <div className="ml-auto w-full md:w-1/3 lg:w-1/4">
-                    <div className="relative">
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                        <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
-                          <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
-                        </svg>
-                      </span>
-                      <input
-                        type="text"
-                        className="pl-10 pr-4 py-2 w-full rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-200"
-                        placeholder="Find products..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </div>
+{/* Heading */}
+<h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+  Featured Products
+</h2>
+
+{/* Amazon-Style Search Bar */}
+<div className="flex w-full lg:w-1/2 items-stretch rounded-md overflow-hidden border border-gray-300 bg-white shadow-sm">
+
+  {/* Category Selector (Left) */}
+  <div className="bg-gray-100 px-3 flex items-center border-r border-gray-300">
+    <CategoryDropdown
+      selected={selectedCategory}
+      onSelect={setSelectedCategory}
+    />
+  </div>
+
+  {/* Search Input (Middle) */}
+  <input
+    type="text"
+    placeholder="Search products..."
+    className="flex-1 px-4 py-2 focus:outline-none"
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+  />
+
+  {/* Amazon Search Button (Right) */}
+  <button
+    className="px-5 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-medium"
+  >
+    🔍
+  </button>
+
+</div>
+</div>
+
 
 
 
