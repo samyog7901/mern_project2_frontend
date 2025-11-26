@@ -254,7 +254,7 @@ const Home: React.FC = () => {
             </h2>
 
             {/* Amazon-Style Search Bar */}
-            <div className="flex w-full lg:w-1/2 items-stretch rounded-md overflow-hidden border border-gray-300 bg-white shadow-sm">
+            <div className="flex w-full lg:w-1/2 items-stretch rounded-md overflow-hidden border border-gray-300 bg-white shadow-sm hover:shadow-2xl">
 
               {/* Category Selector (Left) */}
               <div className="bg-gray-100 px-3 flex items-center border-r border-gray-300">
