@@ -64,7 +64,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md fixed top-0 z-[100000] h-16">
+    <header className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md fixed top-0 z-[10000] h-16">
       <div className={`max-w-7xl mx-auto grid ${isHome ? "grid-cols-3" : "grid-cols-2"} items-center px-4 sm:px-6 h-full`}>
 
         {/* Logo */}

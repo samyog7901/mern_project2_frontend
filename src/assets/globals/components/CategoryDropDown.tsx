@@ -51,7 +51,7 @@ const CategoryDropdown = ({ selected, onSelect,className }: Props) => {
         <div
         className="absolute top-full left-0 mt-2 min-w-[180px] w-max max-w-[260px] bg-white dark:bg-gray-800 
                    border border-gray-300 dark:border-gray-600 rounded-md shadow-lg 
-                   py-2 max-h-60 overflow-y-auto z-[99999]"
+                   py-2 max-h-60 overflow-y-auto z-[9999]"
       >
       
           {/* All Category */}

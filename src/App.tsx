@@ -38,7 +38,7 @@ const App = () => {
    <>
    <Provider store={store}>
     <BrowserRouter>
-        <Toaster position='top-center' reverseOrder={false}/>
+        <Toaster position='top-center' reverseOrder={false} containerStyle={{ zIndex: 100000 }}/>
         {/* <Routes>
             <Route path="/" element={<Home/>}/>
             <Route path="/register" element={<Register/>}/>
