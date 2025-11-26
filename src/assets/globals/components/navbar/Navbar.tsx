@@ -63,7 +63,7 @@ const Navbar: React.FC = () => {
 
   return (
     <header className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md fixed top-0 z-[100000] h-16">
-      <div className="max-w-7xl mx-auto grid grid-cols-3 items-center px-4 sm:px-6 h-full">
+      <div className={`max-w-7xl mx-auto grid ${isHome ? "grid-cols-3":"grid-cols-2"} items-center px-4 sm:px-6 h-full`}>
 
         {/* LOGO */}
         <div className="flex items-center">
@@ -111,7 +111,7 @@ const Navbar: React.FC = () => {
        )}
 
         {/* CART + MENU */}
-        <div className={`flex items-center space-x-10 text-white justify-end ${!isHome && "ml-44"}`}>
+        <div className={`flex items-center space-x-10 text-white justify-end ${!isHome && ""}`}>
           {isLoggedIn ? (
             <>
               <Link to="/cart" className="relative text-gray-100 hover:text-white">
