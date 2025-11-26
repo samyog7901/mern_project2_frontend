@@ -26,6 +26,8 @@ const Home: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCategory, setSidebarCategory] = useState(initialCategory);
+
 
   const [showHero, setShowHero] = useState(() => !isLoggedIn);
   const [heroAnimateOut, setHeroAnimateOut] = useState(false);
@@ -101,9 +103,9 @@ const Home: React.FC = () => {
 
   // Filter products
   const finalProducts = useMemo(() => {
-    const q = searchTerm.toLowerCase().trim();
+    const q = searchTerm.toLowerCase().trim(); // still optional from navbar
     return product
-      .filter(p => selectedCategory === "All" ? true : p.Category.categoryName === selectedCategory)
+      .filter(p => sidebarCategory === "All" ? true : p.Category.categoryName === sidebarCategory)
       .filter(p => {
         if (!q) return true;
         return (
@@ -114,7 +116,8 @@ const Home: React.FC = () => {
           p.Category.categoryName.toLowerCase().includes(q)
         );
       });
-  }, [product, selectedCategory, searchTerm]);
+  }, [product, sidebarCategory, searchTerm]);
+  
   
   
 
@@ -165,7 +168,10 @@ const Home: React.FC = () => {
                     {sidebarOpen ? "Close" : "Open"}
                   </button>
                 </div>
-                <CategoryDropdown selected={selectedCategory} onSelect={setSelectedCategory} />
+                <CategoryDropdown
+  selected={sidebarCategory}
+  onSelect={(cat) => setSidebarCategory(cat)}
+/>
 
               </aside>
 
