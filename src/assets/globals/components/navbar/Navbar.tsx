@@ -79,7 +79,7 @@ const Navbar = () => {
             "
           >
             {/* Search Bar Box */}
-            <div className="flex bg-white rounded-md overflow-hidden">
+            <div className="flex bg-white rounded-md ">
 
               {/* -------- Category Dropdown Inside Search Bar -------- */}
               <div className="relative group">
