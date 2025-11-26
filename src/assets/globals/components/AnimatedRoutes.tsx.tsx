@@ -30,7 +30,7 @@ export default function AnimatedRoutes() {
       <Navbar/>
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        {/* <Route
+        <Route
           path="/"
           element={
             <motion.div
@@ -43,7 +43,7 @@ export default function AnimatedRoutes() {
               <Home/>
             </motion.div>
           }
-        /> */}
+        />
         <Route
           path="/myOrders"
           element={

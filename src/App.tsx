@@ -17,7 +17,6 @@ import PaymentVerify from './pages/payment/PaymentVerify'
 import ProtectedRoute from './assets/globals/components/ProtectedRoute';
 import {io} from 'socket.io-client'
 import AnimatedRoutes from './assets/globals/components/AnimatedRoutes.tsx';
-import Home from './pages/home/Home.tsx';
 // import Navbar from './assets/globals/components/navbar/Navbar.tsx';
 // import Register from './pages/auth/register/Register.tsx';
 // import LoginProtectedRoute from './pages/auth/login/LoginProtectedRoute.tsx';
@@ -62,7 +61,6 @@ const App = () => {
     
       <Routes>
       {/* <Route path="/register" element={<LoginProtectedRoute><Register/></LoginProtectedRoute>}/> */}
-      <Route path="/" element={<Home/>} />
       <Route path="/payment-verify" element={<ProtectedRoute><PaymentVerify /></ProtectedRoute>} />
       </Routes>
 
