@@ -18,6 +18,7 @@ const Navbar: React.FC = () => {
 
   const token = localStorage.getItem("token");
   const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
+  const isAuthPage = location.pathname == "/login" || "/register"
 
   // Navbar controlled search & category
   const queryParams = new URLSearchParams(location.search);
@@ -74,37 +75,39 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* SEARCH BAR */}
-        <div className="flex justify-center">
-          <div className="relative w-full max-w-xl transition-all duration-300 ease-out focus-within:max-w-2xl focus-within:shadow-xl">
-            <div className="flex bg-white rounded-md">
+       {!isAuthPage && (
+         <div className="flex justify-center">
+         <div className="relative w-full max-w-xl transition-all duration-300 ease-out focus-within:max-w-2xl focus-within:shadow-xl">
+           <div className="flex bg-white rounded-md">
 
-              {/* Category dropdown (Navbar controlled) */}
-              <div className="relative">
-                <CategoryDropdown
-                  selected={selectedCategory}
-                  onSelect={(cat) => setSelectedCategory(cat)}
-                />
-              </div>
+             {/* Category dropdown (Navbar controlled) */}
+             <div className="relative">
+               <CategoryDropdown
+                 selected={selectedCategory}
+                 onSelect={(cat) => setSelectedCategory(cat)}
+               />
+             </div>
 
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="w-full px-4 py-2 outline-none transition-all duration-300 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              />
+             <input
+               type="text"
+               placeholder="Search products..."
+               className="w-full px-4 py-2 outline-none transition-all duration-300 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500"
+               value={searchTerm}
+               onChange={(e) => setSearchTerm(e.target.value)}
+               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+             />
 
-              <button
-                onClick={handleSearch}
-                className="px-4 bg-yellow-400 hover:bg-yellow-500 text-black font-medium transition-colors duration-200"
-              >
-                <i className="fas fa-search"></i>
-              </button>
+             <button
+               onClick={handleSearch}
+               className="px-4 bg-yellow-400 hover:bg-yellow-500 text-black font-medium transition-colors duration-200"
+             >
+               <i className="fas fa-search"></i>
+             </button>
 
-            </div>
-          </div>
-        </div>
+           </div>
+         </div>
+       </div>
+       )}
 
         {/* CART + MENU */}
         <div className="flex items-center space-x-10 text-white justify-end">
