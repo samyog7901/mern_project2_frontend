@@ -19,6 +19,7 @@ const Navbar: React.FC = () => {
   const token = localStorage.getItem("token");
   const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
   const isAuthPage = location.pathname === "/login" || location.pathname === "/register"
+  const isHome = location.pathname === "/"
 
   // Navbar controlled search & category
   const queryParams = new URLSearchParams(location.search);
@@ -75,7 +76,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* SEARCH BAR */}
-       {!isAuthPage && (
+       {isHome &&  (
          <div className="flex justify-center">
          <div className="relative w-full max-w-xl transition-all duration-300 ease-out focus-within:max-w-2xl focus-within:shadow-xl">
            <div className="flex bg-white rounded-md">
