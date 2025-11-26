@@ -111,7 +111,7 @@ const Navbar: React.FC = () => {
        )}
 
         {/* CART + MENU */}
-        <div className="flex items-center space-x-10 text-white justify-end">
+        <div className={`flex items-center space-x-10 text-white justify-end ${!isHome && "ml-44"}`}>
           {isLoggedIn ? (
             <>
               <Link to="/cart" className="relative text-gray-100 hover:text-white">
