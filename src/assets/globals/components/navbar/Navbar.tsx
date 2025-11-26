@@ -18,7 +18,6 @@ const Navbar: React.FC = () => {
 
   const token = localStorage.getItem("token");
   const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
-  const isAuthPage = location.pathname === "/login" || location.pathname === "/register"
   const isHome = location.pathname === "/"
 
   // Navbar controlled search & category
@@ -89,21 +88,26 @@ const Navbar: React.FC = () => {
                />
              </div>
 
-             <input
+             <form className="flex bg-white rounded-md"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSearch();
+             }}>
+              <input
                type="text"
                placeholder="Search products..."
                className="w-full px-4 py-2 outline-none transition-all duration-300 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500"
                value={searchTerm}
                onChange={(e) => setSearchTerm(e.target.value)}
-               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
              />
 
              <button
-               onClick={handleSearch}
+               type="submit"
                className="px-4 bg-yellow-400 hover:bg-yellow-500 text-black font-medium transition-colors duration-200"
              >
                <i className="fas fa-search"></i>
              </button>
+             </form>
 
            </div>
          </div>
