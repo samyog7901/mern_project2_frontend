@@ -18,9 +18,9 @@ const Navbar: React.FC = () => {
 
   const token = localStorage.getItem("token");
   const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
-  const isHome = location.pathname === "/"
+  const isHome = location.pathname === "/";
 
-  // Navbar controlled search & category
+  // Navbar search & category (controlled via URL)
   const queryParams = new URLSearchParams(location.search);
   const initialSearch = queryParams.get("search") || "";
   const initialCategory = queryParams.get("category") || "All";
@@ -28,13 +28,12 @@ const Navbar: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
 
-  const [isCategoryOpen, setIsCategoryOpen] = useState(false); // dropdown open state
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchCartItems());
   }, [dispatch]);
 
-  // Close menus when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -43,9 +42,7 @@ const Navbar: React.FC = () => {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleLogout = () => {
@@ -53,8 +50,14 @@ const Navbar: React.FC = () => {
     navigate("/login");
   };
 
+  // When URL changes externally, sync state
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setSearchTerm(params.get("search") || "");
+    setSelectedCategory(params.get("category") || "All");
+  }, [location.search]);
+
   const handleSearch = () => {
-    // Update URL with search and category
     navigate(
       `/?search=${encodeURIComponent(searchTerm)}&category=${encodeURIComponent(selectedCategory)}`
     );
@@ -62,9 +65,9 @@ const Navbar: React.FC = () => {
 
   return (
     <header className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md fixed top-0 z-[100000] h-16">
-      <div className={`max-w-7xl mx-auto grid ${isHome ? "grid-cols-3":"grid-cols-2"} items-center px-4 sm:px-6 h-full`}>
+      <div className={`max-w-7xl mx-auto grid ${isHome ? "grid-cols-3" : "grid-cols-2"} items-center px-4 sm:px-6 h-full`}>
 
-        {/* LOGO */}
+        {/* Logo */}
         <div className="flex items-center">
           <Link to="/" className="flex items-center space-x-2 text-white">
             <svg className="h-7 w-7 text-green-300" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
@@ -74,48 +77,49 @@ const Navbar: React.FC = () => {
           </Link>
         </div>
 
-        {/* SEARCH BAR */}
-       {isHome &&  (
-         <div className="flex justify-center">
-         <div className="relative w-full max-w-xl transition-all duration-300 ease-out focus-within:max-w-2xl focus-within:shadow-xl">
-           <div className="flex bg-white rounded-md">
+        {/* Navbar Search */}
+        {isHome && (
+          <div className="flex justify-center">
+            <div className="relative w-full max-w-xl transition-all duration-300 ease-out focus-within:max-w-2xl focus-within:shadow-xl">
+              <div className="flex bg-white rounded-md">
 
-             {/* Category dropdown (Navbar controlled) */}
-             <div className="relative">
-               <CategoryDropdown
-                 selected={selectedCategory}
-                 onSelect={(cat) => setSelectedCategory(cat)}
-               />
-             </div>
+                {/* Navbar Category Dropdown */}
+                <div className="relative">
+                  <CategoryDropdown
+                    selected={selectedCategory}
+                    onSelect={setSelectedCategory}
+                  />
+                </div>
 
-             <form className="flex bg-white rounded-md"
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSearch();
-             }}>
-              <input
-               type="text"
-               placeholder="Search products..."
-               className="w-full px-4 py-2 outline-none transition-all duration-300 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500"
-               value={searchTerm}
-               onChange={(e) => setSearchTerm(e.target.value)}
-             />
+                <form
+                  className="flex flex-1"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSearch();
+                  }}
+                >
+                  <input
+                    type="text"
+                    placeholder="Search products..."
+                    className="w-full px-4 py-2 outline-none transition-all duration-300 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                  <button
+                    type="submit"
+                    className="px-4 bg-yellow-400 hover:bg-yellow-500 text-black font-medium transition-colors duration-200"
+                  >
+                    <i className="fas fa-search"></i>
+                  </button>
+                </form>
 
-             <button
-               type="submit"
-               className="px-4 bg-yellow-400 hover:bg-yellow-500 text-black font-medium transition-colors duration-200"
-             >
-               <i className="fas fa-search"></i>
-             </button>
-             </form>
+              </div>
+            </div>
+          </div>
+        )}
 
-           </div>
-         </div>
-       </div>
-       )}
-
-        {/* CART + MENU */}
-        <div className={`flex items-center space-x-10 text-white justify-end ${!isHome && ""}`}>
+        {/* Cart + Menu */}
+        <div className="flex items-center space-x-10 text-white justify-end">
           {isLoggedIn ? (
             <>
               <Link to="/cart" className="relative text-gray-100 hover:text-white">
@@ -148,4 +152,4 @@ const Navbar: React.FC = () => {
   );
 };
 
-export default Navbar
+export default Navbar;
