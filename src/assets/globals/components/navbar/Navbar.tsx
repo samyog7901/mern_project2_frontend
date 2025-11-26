@@ -24,6 +24,7 @@ const Navbar = () => {
 
   const token = localStorage.getItem("token");
   const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   useEffect(() => {
     dispatch(fetchCartItems());
@@ -69,61 +70,65 @@ const Navbar = () => {
         </div>
 
         {/* ------------------ CENTER : AMAZON SEARCH BAR ------------------ */}
-        <div className="flex justify-center">
-          <div
-            className="
-              relative w-full max-w-xl 
-              transition-all duration-300 ease-out 
-              focus-within:max-w-2xl 
-              focus-within:shadow-xl
-            "
-          >
-            {/* Search Bar Box */}
-            <div className="flex bg-white rounded-md ">
+       {!isauthPage && (
+         <div className="flex justify-center">
+         <div
+           className="
+             relative w-full max-w-xl 
+             transition-all duration-300 ease-out 
+             focus-within:max-w-2xl 
+             focus-within:shadow-xl
+           "
+         >
+           {/* Search Bar Box */}
+           <div className="flex bg-white rounded-md ">
 
-              {/* -------- Category Dropdown Inside Search Bar -------- */}
-              <div className="relative group">
-                <button
-                  className="
-                    px-3 h-full bg-gray-100 text-gray-700 text-sm 
-                    border-r border-gray-300 flex items-center gap-1
-                  "
-                >
-                  {selectedCategory}
-                  <ChevronDown className="w-4 h-4" />
-                </button>
+             {/* -------- Category Dropdown Inside Search Bar -------- */}
+             <div className="relative group">
+               {/* <button
+                 className="
+                   px-3 h-full bg-gray-100 text-gray-700 text-sm 
+                   border-r border-gray-300 flex items-center gap-1
+                 "
+               >
+                 {selectedCategory}
+                 <ChevronDown className="w-4 h-4" />
+               </button> */}
 
-                <div className="absolute left-0 top-full mt-1 hidden group-hover:block z-[99999]">
-                  <CategoryDropdown
-                    selected={selectedCategory}
-                    onSelect={setSelectedCategory}
-                  />
-                </div>
-              </div>
+               <div className="absolute left-0 top-full mt-1 hidden group-hover:block z-[99999]">
+                 <CategoryDropdown
+                   selected={selectedCategory}
+                   onSelect={setSelectedCategory}
+                 />
+               </div>
+             </div>
 
-              {/* --------- Search Input --------- */}
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="
-                  w-full px-4 py-2 outline-none 
-                  transition-all duration-300
-                  focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500
-                "
-              />
+             {/* --------- Search Input --------- */}
+             <input
+               type="text"
+               placeholder="Search products..."
+               className="
+                 w-full px-4 py-2 outline-none 
+                 transition-all duration-300
+                 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500
+               "
+               value={searchTerm}
+               onChange={(e) => setSearchTerm(e.target.value)}
+             />
 
-              {/* --------- Search Button --------- */}
-              <button
-                className="
-                  px-4 bg-yellow-400 hover:bg-yellow-500 
-                  text-black font-medium transition-colors duration-200
-                "
-              >
-                <i className="fas fa-search"></i>
-              </button>
-            </div>
-          </div>
-        </div>
+             {/* --------- Search Button --------- */}
+             <button
+               className="
+                 px-4 bg-yellow-400 hover:bg-yellow-500 
+                 text-black font-medium transition-colors duration-200
+               "
+             >
+               <i className="fas fa-search"></i>
+             </button>
+           </div>
+         </div>
+       </div>
+       )}
 
         {/* ------------------ RIGHT : CART + MENU ------------------ */}
         <div className="flex items-center justify-end space-x-10 text-white">
