@@ -9,15 +9,15 @@ interface Props {
   className?: string;
 }
 
-const CategoryDropdown = ({ selected, onSelect,className }: Props) => {
+const CategoryDropdown = ({ selected, onSelect, className }: Props) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const { category } = useAppSelector((state) => state.category);
 
-  useEffect(()=>{
-     category && dispatch(fetchCategories())
-  },[dispatch])
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -30,42 +30,51 @@ const CategoryDropdown = ({ selected, onSelect,className }: Props) => {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-
   return (
-    <div ref={ref} className={`relative w-full z-[99999] ${className || ""}`}>
+    <div
+      ref={ref}
+      className={`relative z-[99999] ${className || ""}`}
+    >
       {/* Button */}
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between bg-white dark:bg-gray-700 
-                   border border-gray-300 dark:border-gray-600 px-4 py-2 rounded-md 
-                   text-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500 shadow-sm"
+        className="w-full flex items-center justify-between 
+                   bg-white dark:bg-gray-700 
+                   border border-gray-300 dark:border-gray-600 
+                   px-3 py-2 rounded-l-md 
+                   text-gray-800 dark:text-white 
+                   focus:ring-2 focus:ring-purple-500 
+                   shadow-sm text-sm"
       >
-        <span>{selected}</span>
+        <span className="truncate">{selected}</span>
         <ChevronDown
           className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`}
         />
       </button>
 
-      {/* Dropdown */}
+      {/* Dropdown List */}
       {open && (
         <div
-        className="absolute top-full left-0 mt-2 min-w-[180px] w-max max-w-[260px] bg-white dark:bg-gray-800 
-                   border border-gray-300 dark:border-gray-600 rounded-md shadow-lg 
-                   py-2 max-h-60 overflow-y-auto z-[9999]"
-      >
-      
-          {/* All Category */}
+          className="absolute left-0 top-full mt-1 
+                     bg-white dark:bg-gray-800 
+                     border border-gray-300 dark:border-gray-600 
+                     rounded-md shadow-lg 
+                     max-h-60 overflow-y-auto 
+                     min-w-full w-max 
+                     z-[999999]"
+        >
           <div
             onClick={() => {
               onSelect("All");
               setOpen(false);
             }}
-            className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer dark:text-white"
+            className="px-4 py-2 hover:bg-gray-100 
+                       dark:hover:bg-gray-700 
+                       cursor-pointer text-sm dark:text-white"
           >
             All
           </div>
 
-          {/* Main category list */}
           {category.map((cat) => (
             <div
               key={cat.id}
@@ -74,7 +83,8 @@ const CategoryDropdown = ({ selected, onSelect,className }: Props) => {
                 setOpen(false);
               }}
               className="px-4 py-2 text-gray-700 dark:text-gray-200 
-                         hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                         hover:bg-gray-100 dark:hover:bg-gray-700 
+                         cursor-pointer text-sm"
             >
               {cat.categoryName}
             </div>
