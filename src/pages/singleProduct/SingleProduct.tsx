@@ -32,23 +32,25 @@ const SingleProduct = () => {
     dispatch(fetchProducts());
   }, [dispatch, productId]);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!isLoggedIn) return navigate("/login");
+    if (!singleProduct) return;
+  
+    const cartItem = cartItems.find(item => item.Product.id === singleProduct.id);
+    const availableStock = singleProduct.stockQty - (cartItem?.quantity || 0);
+  
     if (availableStock <= 0) return alert("Out of stock");
   
-    // 1️⃣ Optimistically update Redux
-    if (!singleProduct) return; // safeguard
-
+    // Optimistic Redux update
     dispatch(setItems([
-      ...cartItems.filter(item => item.Product.id !== productId),
+      ...cartItems.filter(item => item.Product.id !== singleProduct.id),
       { Product: singleProduct, quantity: (cartItem?.quantity || 0) + 1 }
     ]));
-    
   
-    // 2️⃣ Send API request
-    if(!productId) return
-    dispatch(addToCart(productId));
+    // Send API request
+    await dispatch(addToCart(singleProduct.id));
   };
+  
   
 
   const handleBuyNow = () => {
@@ -103,7 +105,7 @@ const SingleProduct = () => {
           <div className="flex flex-col md:flex-row gap-10">
             {/* LEFT IMAGE + ACTIONS */}
             <div className="md:w-1/2">
-              <div className="bg-gray-300 dark:bg-gray-700 rounded-2xl overflow-hidden shadow-lg">
+              <div className="bg-gray-300 dark:bg-gray-700 rounded-2xl overflow-hidden shadow-lg max-h-[480px]">
                 <img
                   className="w-full h-full object-contain rounded-2xl transition-transform duration-300 hover:scale-105"
                   src={singleProduct?.imageUrl}
