@@ -5,6 +5,7 @@ import { fetchByProductId, fetchProducts } from "../../store/productSlice";
 import { addToCart, setItems } from "../../store/cartSlice";
 import ProductDescription from "./ProductDescription";
 import { Helmet } from "react-helmet";
+import toast from "react-hot-toast";
 
 const SingleProduct = () => {
 
@@ -13,13 +14,7 @@ const SingleProduct = () => {
   const dispatch = useAppDispatch();
 
   const { singleProduct, product } = useAppSelector((state) => state.product);
-  if (!singleProduct) {
-    return (
-      <div className="pt-24 min-h-screen flex justify-center items-center text-gray-600 dark:text-gray-300">
-        Loading product...
-      </div>
-    );
-  }
+
   
   const { user } = useAppSelector((state) => state.auth);
   const cartItems = useAppSelector((state) => state.carts.items);
@@ -49,7 +44,7 @@ const SingleProduct = () => {
     const cartItem = cartItems.find(item => item.Product.id === singleProduct.id);
     const availableStock = singleProduct.stockQty - (cartItem?.quantity || 0);
   
-    if (availableStock <= 0) return alert("Out of stock");
+    if (availableStock <= 0) return toast.error("Out of stock");
   
     // Optimistic Redux update
     dispatch(setItems([
@@ -85,7 +80,13 @@ const SingleProduct = () => {
     )
     .slice(0, 8);
 
-   
+    if (!singleProduct) {
+      return (
+        <div className="pt-24 min-h-screen flex justify-center items-center text-gray-600 dark:text-gray-300">
+          Loading product...
+        </div>
+      );
+    }
 
   return (
     <>
