@@ -20,7 +20,6 @@ const Navbar: React.FC = () => {
   const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
   const isHome = location.pathname === "/";
 
-  // Navbar search & category
   const queryParams = new URLSearchParams(location.search);
   const initialSearch = queryParams.get("search") || "";
   const initialCategory = queryParams.get("category") || "All";
@@ -34,12 +33,12 @@ const Navbar: React.FC = () => {
     dispatch(fetchCartItems());
   }, [dispatch]);
 
-  // Auto-close menu when route changes
+  // CLOSE MENU ON ROUTE CHANGE
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
 
-  // Hide menus when clicked outside
+  // CLOSE MENU WHEN CLICKING OUTSIDE
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -57,6 +56,7 @@ const Navbar: React.FC = () => {
     setIsMenuOpen(false);
   };
 
+  // SYNC SEARCH STATE WITH URL
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     setSearchTerm(params.get("search") || "");
@@ -65,18 +65,18 @@ const Navbar: React.FC = () => {
 
   const handleSearch = () => {
     navigate(
-      `/?search=${encodeURIComponent(searchTerm)}&category=${encodeURIComponent(
-        selectedCategory
-      )}`
+      `/?search=${encodeURIComponent(searchTerm)}&category=${encodeURIComponent(selectedCategory)}`
     );
   };
 
   return (
     <header className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md fixed top-0 z-[1000] h-16">
       <div
-        className={`max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 h-full`}
+        className={`max-w-7xl mx-auto grid ${
+          isHome ? "grid-cols-3" : "grid-cols-2"
+        } items-center px-4 sm:px-6 h-full gap-2`}
       >
-        {/* Logo */}
+        {/* LOGO */}
         <div className="flex items-center">
           <Link to="/" className="flex items-center space-x-2 text-white">
             <svg
@@ -91,16 +91,21 @@ const Navbar: React.FC = () => {
           </Link>
         </div>
 
-        {/* CENTER SEARCH — MOBILE FRIENDLY */}
+        {/* SEARCH BAR (RESPONSIVE) */}
         {isHome && (
-          <div className="hidden sm:flex flex-1 justify-center px-4">
-            <div className="relative w-full max-w-xl transition-all duration-300 ease-out focus-within:max-w-2xl focus-within:shadow-xl">
+          <div className="flex justify-center w-full">
+            <div className="relative w-full max-w-xl transition-all duration-300 focus-within:max-w-2xl">
               <div className="flex bg-white rounded-md overflow-hidden">
-                <CategoryDropdown
-                  selected={selectedCategory}
-                  onSelect={setSelectedCategory}
-                />
 
+                {/* CATEGORY DROPDOWN */}
+                <div className="relative min-w-[110px] sm:min-w-[140px]">
+                  <CategoryDropdown
+                    selected={selectedCategory}
+                    onSelect={setSelectedCategory}
+                  />
+                </div>
+
+                {/* SEARCH INPUT */}
                 <form
                   className="flex flex-1"
                   onSubmit={(e) => {
@@ -111,11 +116,10 @@ const Navbar: React.FC = () => {
                   <input
                     type="text"
                     placeholder="Search products..."
-                    className="w-full px-4 py-2 outline-none"
+                    className="w-full px-4 py-2 outline-none text-sm sm:text-base"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
-
                   <button
                     type="submit"
                     className="px-4 bg-yellow-400 hover:bg-yellow-500 text-black font-medium"
@@ -128,22 +132,20 @@ const Navbar: React.FC = () => {
           </div>
         )}
 
-        {/* RIGHT SIDE */}
-        <div className="flex items-center space-x-4 text-white">
+        {/* CART + MENU ICON (RESPONSIVE) */}
+        <div className="flex items-center justify-end space-x-5 sm:space-x-10 text-white">
+
           {isLoggedIn ? (
             <>
-              {/* Cart */}
-              <Link
-                to="/cart"
-                className="relative text-gray-100 hover:text-white"
-              >
+              {/* CART */}
+              <Link to="/cart" className="relative text-gray-100 hover:text-white">
                 <i className="fas fa-shopping-cart text-lg"></i>
                 <span className="absolute -top-2 -right-2 bg-purple-600 text-white text-xs px-2 py-0.5 rounded-full">
                   {items?.length}
                 </span>
               </Link>
 
-              {/* Menu */}
+              {/* MOBILE & DESKTOP MENU */}
               <div ref={menuRef} className="relative">
                 <button
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -152,36 +154,13 @@ const Navbar: React.FC = () => {
                   ☰
                 </button>
 
+                {/* MENU LIST */}
                 {isMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-2 text-sm z-[10000]">
-                    <Link
-                      to="/"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                    >
-                      Home
-                    </Link>
-                    <Link
-                      to="/profile"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                    >
-                      Profile
-                    </Link>
-                    <Link
-                      to="/wishlist"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                    >
-                      Wishlist
-                    </Link>
-                    <Link
-                      to="/myOrders"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                    >
-                      Orders
-                    </Link>
+                  <div className="absolute right-0 mt-2 w-48 sm:w-56 bg-white rounded-md shadow-lg py-2 text-sm z-[10000] animate-fadeIn">
+                    <Link to="/" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Home</Link>
+                    <Link to="/profile" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</Link>
+                    <Link to="/wishlist" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Wishlist</Link>
+                    <Link to="/myOrders" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 text-gray-800 hover:bg-gray-100">Orders</Link>
 
                     <button
                       onClick={handleLogout}
@@ -194,52 +173,13 @@ const Navbar: React.FC = () => {
               </div>
             </>
           ) : (
-            <div className="space-x-4 text-sm font-medium">
-              <Link to="/login" className="hover:text-gray-200">
-                Login
-              </Link>
-              <Link to="/register" className="hover:text-gray-200">
-                Register
-              </Link>
+            <div className="space-x-4 text-xs sm:text-sm font-medium">
+              <Link to="/login" className="hover:text-gray-200">Login</Link>
+              <Link to="/register" className="hover:text-gray-200">Register</Link>
             </div>
           )}
         </div>
       </div>
-
-      {/* MOBILE SEARCH BAR (shown under navbar) */}
-      {isHome && (
-        <div className="sm:hidden px-4 pb-3 mt-16 w-full">
-          <div className="bg-white rounded-md shadow-md overflow-hidden">
-            <CategoryDropdown
-              selected={selectedCategory}
-              onSelect={setSelectedCategory}
-            />
-
-            <form
-              className="flex"
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSearch();
-              }}
-            >
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="w-full px-4 py-2 outline-none"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-
-              <button
-                type="submit"
-                className="px-4 bg-yellow-400 hover:bg-yellow-500 text-black font-medium"
-              >
-                <i className="fas fa-search"></i>
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
     </header>
   );
 };
