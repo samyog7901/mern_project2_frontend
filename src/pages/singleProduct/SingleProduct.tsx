@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fetchByProductId, fetchProducts } from "../../store/productSlice";
-import { addToCart } from "../../store/cartSlice";
+import { addToCart, setItems } from "../../store/cartSlice";
 import ProductDescription from "./ProductDescription";
 import { Helmet } from "react-helmet";
 
@@ -14,6 +14,7 @@ const SingleProduct = () => {
   const { singleProduct, product } = useAppSelector((state) => state.product);
   const { user } = useAppSelector((state) => state.auth);
   const cartItems = useAppSelector((state) => state.carts.items);
+  // const [items, setItems] = useState(singleProduct?.id)
 
   const token = localStorage.getItem("token");
   const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
@@ -31,23 +32,24 @@ const SingleProduct = () => {
     dispatch(fetchProducts());
   }, [dispatch, productId]);
 
-  const handleAddToCart = async () => {
-    if (!isLoggedIn) {
-      navigate("/login");
-      return;
-    }
+  const handleAddToCart = () => {
+    if (!isLoggedIn) return navigate("/login");
+    if (availableStock <= 0) return alert("Out of stock");
+  
+    // 1️⃣ Optimistically update Redux
+    if (!singleProduct) return; // safeguard
 
-    if (!productId || availableStock <= 0) {
-      alert("Product is out of stock");
-      return;
-    }
-
-    try {
-      await dispatch(addToCart(productId));
-    } catch (err) {
-      console.error(err);
-    }
+    dispatch(setItems([
+      ...cartItems.filter(item => item.Product.id !== productId),
+      { Product: singleProduct, quantity: (cartItem?.quantity || 0) + 1 }
+    ]));
+    
+  
+    // 2️⃣ Send API request
+    if(!productId) return
+    dispatch(addToCart(productId));
   };
+  
 
   const handleBuyNow = () => {
     if (!isLoggedIn) return navigate("/login");
@@ -103,7 +105,7 @@ const SingleProduct = () => {
             <div className="md:w-1/2">
               <div className="bg-gray-300 dark:bg-gray-700 rounded-2xl overflow-hidden shadow-lg">
                 <img
-                  className="w-full object-cover rounded-2xl transition-transform duration-300 hover:scale-105"
+                  className="w-full h-full object-contain rounded-2xl transition-transform duration-300 hover:scale-105"
                   src={singleProduct?.imageUrl}
                   alt={singleProduct?.productName}
                 />
