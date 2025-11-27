@@ -20,7 +20,8 @@ const Home: React.FC = () => {
 
  
 
-  const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
+  const isLoggedIn = !!token && !!user?.id;
+
 
 
   // Get initial search from URL (from Navbar)
