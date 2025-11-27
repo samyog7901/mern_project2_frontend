@@ -18,6 +18,7 @@ const SingleProduct = () => {
   
   const { user } = useAppSelector((state) => state.auth);
   const cartItems = useAppSelector((state) => state.carts.items);
+  const [loading, setLoading] = useState(false);
   // const [items, setItems] = useState(singleProduct?.id)
 
   const token = localStorage.getItem("token");
@@ -47,11 +48,13 @@ const SingleProduct = () => {
   
     if (availableStock <= 0) return toast.error("Out of stock");
   
-    // ✅ Make sure Product is fully typed and non-null
-    const newItem = {
-      Product: singleProduct,
-      quantity: (existingCartItem?.quantity || 0) + 1
-    };
+    // // ✅ Make sure Product is fully typed and non-null
+    // const newItem = {
+    //   Product: singleProduct,
+    //   quantity: (existingCartItem?.quantity || 0) + 1
+    // };
+    if (loading) return; // Prevent multiple clicks
+    setLoading(true);
   
     try {
       // Wait for API first
@@ -70,6 +73,8 @@ const SingleProduct = () => {
       ]));
     } catch (err) {
       toast.error("Failed to add to cart");
+    }finally{
+      setLoading(false)
     }
     
   };
