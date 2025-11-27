@@ -1,36 +1,35 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { fetchByProductId, fetchProducts } from "../../store/productSlice";
 import { addToCart } from "../../store/cartSlice";
 import ProductDescription from "./ProductDescription";
 import { Helmet } from "react-helmet";
 
 const SingleProduct = () => {
-  // 1️⃣ Tell TS that id is string
   const { id: productId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const { singleProduct, product } = useAppSelector((state) => state.product);
   const { user } = useAppSelector((state) => state.auth);
+  const cartItems = useAppSelector((state) => state.carts.items);
 
   const token = localStorage.getItem("token");
   const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
 
-  const [currentStock, setCurrentStock] = useState(singleProduct?.stockQty || 0);
+  // Calculate stock dynamically based on items already in cart
+  const cartItem = cartItems.find(item => item.Product.id === singleProduct?.id);
+  const availableStock = singleProduct
+    ? singleProduct.stockQty - (cartItem?.quantity || 0)
+    : 0;
+  
 
   // Fetch product data
   useEffect(() => {
-    if (productId) {
-      dispatch(fetchByProductId(productId));
-    }
+    if (productId) dispatch(fetchByProductId(productId));
     dispatch(fetchProducts());
   }, [dispatch, productId]);
-
-  useEffect(() => {
-    setCurrentStock(singleProduct?.stockQty || 0);
-  }, [singleProduct]);
 
   const handleAddToCart = async () => {
     if (!isLoggedIn) {
@@ -38,26 +37,22 @@ const SingleProduct = () => {
       return;
     }
 
-    if (currentStock <= 0) {
+    if (!productId || availableStock <= 0) {
       alert("Product is out of stock");
       return;
     }
 
-    if (!productId) return; // safeguard
-
     try {
-      setCurrentStock((prev) => prev - 1); // optimistic update
       await dispatch(addToCart(productId));
     } catch (err) {
       console.error(err);
-      setCurrentStock((prev) => prev + 1); // revert if error
     }
   };
 
   const handleBuyNow = () => {
     if (!isLoggedIn) return navigate("/login");
     if (!productId) return;
-    navigate(`/checkout/${productId}`);
+    navigate("/checkout");
   };
 
   const handleRedirect = () => {
@@ -76,23 +71,6 @@ const SingleProduct = () => {
     )
     .slice(0, 8);
 
-  const renderStars = (rating: number) => {
-    const full = Math.floor(rating);
-    const half = rating % 1 !== 0;
-
-    return (
-      <div className="flex items-center space-x-1">
-        {[...Array(full)].map((_, i) => (
-          <i key={i} className="fa-solid fa-star text-yellow-400"></i>
-        ))}
-        {half && <i className="fa-solid fa-star-half-stroke text-yellow-400"></i>}
-        {[...Array(5 - full - (half ? 1 : 0))].map((_, i) => (
-          <i key={i} className="fa-regular fa-star text-gray-400"></i>
-        ))}
-      </div>
-    );
-  };
-
   return (
     <>
       <Helmet>
@@ -101,7 +79,10 @@ const SingleProduct = () => {
       </Helmet>
 
       {/* Go Back Button */}
-      <button onClick={handleRedirect} className="bg-gray-300 p-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 fixed top-24 left-3 z-50 rounded-full flex items-center">
+      <button
+        onClick={handleRedirect}
+        className="bg-gray-300 p-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 fixed top-24 left-3 z-50 rounded-full flex items-center"
+      >
         <i className="fa-solid fa-arrow-left text-lg"></i>
       </button>
 
@@ -163,7 +144,7 @@ const SingleProduct = () => {
 
               {/* STOCK */}
               <div className="bg-yellow-200 dark:bg-yellow-700 text-gray-900 dark:text-white px-4 py-2 rounded-lg shadow-md w-fit mb-5">
-                In Stock: <span className="font-bold">{currentStock}</span>
+                In Stock: <span className="font-bold">{availableStock}</span>
               </div>
 
               <ProductDescription description={singleProduct?.description || ""} />
