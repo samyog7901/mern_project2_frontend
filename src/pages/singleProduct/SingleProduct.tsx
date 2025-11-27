@@ -101,13 +101,7 @@ const SingleProduct = () => {
       </Helmet>
 
       {/* Go Back Button */}
-      <button
-        onClick={handleRedirect}
-        className="bg-gray-300 p-1 ml-2 shadow-blue-300 hover:shadow-blue-500 shadow-xl transition-transform duration-300 hover:scale-105 fixed top-24 left-5 z-50"
-      >
-        <i className="fa-solid fa-arrow-left text-lg"></i>
-        <span className="font-medium ml-2">Go Back</span>
-      </button>
+      <button onClick={handleRedirect} className="bg-gray-300 p-1 ml-2 shadow-blue-300 hover:shadow-blue-500 shadow-xl transition-transform duration-300 hover:scale-105 fixed top-24 left-5 z-50" > <i className="fa-solid fa-arrow-left text-lg"></i> <span className="font-medium ml-2">Go Back</span> </button>
 
       <div className="pt-24 bg-gray-100 dark:bg-gray-800 min-h-screen">
         {/* Breadcrumb */}
