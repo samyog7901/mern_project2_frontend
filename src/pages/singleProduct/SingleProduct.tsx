@@ -24,7 +24,7 @@ const SingleProduct = () => {
   const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
 
   // Calculate stock dynamically based on items already in cart
-  const cartItem = cartItems.find(item => item.Product.id === singleProduct?.id);
+  const cartItem = cartItems.find(item => item.Product?.id === singleProduct?.id);
   const availableStock = singleProduct
     ? singleProduct.stockQty - (cartItem?.quantity || 0)
     : 0;
@@ -42,7 +42,7 @@ const SingleProduct = () => {
     if (!singleProduct) return toast.error("Product not found");
   
     // Find existing item in cart
-    const existingCartItem = cartItems.find(item => item.Product?.id === singleProduct.id);
+    const existingCartItem = cartItems.find(item => item.Product?.id === singleProduct?.id);
     const availableStock = singleProduct.stockQty - (existingCartItem?.quantity || 0);
   
     if (availableStock <= 0) return toast.error("Out of stock");
@@ -56,12 +56,12 @@ const SingleProduct = () => {
     try {
       // Optimistic update
       dispatch(setItems([
-        ...cartItems.filter(item => item.Product?.id !== singleProduct.id),
+        ...cartItems.filter(item => item.Product?.id !== singleProduct?.id),
         newItem
       ]));
   
       // Send API request
-      await dispatch(addToCart(singleProduct.id));
+      await dispatch(addToCart(singleProduct?.id));
     } catch (err) {
       toast.error("Failed to add to cart");
       // Optional: re-fetch cart to sync
