@@ -7,11 +7,20 @@ import ProductDescription from "./ProductDescription";
 import { Helmet } from "react-helmet";
 
 const SingleProduct = () => {
+
   const { id: productId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const { singleProduct, product } = useAppSelector((state) => state.product);
+  if (!singleProduct) {
+    return (
+      <div className="pt-24 min-h-screen flex justify-center items-center text-gray-600 dark:text-gray-300">
+        Loading product...
+      </div>
+    );
+  }
+  
   const { user } = useAppSelector((state) => state.auth);
   const cartItems = useAppSelector((state) => state.carts.items);
   // const [items, setItems] = useState(singleProduct?.id)
@@ -32,6 +41,7 @@ const SingleProduct = () => {
     dispatch(fetchProducts());
   }, [dispatch, productId]);
 
+  
   const handleAddToCart = async () => {
     if (!isLoggedIn) return navigate("/login");
     if (!singleProduct) return;
@@ -75,6 +85,8 @@ const SingleProduct = () => {
     )
     .slice(0, 8);
 
+   
+
   return (
     <>
       <Helmet>
@@ -105,9 +117,9 @@ const SingleProduct = () => {
           <div className="flex flex-col md:flex-row gap-10">
             {/* LEFT IMAGE + ACTIONS */}
             <div className="md:w-1/2">
-              <div className="bg-gray-300 dark:bg-gray-700 rounded-2xl overflow-hidden shadow-lg max-h-[480px]">
+              <div className="bg-gray-300 dark:bg-gray-700 rounded-2xl overflow-y-auto shadow-lg max-h-[480px]">
                 <img
-                  className="w-full h-full object-contain rounded-2xl transition-transform duration-300 hover:scale-105"
+                  className="w-full  object-contain rounded-2xl transition-transform duration-300 hover:scale-105"
                   src={singleProduct?.imageUrl}
                   alt={singleProduct?.productName}
                 />
