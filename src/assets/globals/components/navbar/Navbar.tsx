@@ -156,7 +156,7 @@ const Navbar: React.FC = () => {
                 </button>
 
                 {isMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-2 text-sm z-[10000]">
+                  <div className="absolute right-0 mt-2 w-35 bg-white rounded-md shadow-lg py-2 text-sm z-[10000]">
                     <Link
                       to="/"
                       onClick={() => setIsMenuOpen(false)}
