@@ -211,7 +211,7 @@ const Navbar: React.FC = () => {
 
       {/* MOBILE SEARCH BAR (shown under navbar) */}
       {isHome && (
-        <div className="sm:hidden px-4 pb-3 mt-16 w-full">
+        <div className="sm:hidden px-4 pb-3 w-full sticky top-16 bg-white z-[999] shadow-md">
           <div className="bg-white rounded-md shadow-md">
           <div className="relative w-full border-b border-gray-300">
             <CategoryDropdown
