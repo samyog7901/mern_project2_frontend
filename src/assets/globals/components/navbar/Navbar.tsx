@@ -95,11 +95,14 @@ const Navbar: React.FC = () => {
         {isHome && (
           <div className="hidden sm:flex flex-1 justify-center px-4">
             <div className="relative w-full max-w-xl transition-all duration-300 ease-out focus-within:max-w-2xl focus-within:shadow-xl">
-              <div className="flex bg-white rounded-md overflow-hidden">
+              <div className="flex bg-white rounded-md">
+              <div className="relative w-28 sm:w-32 border-r border-gray-300">
                 <CategoryDropdown
                   selected={selectedCategory}
                   onSelect={setSelectedCategory}
                 />
+              </div>
+
 
                 <form
                   className="flex flex-1"
@@ -210,10 +213,13 @@ const Navbar: React.FC = () => {
       {isHome && (
         <div className="sm:hidden px-4 pb-3 mt-16 w-full">
           <div className="bg-white rounded-md shadow-md overflow-hidden">
+          <div className="relative w-full border-b border-gray-300">
             <CategoryDropdown
               selected={selectedCategory}
               onSelect={setSelectedCategory}
             />
+          </div>
+
 
             <form
               className="flex"
