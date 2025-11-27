@@ -39,22 +39,36 @@ const SingleProduct = () => {
   
   const handleAddToCart = async () => {
     if (!isLoggedIn) return navigate("/login");
-    if (!singleProduct) return;
+    if (!singleProduct) return toast.error("Product not found");
   
-    const cartItem = cartItems.find(item => item.Product.id === singleProduct.id);
-    const availableStock = singleProduct.stockQty - (cartItem?.quantity || 0);
+    // Find existing item in cart
+    const existingCartItem = cartItems.find(item => item.Product.id === singleProduct.id);
+    const availableStock = singleProduct.stockQty - (existingCartItem?.quantity || 0);
   
     if (availableStock <= 0) return toast.error("Out of stock");
   
-    // Optimistic Redux update
-    dispatch(setItems([
-      ...cartItems.filter(item => item.Product.id !== singleProduct.id),
-      { Product: singleProduct, quantity: (cartItem?.quantity || 0) + 1 }
-    ]));
+    // ✅ Make sure Product is fully typed and non-null
+    const newItem = {
+      Product: singleProduct,
+      quantity: (existingCartItem?.quantity || 0) + 1
+    };
   
-    // Send API request
-    await dispatch(addToCart(singleProduct.id));
+    try {
+      // Optimistic update
+      dispatch(setItems([
+        ...cartItems.filter(item => item.Product.id !== singleProduct.id),
+        newItem
+      ]));
+  
+      // Send API request
+      await dispatch(addToCart(singleProduct.id));
+    } catch (err) {
+      toast.error("Failed to add to cart");
+      // Optional: re-fetch cart to sync
+      // dispatch(fetchCartItems());
+    }
   };
+  
   
   
 
