@@ -122,7 +122,7 @@ const Home: React.FC = () => {
 
         {/* Greeting */}
         {isLoggedIn && !showHero && (
-          <div className="relative bg-white shadow-sm flex flex-col items-center justify-center px-4 animate-fade-slide mt-12 pt-20 sm:pt-0 py-6">
+          <div className="relative bg-white shadow-sm flex flex-col items-center justify-center px-4 animate-fade-slide mt-20 pt-20 sm:pt-0 py-6">
 
 
             <h1 className="text-2xl md:text-3xl font-semibold text-gray-800">Welcome back, <span className="text-purple-600">{user?.username || "there"}</span> 👋</h1>
