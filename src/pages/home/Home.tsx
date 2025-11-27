@@ -15,8 +15,9 @@ const Home: React.FC = () => {
   const { product } = useAppSelector((s) => s.product);
 
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  const user = localStorage.getItem("user")
-  console.info(user)
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  console.info(user.username)
+
   const isLoggedIn = Boolean(user || (token && token.trim() !== ""));
 
 
@@ -129,7 +130,7 @@ const Home: React.FC = () => {
           <div className="relative bg-white shadow-sm flex flex-col items-center justify-center px-4 animate-fade-slide mt-20 pt-20 sm:pt-0 py-6">
 
 
-            <h1 className="text-2xl md:text-3xl font-semibold text-gray-800">Welcome back, <span className="text-purple-600">{user || "there"}</span> 👋</h1>
+            <h1 className="text-2xl md:text-3xl font-semibold text-gray-800">Welcome back, <span className="text-purple-600">{user && user?.username || "there"}</span> 👋</h1>
             <p className="text-gray-600 mt-1 text-sm md:text-base">Explore today’s best deals</p>
           </div>
         )}
