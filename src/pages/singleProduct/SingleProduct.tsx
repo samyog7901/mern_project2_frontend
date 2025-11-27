@@ -42,7 +42,7 @@ const SingleProduct = () => {
     if (!singleProduct) return toast.error("Product not found");
   
     // Find existing item in cart
-    const existingCartItem = cartItems.find(item => item.Product.id === singleProduct.id);
+    const existingCartItem = cartItems.find(item => item.Product?.id === singleProduct.id);
     const availableStock = singleProduct.stockQty - (existingCartItem?.quantity || 0);
   
     if (availableStock <= 0) return toast.error("Out of stock");
@@ -56,7 +56,7 @@ const SingleProduct = () => {
     try {
       // Optimistic update
       dispatch(setItems([
-        ...cartItems.filter(item => item.Product.id !== singleProduct.id),
+        ...cartItems.filter(item => item.Product?.id !== singleProduct.id),
         newItem
       ]));
   
