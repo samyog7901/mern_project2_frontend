@@ -35,7 +35,7 @@ const Card: React.FC<CardProps> = ({ data }) => {
             Rs.{data?.price}
           </span>
           <button className="text-white bg-blue-700 hover:bg-blue-800  sm:px-2 sm:py-2 rounded-lg text-sm sm:text-base">
-            Quick View
+            Buy
           </button>
         </div>
       </div>
