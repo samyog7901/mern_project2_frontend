@@ -54,19 +54,24 @@ const SingleProduct = () => {
     };
   
     try {
-      // Optimistic update
+      // Wait for API first
+      await dispatch(addToCart(singleProduct.id));
+    
+      // Update local Redux state after successful API call
+      const existingCartItem = cartItems.find(item => item.Product?.id === singleProduct?.id);
+      const newItem = {
+        Product: singleProduct,
+        quantity: (existingCartItem?.quantity || 0) + 1
+      };
+    
       dispatch(setItems([
         ...cartItems.filter(item => item.Product?.id !== singleProduct?.id),
         newItem
       ]));
-  
-      // Send API request
-      await dispatch(addToCart(singleProduct?.id));
     } catch (err) {
       toast.error("Failed to add to cart");
-      // Optional: re-fetch cart to sync
-      // dispatch(fetchCartItems());
     }
+    
   };
   
   
