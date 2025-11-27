@@ -66,7 +66,7 @@ const SingleProduct = () => {
           flex items-center justify-center
         ">
           <img
-            className="w-full object-contain rounded-2xl hover:scale-102 duration-10"
+            className="w-full h-full object-contain rounded-2xl hover:scale-102 duration-10"
             src={singleProduct?.imageUrl}
             alt="Product Image"
           />
