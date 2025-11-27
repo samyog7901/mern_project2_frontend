@@ -34,7 +34,7 @@ const Card: React.FC<CardProps> = ({ data }) => {
           <span className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
             Rs.{data?.price}
           </span>
-          <button className="text-white bg-blue-700 hover:bg-blue-800  sm:px-6 sm:py-4 rounded-lg text-sm sm:text-base">
+          <button className="text-white bg-blue-700 hover:bg-blue-800  sm:px-4 sm:py-4 rounded-lg text-sm sm:text-base">
             Buy
           </button>
         </div>
