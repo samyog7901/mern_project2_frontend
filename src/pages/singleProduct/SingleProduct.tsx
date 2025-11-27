@@ -61,9 +61,9 @@ const SingleProduct = () => {
         {/* Image */}
         <div className="
           bg-gray-300 dark:bg-gray-700 
-          rounded-2xl overflow-hidden 
+          rounded-2xl overflow-y-auto 
           max-h-[420px] sm:max-h-[480px] 
-          flex items-center justify-center
+          flex items-center justify-center scroll-auto scrollbar-hide
         ">
           <img
             className="w-full h-full object-contain rounded-2xl hover:scale-102 duration-10"
