@@ -19,7 +19,10 @@ const Checkout = () => {
   const [errors, setErrors] = useState({ phoneNumber: "", shippingAddress: "" })
 
   // Use either BuyNow product or cart items
-  const items = buyNowProduct ? [{ Product: buyNowProduct, quantity: buyNowQuantity }] : cartItems
+  const items = buyNowProduct
+  ? [{ product: buyNowProduct, quantity: buyNowQuantity }]
+  : cartItems.map((item) => ({ product: item, quantity: item.quantity }));
+
 
   const [data, setData] = useState<OrderData>({
     phoneNumber: "",
@@ -61,7 +64,7 @@ const Checkout = () => {
   }
   
   const totalAmount = items.reduce(
-    (total, item) => item?.quantity * item?.Product?.price + total,
+    (total, item) => item?.quantity * item?.product?.price + total,
     0
   )
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -69,7 +72,7 @@ const Checkout = () => {
     if (!validate()) return
 
     const itemDetails: ItemDetails[] = items.map((item) => ({
-      productId: item?.Product?.id,
+      productId: item?.product?.id,
       quantity: item?.quantity,
     }))
     
@@ -116,20 +119,20 @@ const Checkout = () => {
             {items.length > 0 &&
               items.map((item) => (
                 <div
-                  key={item?.Product?.id}
+                  key={item?.product?.id}
                   className="flex flex-col sm:flex-row items-center rounded-lg bg-white p-2 hover:shadow-md transition-all duration-200"
                 >
                   <img
                     className="m-2 h-20 w-24 sm:h-24 sm:w-28 rounded-md border object-cover object-center flex-shrink-0 transition-transform hover:scale-105 duration-300"
-                    src={item?.Product?.imageUrl}
-                    alt={item?.Product?.productName}
+                    src={item?.product?.imageUrl}
+                    alt={item?.product?.productName}
                   />
                   <div className="flex w-full flex-col px-2 py-2 sm:px-4">
                     <span className="font-semibold text-sm sm:text-base truncate">
-                      {item?.Product?.productName}
+                      {item?.product?.productName}
                     </span>
                     <span className="text-gray-400 text-xs sm:text-sm">Qty: {item?.quantity}</span>
-                    <p className="text-base sm:text-lg font-bold">Rs. {item?.Product?.price}</p>
+                    <p className="text-base sm:text-lg font-bold">Rs. {item?.product?.price}</p>
                   </div>
                 </div>
               ))}
