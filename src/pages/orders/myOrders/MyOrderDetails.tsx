@@ -16,14 +16,10 @@ const MyOrderDetails = () => {
   const { orderDetails } = useAppSelector((state) => state.orders);
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  // const controls = useAnimation()
 
-
-  // @ts-ignore
   useEffect(() => {
     if (id) dispatch(fetchMyOrderDetails(id));
-  }, [id])
-  
+  }, [id, dispatch]);
 
   const handleDeleteOrder = (orderId: string) => {
     socket.emit("deleteOrder", { orderId });
@@ -31,24 +27,20 @@ const MyOrderDetails = () => {
 
   useEffect(() => {
     const handleOrderDeleted = (orderId: string) => {
-      setIsLoading(true)
+      setIsLoading(true);
       dispatch(setDeleteOrderById({ orderId }));
-      toast.error("Your Order have been deleted!")
+      toast.error("Your Order has been deleted!");
       setTimeout(() => {
         navigate("/myOrders");
         setIsLoading(false);
-      }, 2000); // 2 seconds delay
+      }, 2000);
     };
-    
-  
+
     socket.on("orderDeleted", handleOrderDeleted);
-  
     return () => {
       socket.off("orderDeleted", handleOrderDeleted);
-    }
-  }, [dispatch,navigate]);
-
-
+    };
+  }, [dispatch, navigate]);
 
   const paymentMap: Record<string, PaymentStatus> = {
     paid: PaymentStatus.Paid,
@@ -62,12 +54,11 @@ const MyOrderDetails = () => {
     ontheway: OrderStatus.Ontheway,
     preparation: OrderStatus.Preparation,
     cancelled: OrderStatus.Cancelled,
-    all : OrderStatus.All,
+    all: OrderStatus.All,
   };
 
   useEffect(() => {
-    //@ts-ignore
-    const handler = ({ type, status, orderId }) => {
+    const handler = ({ type, status, orderId }: any) => {
       if (type === "ORDER_STATUS") {
         dispatch(updateOrderDetailsStatusInStore({ orderId, status }));
       }
@@ -75,9 +66,8 @@ const MyOrderDetails = () => {
         dispatch(updateOrderDetailsPaymentStatusInStore({ orderId, status }));
       }
     };
-  
+
     socket.on("statusUpdated", handler);
-  
     return () => {
       socket.off("statusUpdated", handler);
     };
@@ -91,18 +81,10 @@ const MyOrderDetails = () => {
     );
   }
 
- 
-
-
-  const handleClick = async () => {
-    
-    navigate("/myOrders");
-  };
-  
+  const handleClick = () => navigate("/myOrders");
 
   return (
     <>
-      {/* <Navbar /> */}
       <div
         className="fixed top-20 left-4 z-30 flex items-center gap-2 bg-white/80 dark:bg-gray-900/60 
         backdrop-blur-md px-3 py-2 sm:px-2 sm:py-1 rounded-full shadow-md cursor-pointer hover:shadow-lg transition"
@@ -111,136 +93,123 @@ const MyOrderDetails = () => {
         <span className="text-xl">👈</span>
         <span className="font-medium text-gray-700 dark:text-gray-200">Back</span>
       </div>
+
       <div className="py-20 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
-     
-      {/* ---------- Header ---------- */}
-      <div className="flex flex-col space-y-2 my-10 sticky top-0">
-        <h1 className="text-2xl font-semibold text-gray-700">Order {id}</h1>
-        <p className="text-base text-gray-500 dark:text-gray-400">
-          {orderDetails[0]?.createdAt
-            ? new Date(orderDetails[0].createdAt).toLocaleDateString()
-            : ""}
-        </p>
-      </div>
+        {/* Header */}
+        <div className="flex flex-col space-y-2 my-10 sticky top-0 bg-white dark:bg-gray-900 z-10">
+          <h1 className="text-2xl font-semibold text-gray-700 dark:text-white">Order {id}</h1>
+          <p className="text-base text-gray-500 dark:text-gray-400">
+            {orderDetails[0]?.createdAt && new Date(orderDetails[0].createdAt).toLocaleDateString()}
+          </p>
+        </div>
 
-      {/* ---------- Main Layout ---------- */}
-      <div className="flex flex-col xl:flex-row justify-between items-start w-full xl:space-x-8 space-y-8 xl:space-y-0 lg:ml-40 sm:ml-0">
-        {/* ---------- Left Section ---------- */}
-        <div className="flex flex-col w-full space-y-6 xl:max-h-[80vh] xl:overflow-y-auto pr-2 scrollbar-hide">
-          {orderDetails && orderDetails.length > 0 && (
-            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm flex flex-col w-full space-y-6 xl:max-h-[80vh] xl:overflow-y-auto  custom-scrollbar scrollbar-hide hover:lg:shadow-xl">
-            <p className="text-lg md:text-xl dark:text-white font-semibold">
-              My Order
-            </p>
-
-            {orderDetails.map((order) => (
-              <div
-                key={order.Order?.id}
-                className="flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 border-b border-gray-200 pb-6 mb-4"
-              >
-                <div className="w-full md:w-36">
-                  <img
-                    className="w-full rounded-lg object-cover"
-                    src={order.Product?.imageUrl}
-                    alt={order.Product?.productName}
-                  />
-                </div>
-
-                <div className="flex w-full md:flex-row justify-between items-center mt-4 md:mt-0">
-                  <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
-                    {order.Product?.productName}
-                  </h3>
-
-                  <div className="flex items-center space-x-6">
-                    <p className="text-gray-700 dark:text-gray-300">
-                      Rs.{order.Product?.price}
-                    </p>
-                    <p className="text-gray-700 dark:text-gray-300">
-                      Qty: {order.quantity}
-                    </p>
-                    <p className="font-semibold text-gray-800 dark:text-gray-200">
-                      Rs.{order.Product?.price * order.quantity}
-                    </p>
+        {/* Main Layout */}
+        <div className="flex flex-col xl:flex-row justify-between items-start w-full xl:space-x-8 space-y-8 xl:space-y-0">
+          {/* Left Section */}
+          <div className="flex flex-col w-full space-y-6">
+            {/* Order Items */}
+            {orderDetails.length > 0 && (
+              <div className="bg-gray-50 dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm flex flex-col space-y-6">
+                <p className="text-lg md:text-xl dark:text-white font-semibold">My Order</p>
+                {orderDetails.map((order) => (
+                  <div
+                    key={order.Order?.id}
+                    className="flex flex-col sm:flex-row justify-start items-start sm:items-center sm:space-x-4 border-b border-gray-200 pb-4"
+                  >
+                    <div className="w-full sm:w-32 flex-shrink-0">
+                      <img
+                        className="w-full h-32 sm:h-24 object-cover rounded-lg"
+                        src={order.Product?.imageUrl}
+                        alt={order.Product?.productName}
+                      />
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center w-full mt-2 sm:mt-0">
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+                        {order.Product?.productName}
+                      </h3>
+                      <div className="flex items-center space-x-4 mt-2 sm:mt-0">
+                        <p className="text-gray-700 dark:text-gray-300">Rs.{order.Product?.price}</p>
+                        <p className="text-gray-700 dark:text-gray-300">Qty: {order.quantity}</p>
+                        <p className="font-semibold text-gray-800 dark:text-gray-200">
+                          Rs.{order.Product?.price * order.quantity}
+                        </p>
+                      </div>
+                    </div>
                   </div>
+                ))}
+              </div>
+            )}
+
+            {/* Order Summary */}
+            <div className="bg-gray-50 dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Order Summary</h3>
+              <div className="space-y-2 text-gray-700 dark:text-gray-300">
+                <div className="flex justify-between">
+                  <p>Payment Method</p>
+                  <p>{orderDetails[0].Order?.Payment?.paymentMethod}</p>
                 </div>
-              </div>
-
-            ))}
-          </div>
-          )}
-
-          {/* ---------- Order Summary ---------- */}
-          <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm">
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
-              Order Summary
-            </h3>
-            <div className="space-y-2 text-gray-700 dark:text-gray-300">
-              <div className="flex justify-between">
-                <p>Payment Method</p>
-                <p>{orderDetails?.[0].Order?.Payment?.paymentMethod}</p>
-              </div>
-              <div className="flex justify-between">
-                <p>Payment Status</p>
-                <p>{paymentMap[orderDetails?.[0].Order?.Payment?.paymentStatus || "pending"]}</p>
-              </div>
-              <div className="flex justify-between">
-                <p>Order Status</p>
-                <p className="transition-all duration-300 ease-in-out">{orderMap[orderDetails?.[0].Order?.orderStatus || "pending"]}</p>
-              </div>
-              <hr className="my-2 border-gray-300" />
-              <div className="flex justify-between">
-                <p>Subtotal</p>
-                <p>Rs. {orderDetails?.[0].Order?.totalAmount - 100}</p>
-              </div>
-              <div className="flex justify-between">
-                <p>Shipping (24-hour delivery)</p>
-                <p>Rs. 100</p>
-              </div>
-              <div className="flex justify-between font-semibold text-lg mt-2">
-                <p>Total</p>
-                <p>Rs. {orderDetails?.[0].Order?.totalAmount}</p>
+                <div className="flex justify-between">
+                  <p>Payment Status</p>
+                  <p>{paymentMap[orderDetails[0].Order?.Payment?.paymentStatus || "pending"]}</p>
+                </div>
+                <div className="flex justify-between">
+                  <p>Order Status</p>
+                  <p className="transition-all duration-300 ease-in-out">
+                    {orderMap[orderDetails[0].Order?.orderStatus || "pending"]}
+                  </p>
+                </div>
+                <hr className="my-2 border-gray-300" />
+                <div className="flex justify-between">
+                  <p>Subtotal</p>
+                  <p>Rs. {orderDetails[0].Order?.totalAmount - 100}</p>
+                </div>
+                <div className="flex justify-between">
+                  <p>Shipping (24-hour delivery)</p>
+                  <p>Rs. 100</p>
+                </div>
+                <div className="flex justify-between font-semibold text-lg mt-2">
+                  <p>Total</p>
+                  <p>Rs. {orderDetails[0].Order?.totalAmount}</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* ---------- Right Section: Customer Details ---------- */}
-        <div className="bg-gray-50 dark:bg-gray-800 w-full xl:w-96 p-6 rounded-xl shadow-sm flex flex-col justify-between space-y-6 xl:sticky xl:top-24">
-          <div>
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-3">
-              Customer Details
-            </h3>
-           
-            <p className="text-gray-700 dark:text-gray-300 mb-2">
-              <strong>Address:</strong> {orderDetails?.[0].Order?.shippingAddress}
-            </p>
-            <p className="text-gray-700 dark:text-gray-300">
-              <strong>Phone:</strong> {orderDetails?.[0].Order?.phoneNumber}
-            </p>
-          </div>
-         
+          {/* Right Section: Customer Details */}
+          <div className="bg-gray-50 dark:bg-gray-800 w-full sm:w-96 p-4 sm:p-6 rounded-xl shadow-sm flex flex-col space-y-6 xl:sticky xl:top-24">
+            <div>
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-3">Customer Details</h3>
+              <p className="text-gray-700 dark:text-gray-300 mb-2">
+                <strong>Address:</strong> {orderDetails[0].Order?.shippingAddress}
+              </p>
+              <p className="text-gray-700 dark:text-gray-300">
+                <strong>Phone:</strong> {orderDetails[0].Order?.phoneNumber}
+              </p>
+            </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-col space-y-3">
+            {/* Action Buttons */}
+            <div className="flex flex-col space-y-3">
               <button className="border border-gray-800 dark:border-gray-300 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-900 text-gray-800 dark:text-white transition">
                 Edit Order
               </button>
-
-              {orderDetails?.[0]?.Order.Payment.paymentStatus !== PaymentStatus.Paid && (
+              {orderDetails[0].Order.Payment.paymentStatus !== PaymentStatus.Paid && (
                 <button className="border border-yellow-500 text-yellow-700 py-2 rounded-lg hover:bg-yellow-100 dark:hover:bg-yellow-900 dark:text-yellow-400 transition">
-                Cancel Order
-              </button>
+                  Cancel Order
+                </button>
               )}
-
-              <button onClick={()=>handleDeleteOrder(orderDetails?.[0]?.Order.id)} className="bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition">
+              <button
+                onClick={() => handleDeleteOrder(orderDetails[0].Order.id)}
+                className="bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
+              >
                 Delete Order
               </button>
             </div>
+          </div>
         </div>
-        </div>
-        </div>
+      </div>
     </>
   );
 };
+
 
 export default MyOrderDetails;
