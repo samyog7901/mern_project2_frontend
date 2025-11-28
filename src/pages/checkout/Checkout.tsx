@@ -5,6 +5,7 @@ import { PaymentMethod, type ItemDetails, type OrderData } from "../../assets/gl
 import { orderItem, setStatus } from "../../store/checkoutSlice"
 import { Status } from "../../assets/globals/types/types"
 import { useLocation, useNavigate } from "react-router-dom"
+import toast from "react-hot-toast"
 
 const Checkout = () => {
   const { items: cartItems } = useAppSelector((state) => state.carts)
@@ -83,23 +84,26 @@ const Checkout = () => {
     await dispatch(orderItem(orderData))
   }
 
-  const [initialRender, setInitialRender] = useState(true)
+  // const [initialRender, setInitialRender] = useState(true)
 
   useEffect(() => {
-    if (initialRender) {
-      setInitialRender(false)
-      return
+    if (status !== Status.SUCCESS) return;
+  
+    // COD Flow
+    if (paymentMethod === PaymentMethod.COD) {
+      toast.success("Order Placed!");
+      navigate("/myOrders");
+      dispatch(setStatus(Status.IDLE));
+      return;
     }
-
-    if (status === Status.SUCCESS && paymentMethod === PaymentMethod.COD) {
-      navigate("/myOrders")
-      dispatch(setStatus(Status.LOADING))
+  
+    // KHALTI Flow
+    if (paymentMethod === PaymentMethod.KHALTI && khaltiUrl) {
+      window.location.href = khaltiUrl;
+      dispatch(setStatus(Status.IDLE));
     }
-
-    if (status === Status.SUCCESS && paymentMethod === PaymentMethod.KHALTI && khaltiUrl) {
-      window.location.href = khaltiUrl
-    }
-  }, [status, khaltiUrl, navigate, paymentMethod, dispatch, initialRender])
+  }, [status, paymentMethod, khaltiUrl, navigate, dispatch]);
+  
 
  
 
