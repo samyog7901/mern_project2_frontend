@@ -105,7 +105,7 @@ const MyOrderDetails = () => {
       {/* <Navbar /> */}
       <div
         className="fixed top-20 left-4 z-30 flex items-center gap-2 bg-white/80 dark:bg-gray-900/60 
-        backdrop-blur-md px-3 py-2 rounded-full shadow-md cursor-pointer hover:shadow-lg transition"
+        backdrop-blur-md px-3 py-2 sm:px-2 sm:py-1 rounded-full shadow-md cursor-pointer hover:shadow-lg transition"
         onClick={handleClick}
       >
         <span className="text-xl">👈</span>
@@ -114,7 +114,7 @@ const MyOrderDetails = () => {
       <div className="py-20 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
      
       {/* ---------- Header ---------- */}
-      <div className="flex flex-col space-y-2 my-2 sticky top-0">
+      <div className="flex flex-col space-y-2 my-6 sticky top-0">
         <h1 className="text-2xl font-semibold text-gray-700">Order {id}</h1>
         <p className="text-base text-gray-500 dark:text-gray-400">
           {orderDetails[0]?.createdAt
@@ -124,7 +124,7 @@ const MyOrderDetails = () => {
       </div>
 
       {/* ---------- Main Layout ---------- */}
-      <div className="flex flex-col xl:flex-row justify-between items-center w-full xl:space-x-8 space-y-8 xl:space-y-0">
+      <div className="flex flex-col xl:flex-row justify-between items-start w-full xl:space-x-8 space-y-8 xl:space-y-0 lg:ml-40 sm:ml-0">
         {/* ---------- Left Section ---------- */}
         <div className="flex flex-col w-full space-y-6 xl:max-h-[80vh] xl:overflow-y-auto pr-2 scrollbar-hide">
           {orderDetails && orderDetails.length > 0 && (
