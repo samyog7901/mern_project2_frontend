@@ -5,6 +5,7 @@ import { PaymentMethod, type ItemDetails, type OrderData } from "../../assets/gl
 import { orderItem, setStatus } from "../../store/checkoutSlice"
 import { Status } from "../../assets/globals/types/types"
 import { useLocation, useNavigate } from "react-router-dom"
+import type { Product, ProductState } from "../../assets/globals/types/productTypes"
 
 const Checkout = () => {
   const { items: cartItems } = useAppSelector((state) => state.carts)
@@ -14,6 +15,7 @@ const Checkout = () => {
   const location = useLocation()
   const buyNowProduct = location.state?.product
   const buyNowQuantity = location.state?.quantity || 1
+  console.info(buyNowProduct)
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.COD)
   const [errors, setErrors] = useState({ phoneNumber: "", shippingAddress: "" })
