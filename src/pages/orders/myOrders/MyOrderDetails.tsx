@@ -103,8 +103,6 @@ const MyOrderDetails = () => {
   return (
     <>
       {/* <Navbar /> */}
-      
-      <div className="py-20 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
       <div
         className="fixed top-20 left-4 z-30 flex items-center gap-2 bg-white/80 dark:bg-gray-900/60 
         backdrop-blur-md px-3 py-2 rounded-full shadow-md cursor-pointer hover:shadow-lg transition"
@@ -113,6 +111,8 @@ const MyOrderDetails = () => {
         <span className="text-xl">👈</span>
         <span className="font-medium text-gray-700 dark:text-gray-200">Back</span>
       </div>
+      <div className="py-20 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
+     
       {/* ---------- Header ---------- */}
       <div className="flex flex-col space-y-2 my-2 sticky top-0">
         <h1 className="text-2xl font-semibold text-gray-700">Order {id}</h1>
@@ -124,12 +124,12 @@ const MyOrderDetails = () => {
       </div>
 
       {/* ---------- Main Layout ---------- */}
-      <div className="flex flex-col xl:flex-row justify-between items-start w-full xl:space-x-8 space-y-8 xl:space-y-0">
+      <div className="flex flex-col xl:flex-row justify-between items-center w-full xl:space-x-8 space-y-8 xl:space-y-0">
         {/* ---------- Left Section ---------- */}
         <div className="flex flex-col w-full space-y-6 xl:max-h-[80vh] xl:overflow-y-auto pr-2 scrollbar-hide">
           {orderDetails && orderDetails.length > 0 && (
             <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm flex flex-col w-full space-y-6 xl:max-h-[80vh] xl:overflow-y-auto  custom-scrollbar scrollbar-hide hover:lg:shadow-xl">
-            <p className="text-lg md:text-xl dark:text-white font-semibold mt-10">
+            <p className="text-lg md:text-xl dark:text-white font-semibold">
               My Order
             </p>
 
