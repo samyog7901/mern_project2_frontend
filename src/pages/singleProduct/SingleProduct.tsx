@@ -89,6 +89,7 @@ const SingleProduct = () => {
   const handleBuyNow = () => {
     if (!isLoggedIn) return navigate("/login");
     if (!productId) return;
+    console.log("Navigating with product:", product);
     navigate("/checkout",{state:{product,quantity:1}});
   };
 
