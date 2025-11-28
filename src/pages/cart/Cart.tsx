@@ -20,7 +20,7 @@ const Cart = () => {
         );
         
         
-      }, 2100);
+      }, 10000);
       dispatch(fetchCartItems());
       return () => clearTimeout(timer);
     
