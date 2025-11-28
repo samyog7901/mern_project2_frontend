@@ -15,16 +15,14 @@ const Checkout = () => {
   const location = useLocation()
   const buyNowProduct = location.state?.product
   const buyNowQuantity = location.state?.quantity || 1
-  console.info(buyNowProduct)
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.COD)
   const [errors, setErrors] = useState({ phoneNumber: "", shippingAddress: "" })
 
   // Use either BuyNow product or cart items
   const items = buyNowProduct
-  ? buyNowProduct.map((product:Product) => ({ product, quantity: buyNowQuantity }))
+  ? [{ product: buyNowProduct, quantity: buyNowQuantity }]
   : cartItems.map((item) => ({ product: item, quantity: item.quantity }));
-
 
 
   const [data, setData] = useState<OrderData>({
@@ -34,7 +32,7 @@ const Checkout = () => {
     paymentDetails: {
       paymentMethod: PaymentMethod.COD,
     },
-    items : items
+    items: [],
   })
 
   const handlePaymentMethod = (e: ChangeEvent<HTMLInputElement>) => {
@@ -67,14 +65,14 @@ const Checkout = () => {
   }
   
   const totalAmount = items.reduce(
-    (total:number, item: { product: Product; quantity: number }) => item?.quantity * item?.product?.price + total,
+    (total, item) => item?.quantity * item?.product?.price + total,
     0
   )
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!validate()) return
 
-    const itemDetails: ItemDetails[] = items.map((item: { product: Product; quantity: number }) => ({
+    const itemDetails: ItemDetails[] = items.map((item) => ({
       productId: item?.product?.id,
       quantity: item?.quantity,
     }))
@@ -120,7 +118,7 @@ const Checkout = () => {
           <p className="text-gray-400">Check your items. And select a suitable shipping method.</p>
           <div className="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6 max-h-[300px] overflow-y-auto custom-scrollbar scrollbar-hide">
             {items.length > 0 &&
-              items.map((item: { product: Product; quantity: number }) => (
+              items.map((item) => (
                 <div
                   key={item?.product?.id}
                   className="flex flex-col sm:flex-row items-center rounded-lg bg-white p-2 hover:shadow-md transition-all duration-200"
