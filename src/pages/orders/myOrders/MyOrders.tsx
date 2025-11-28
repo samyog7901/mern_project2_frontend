@@ -17,6 +17,7 @@ const MyOrders = () => {
     const [selectedPayment,setSelectedPayment] = useState<PaymentStatus>(PaymentStatus.All)
     const [searchTerm,setSearchTerm] = useState<string>('')
     const [date,setDate] = useState<string>('')
+    const [isLoading, setIsLoading] = useState(false);
     const getStatusColor = (status: OrderStatus | undefined) => {
         const normalized = status?.toLowerCase();
         if (normalized === 'delivered') return 'bg-green-600';
@@ -116,6 +117,14 @@ const MyOrders = () => {
           socket.off("statusUpdated", handler);
         };
       }, [socket,dispatch]);
+
+      if (isLoading || !myOrders || myOrders.length === 0) {
+        return (
+          <div className="py-20 text-center text-gray-500">
+            Loading my orders...
+          </div>
+        );
+      }
       
       
   return (

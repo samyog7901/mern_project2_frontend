@@ -138,13 +138,13 @@ const MyOrderDetails = () => {
                 key={order.Order?.id}
                 className="flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 border-b border-gray-200 pb-6 mb-4"
               >
-                <div className="w-full md:w-36 h-max-[400px]">
-                  <img
-                    className="w-full rounded-lg object-contain"
-                    src={order.Product?.imageUrl}
-                    alt={order.Product?.productName}
-                  />
-                </div>
+                <div className="w-full sm:w-32 aspect-square flex-shrink-0 rounded-lg overflow-hidden">
+                <img
+                  src={order.Product?.imageUrl}
+                  alt={order.Product?.productName}
+                  className="w-full h-full object-cover"
+                />
+              </div>
 
                 <div className="flex w-full md:flex-row justify-between items-center mt-4 md:mt-0">
                   <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
