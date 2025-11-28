@@ -4,16 +4,22 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { PaymentMethod, type ItemDetails, type OrderData } from "../../assets/globals/types/checkoutTypes"
 import { orderItem, setStatus } from "../../store/checkoutSlice"
 import { Status } from "../../assets/globals/types/types"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 
 const Checkout = () => {
-  const { items } = useAppSelector((state) => state.carts)
+  const { items: cartItems } = useAppSelector((state) => state.carts)
   const { khaltiUrl, status } = useAppSelector((state) => state.orders)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const location = useLocation()
+  const buyNowProduct = location.state?.product
+  const buyNowQuantity = location.state?.quantity || 1
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.COD)
   const [errors, setErrors] = useState({ phoneNumber: "", shippingAddress: "" })
+
+  // Use either BuyNow product or cart items
+  const items = buyNowProduct ? [{ Product: buyNowProduct, quantity: buyNowQuantity }] : cartItems
 
   const [data, setData] = useState<OrderData>({
     phoneNumber: "",
@@ -26,42 +32,38 @@ const Checkout = () => {
   })
 
   const handlePaymentMethod = (e: ChangeEvent<HTMLInputElement>) => {
-    setPaymentMethod(e.target.value as PaymentMethod)
+    const method = e.target.value as PaymentMethod
+    setPaymentMethod(method)
     setData({
       ...data,
-      paymentDetails: {
-        paymentMethod: e.target.value as PaymentMethod,
-      },
+      paymentDetails: { paymentMethod: method },
     })
   }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setData({
-      ...data,
-      [name]: value,
-    })
-    setErrors({ ...errors, [name]: "" }) // clear error while typing
+    setData({ ...data, [name]: value })
+    setErrors({ ...errors, [name]: "" })
   }
 
   const validate = () => {
     const newErrors = { phoneNumber: "", shippingAddress: "" }
-    const phonePattern = /^(98|97)\d{8}$/ // 10-digit Nepali number validation
+    const phonePattern = /^(98|97)\d{8}$/
 
-    if (!data.phoneNumber.trim()) {
-      newErrors.phoneNumber = "Phone number is required"
-    } else if (!phonePattern.test(data.phoneNumber.trim())) {
+    if (!data.phoneNumber.trim()) newErrors.phoneNumber = "Phone number is required"
+    else if (!phonePattern.test(data.phoneNumber.trim()))
       newErrors.phoneNumber = "Enter a valid 10-digit Nepali number (starts with 98/97)"
-    }
 
-    if (!data.shippingAddress.trim()) {
-      newErrors.shippingAddress = "Shipping address is required"
-    }
+    if (!data.shippingAddress.trim()) newErrors.shippingAddress = "Shipping address is required"
 
     setErrors(newErrors)
     return !newErrors.phoneNumber && !newErrors.shippingAddress
   }
-
+  
+  const totalAmount = items.reduce(
+    (total, item) => item?.quantity * item?.Product?.price + total,
+    0
+  )
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!validate()) return
@@ -70,16 +72,17 @@ const Checkout = () => {
       productId: item?.Product?.id,
       quantity: item?.quantity,
     }))
-
+    
     const orderData = {
       ...data,
       items: itemDetails,
-      totalAmount: totalAmount + 100, // including shipping fee
+      totalAmount: totalAmount + 100, // include shipping
     }
+
     dispatch(setStatus(Status.LOADING))
     await dispatch(orderItem(orderData))
- 
   }
+
   const [initialRender, setInitialRender] = useState(true)
 
   useEffect(() => {
@@ -87,17 +90,18 @@ const Checkout = () => {
       setInitialRender(false)
       return
     }
-   
+
     if (status === Status.SUCCESS && paymentMethod === PaymentMethod.COD) {
       navigate("/myOrders")
       dispatch(setStatus(Status.LOADING))
     }
+
     if (status === Status.SUCCESS && paymentMethod === PaymentMethod.KHALTI && khaltiUrl) {
       window.location.href = khaltiUrl
     }
-  }, [status,khaltiUrl,navigate])
+  }, [status, khaltiUrl, navigate, paymentMethod, dispatch, initialRender])
 
-  const totalAmount = items.reduce((total, item) => item?.quantity * item?.Product?.price + total, 0)
+ 
 
   return (
     <>

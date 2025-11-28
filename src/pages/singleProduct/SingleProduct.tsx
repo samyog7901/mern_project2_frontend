@@ -89,7 +89,7 @@ const SingleProduct = () => {
   const handleBuyNow = () => {
     if (!isLoggedIn) return navigate("/login");
     if (!productId) return;
-    navigate("/checkout");
+    navigate("/checkout",{state:{product,quantity:1}});
   };
 
   const handleRedirect = () => {
