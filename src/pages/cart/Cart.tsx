@@ -16,7 +16,7 @@ const Cart = () => {
       dispatch(fetchCartItems());
       const timer = setTimeout(() => {
         setLoading(false);
-      }, 7000);
+      }, 3000);
       
       return () => clearTimeout(timer);
     
