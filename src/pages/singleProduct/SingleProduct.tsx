@@ -126,7 +126,7 @@ const SingleProduct = () => {
       {/* Go Back Button */}
       <button
         onClick={handleRedirect}
-        className="bg-gray-300 p-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 fixed top-24 left-3 z-50 rounded-full flex items-center sm:top-1"
+        className="bg-gray-300 p-2 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 fixed top-24 left-3 z-50 rounded-full flex items-center sm:fixed sm:top-0"
       >
         <i className="fa-solid fa-arrow-left text-lg"></i>
       </button>
