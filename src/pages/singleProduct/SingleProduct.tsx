@@ -37,9 +37,9 @@ const SingleProduct = () => {
     dispatch(fetchProducts());
   }, [dispatch, productId]);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [productId]);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, [productId]);
 
   
   const handleAddToCart = async () => {

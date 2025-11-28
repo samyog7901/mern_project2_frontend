@@ -13,10 +13,11 @@ import { Toaster } from 'react-hot-toast';
 // import Checkout from './pages/checkout/Checkout'
 // import MyOrders from './pages/orders/myOrders/MyOrders'
 // import MyOrderDetails from './pages/orders/myOrders/MyOrderDetails'
-import PaymentVerify from './pages/payment/PaymentVerify'
-import ProtectedRoute from './assets/globals/components/ProtectedRoute';
+// import PaymentVerify from './pages/payment/PaymentVerify'
+// import ProtectedRoute from './assets/globals/components/ProtectedRoute';
 import {io} from 'socket.io-client'
 import AnimatedRoutes from './assets/globals/components/AnimatedRoutes.tsx';
+import ScrollToTop from './assets/globals/components/ScrollToTop.tsx';
 // import Navbar from './assets/globals/components/navbar/Navbar.tsx';
 // import Register from './pages/auth/register/Register.tsx';
 // import LoginProtectedRoute from './pages/auth/login/LoginProtectedRoute.tsx';
@@ -39,6 +40,7 @@ const App = () => {
    <Provider store={store}>
     <BrowserRouter>
         <Toaster position='top-center' reverseOrder={false} containerStyle={{ zIndex: 100000 }}/>
+        <ScrollToTop />
         {/* <Routes>
             <Route path="/" element={<Home/>}/>
             <Route path="/register" element={<Register/>}/>
