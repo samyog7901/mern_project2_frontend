@@ -84,26 +84,24 @@ const Checkout = () => {
     await dispatch(orderItem(orderData))
   }
 
-  // const [initialRender, setInitialRender] = useState(true)
+  const [initialRender, setInitialRender] = useState(true)
 
   useEffect(() => {
-    if (status !== Status.SUCCESS) return;
-  
-    // COD Flow
-    if (paymentMethod === PaymentMethod.COD) {
-      toast.success("Order Placed!");
-      navigate("/myOrders");
-      dispatch(setStatus(Status.IDLE));
-      return;
+    if (initialRender) {
+      setInitialRender(false)
+      return
     }
-  
-    // KHALTI Flow
-    if (paymentMethod === PaymentMethod.KHALTI && khaltiUrl) {
-      window.location.href = khaltiUrl;
-      dispatch(setStatus(Status.IDLE));
+
+    if (status === Status.SUCCESS && paymentMethod === PaymentMethod.COD) {
+      navigate("/myOrders")
+      toast.success("Order Placed!")
+      dispatch(setStatus(Status.LOADING))
     }
-  }, [status, paymentMethod, khaltiUrl, navigate, dispatch]);
-  
+
+    if (status === Status.SUCCESS && paymentMethod === PaymentMethod.KHALTI && khaltiUrl) {
+      window.location.href = khaltiUrl
+    }
+  }, [status, khaltiUrl, navigate, paymentMethod, dispatch, initialRender])
 
  
 
