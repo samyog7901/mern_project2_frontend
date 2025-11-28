@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 
 const MyOrderDetails = () => {
   const { id } = useParams();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { orderDetails } = useAppSelector((state) => state.orders);
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -85,125 +85,108 @@ const MyOrderDetails = () => {
 
   return (
     <>
+      {/* Back Button */}
       <div
         className="fixed top-20 left-4 z-30 flex items-center gap-2 bg-white/80 dark:bg-gray-900/60 
-        backdrop-blur-md px-3 py-2 sm:px-2 sm:py-1 rounded-full shadow-md cursor-pointer hover:shadow-lg transition"
+        backdrop-blur-md px-3 py-2 rounded-full shadow-md cursor-pointer hover:shadow-lg transition"
         onClick={handleClick}
       >
         <span className="text-xl">👈</span>
         <span className="font-medium text-gray-700 dark:text-gray-200">Back</span>
       </div>
 
-      <div className="py-20 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
+      <div className="py-20 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto space-y-6">
         {/* Header */}
-        <div className="flex flex-col space-y-2 my-10 sticky top-0 bg-white dark:bg-gray-900 z-10">
+        <div className="flex flex-col space-y-1">
           <h1 className="text-2xl font-semibold text-gray-700 dark:text-white">Order {id}</h1>
-          <p className="text-base text-gray-500 dark:text-gray-400">
+          <p className="text-gray-500 dark:text-gray-400">
             {orderDetails[0]?.createdAt && new Date(orderDetails[0].createdAt).toLocaleDateString()}
           </p>
         </div>
 
-        {/* Main Layout */}
-        <div className="flex flex-col xl:flex-row justify-between items-start w-full xl:space-x-8 space-y-8 xl:space-y-0">
-          {/* Left Section */}
-          <div className="flex flex-col w-full space-y-6">
-            {/* Order Items */}
-            {orderDetails.length > 0 && (
-              <div className="bg-gray-50 dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm flex flex-col space-y-6">
-                <p className="text-lg md:text-xl dark:text-white font-semibold">My Order</p>
-                {orderDetails.map((order) => (
-                  <div
-                    key={order.Order?.id}
-                    className="flex flex-col sm:flex-row justify-start items-start sm:items-center sm:space-x-4 border-b border-gray-200 pb-4"
-                  >
-                    <div className="w-full sm:w-32 flex-shrink-0">
-                      <img
-                        className="w-full h-32 sm:h-24 object-cover rounded-lg"
-                        src={order.Product?.imageUrl}
-                        alt={order.Product?.productName}
-                      />
-                    </div>
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center w-full mt-2 sm:mt-0">
-                      <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
-                        {order.Product?.productName}
-                      </h3>
-                      <div className="flex items-center space-x-4 mt-2 sm:mt-0">
-                        <p className="text-gray-700 dark:text-gray-300">Rs.{order.Product?.price}</p>
-                        <p className="text-gray-700 dark:text-gray-300">Qty: {order.quantity}</p>
-                        <p className="font-semibold text-gray-800 dark:text-gray-200">
-                          Rs.{order.Product?.price * order.quantity}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+        {/* Order Items */}
+        <div className="flex flex-col space-y-4">
+          {orderDetails.map((order) => (
+            <div
+              key={order.Order?.id}
+              className="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl shadow-md flex flex-col sm:flex-row sm:items-center gap-4 transition hover:shadow-lg"
+            >
+              {/* Product Image */}
+              <div className="w-full sm:w-32 aspect-square flex-shrink-0 rounded-lg overflow-hidden">
+                <img
+                  src={order.Product?.imageUrl}
+                  alt={order.Product?.productName}
+                  className="w-full h-full object-cover"
+                />
               </div>
-            )}
 
-            {/* Order Summary */}
-            <div className="bg-gray-50 dark:bg-gray-800 p-4 sm:p-6 rounded-xl shadow-sm">
-              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Order Summary</h3>
-              <div className="space-y-2 text-gray-700 dark:text-gray-300">
-                <div className="flex justify-between">
-                  <p>Payment Method</p>
-                  <p>{orderDetails[0].Order?.Payment?.paymentMethod}</p>
-                </div>
-                <div className="flex justify-between">
-                  <p>Payment Status</p>
-                  <p>{paymentMap[orderDetails[0].Order?.Payment?.paymentStatus || "pending"]}</p>
-                </div>
-                <div className="flex justify-between">
-                  <p>Order Status</p>
-                  <p className="transition-all duration-300 ease-in-out">
-                    {orderMap[orderDetails[0].Order?.orderStatus || "pending"]}
-                  </p>
-                </div>
-                <hr className="my-2 border-gray-300" />
-                <div className="flex justify-between">
-                  <p>Subtotal</p>
-                  <p>Rs. {orderDetails[0].Order?.totalAmount - 100}</p>
-                </div>
-                <div className="flex justify-between">
-                  <p>Shipping (24-hour delivery)</p>
-                  <p>Rs. 100</p>
-                </div>
-                <div className="flex justify-between font-semibold text-lg mt-2">
-                  <p>Total</p>
-                  <p>Rs. {orderDetails[0].Order?.totalAmount}</p>
+              {/* Product Info */}
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center w-full">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-white">{order.Product?.productName}</h3>
+                <div className="flex items-center space-x-4 mt-2 sm:mt-0 text-gray-700 dark:text-gray-300">
+                  <p>Rs.{order.Product?.price}</p>
+                  <p>Qty: {order.quantity}</p>
+                  <p className="font-semibold text-gray-800 dark:text-gray-200">Rs.{order.Product?.price * order.quantity}</p>
                 </div>
               </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Order Summary */}
+        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl shadow-md flex flex-col space-y-2">
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-white">Order Summary</h3>
+          <div className="space-y-1 text-gray-700 dark:text-gray-300">
+            <div className="flex justify-between">
+              <p>Payment Method</p>
+              <p>{orderDetails[0].Order?.Payment?.paymentMethod}</p>
+            </div>
+            <div className="flex justify-between">
+              <p>Payment Status</p>
+              <p>{paymentMap[orderDetails[0].Order?.Payment?.paymentStatus || "pending"]}</p>
+            </div>
+            <div className="flex justify-between">
+              <p>Order Status</p>
+              <p>{orderMap[orderDetails[0].Order?.orderStatus || "pending"]}</p>
+            </div>
+            <hr className="border-gray-300" />
+            <div className="flex justify-between">
+              <p>Subtotal</p>
+              <p>Rs. {orderDetails[0].Order?.totalAmount - 100}</p>
+            </div>
+            <div className="flex justify-between">
+              <p>Shipping (24-hour delivery)</p>
+              <p>Rs. 100</p>
+            </div>
+            <div className="flex justify-between font-semibold text-lg">
+              <p>Total</p>
+              <p>Rs. {orderDetails[0].Order?.totalAmount}</p>
             </div>
           </div>
+        </div>
 
-          {/* Right Section: Customer Details */}
-          <div className="bg-gray-50 dark:bg-gray-800 w-full sm:w-96 p-4 sm:p-6 rounded-xl shadow-sm flex flex-col space-y-6 xl:sticky xl:top-24">
-            <div>
-              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-3">Customer Details</h3>
-              <p className="text-gray-700 dark:text-gray-300 mb-2">
-                <strong>Address:</strong> {orderDetails[0].Order?.shippingAddress}
-              </p>
-              <p className="text-gray-700 dark:text-gray-300">
-                <strong>Phone:</strong> {orderDetails[0].Order?.phoneNumber}
-              </p>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex flex-col space-y-3">
-              <button className="border border-gray-800 dark:border-gray-300 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-900 text-gray-800 dark:text-white transition">
-                Edit Order
+        {/* Customer Details & Actions */}
+        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl shadow-md flex flex-col space-y-4">
+          <div>
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">Customer Details</h3>
+            <p className="text-gray-700 dark:text-gray-300"><strong>Address:</strong> {orderDetails[0].Order?.shippingAddress}</p>
+            <p className="text-gray-700 dark:text-gray-300"><strong>Phone:</strong> {orderDetails[0].Order?.phoneNumber}</p>
+          </div>
+          <div className="flex flex-col space-y-2">
+            <button className="py-2 rounded-lg border border-gray-800 dark:border-gray-300 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-900 transition">
+              Edit Order
+            </button>
+            {orderDetails[0].Order.Payment.paymentStatus !== PaymentStatus.Paid && (
+              <button className="py-2 rounded-lg border border-yellow-500 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100 dark:hover:bg-yellow-900 transition">
+                Cancel Order
               </button>
-              {orderDetails[0].Order.Payment.paymentStatus !== PaymentStatus.Paid && (
-                <button className="border border-yellow-500 text-yellow-700 py-2 rounded-lg hover:bg-yellow-100 dark:hover:bg-yellow-900 dark:text-yellow-400 transition">
-                  Cancel Order
-                </button>
-              )}
-              <button
-                onClick={() => handleDeleteOrder(orderDetails[0].Order.id)}
-                className="bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
-              >
-                Delete Order
-              </button>
-            </div>
+            )}
+            <button
+              onClick={() => handleDeleteOrder(orderDetails[0].Order.id)}
+              className="py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition"
+            >
+              Delete Order
+            </button>
           </div>
         </div>
       </div>
