@@ -114,7 +114,7 @@ const MyOrderDetails = () => {
       <div className="py-20 px-4 md:px-6 2xl:px-20 2xl:container 2xl:mx-auto">
      
       {/* ---------- Header ---------- */}
-      <div className="flex flex-col space-y-2 my-6 sticky top-0">
+      <div className="flex flex-col space-y-2 my-10 sticky top-0">
         <h1 className="text-2xl font-semibold text-gray-700">Order {id}</h1>
         <p className="text-base text-gray-500 dark:text-gray-400">
           {orderDetails[0]?.createdAt
