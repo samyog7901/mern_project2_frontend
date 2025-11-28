@@ -12,8 +12,21 @@ const Cart = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        dispatch(fetchCartItems());
-      }, [dispatch]);
+      const timer = setTimeout(() => {
+        return (
+          <div className="py-20 text-center text-gray-500">
+            Loading your cart...
+          </div>
+        );
+        
+        
+      }, 2100);
+      dispatch(fetchCartItems());
+      return () => clearTimeout(timer);
+    
+        
+    }, [dispatch]);
+
     const handleDelete = (productId:string)=>{
         dispatch(deleteCartItem(productId))
     }
