@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom"
 // import Navbar from "../../assets/globals/components/navbar/Navbar"
 import { deleteCartItem, fetchCartItems, updateCartItem } from "../../store/cartSlice"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 
 const Cart = () => {
@@ -10,22 +10,26 @@ const Cart = () => {
     const cartItems = Array.isArray(items) ? items : [];
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-      const timer = setTimeout(() => {
-        return (
-          <div className="py-20 text-center text-gray-500">
-            Loading your cart...
-          </div>
-        );
-        
-        
-      }, 10000);
       dispatch(fetchCartItems());
+      const timer = setTimeout(() => {
+        setLoading(false);
+      }, 7000);
+      
       return () => clearTimeout(timer);
     
         
     }, [dispatch]);
+    if (loading) {
+      return (
+        <div className="flex flex-col items-center justify-center min-h-screen py-20 text-gray-500">
+          <div className="w-12 h-12 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-lg font-medium">Loading your cart...</p>
+        </div>
+      );
+    }
 
     const handleDelete = (productId:string)=>{
         dispatch(deleteCartItem(productId))
