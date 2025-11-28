@@ -124,7 +124,7 @@ const MyOrderDetails = () => {
       </div>
 
       {/* ---------- Main Layout ---------- */}
-      <div className="flex flex-col xl:flex-row justify-between items-start w-full xl:space-x-8 space-y-8 xl:space-y-0 lg:ml-30 sm:ml-0">
+      <div className="flex flex-col xl:flex-row justify-between items-start w-full xl:space-x-8 space-y-8 xl:space-y-0 lg:ml-10 sm:ml-0">
         {/* ---------- Left Section ---------- */}
         <div className="flex flex-col w-full space-y-6 xl:max-h-[80vh] xl:overflow-y-auto pr-2 scrollbar-hide">
           {orderDetails && orderDetails.length > 0 && (
@@ -138,7 +138,7 @@ const MyOrderDetails = () => {
                 key={order.Order?.id}
                 className="flex flex-col md:flex-row justify-start items-start md:items-center md:space-x-6 border-b border-gray-200 pb-6 mb-4"
               >
-                <div className="w-full md:w-36 h-max-[460px]">
+                <div className="w-full md:w-36 h-max-[400px]">
                   <img
                     className="w-full rounded-lg object-contain"
                     src={order.Product?.imageUrl}
