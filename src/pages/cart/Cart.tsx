@@ -16,7 +16,7 @@ const Cart = () => {
       dispatch(fetchCartItems());
       const timer = setTimeout(() => {
         setLoading(false);
-      }, 2000);
+      }, 1500);
       
       return () => clearTimeout(timer);
     
@@ -24,9 +24,27 @@ const Cart = () => {
     }, [dispatch]);
     if (loading) {
       return (
-        <div className="flex flex-col items-center justify-center min-h-screen py-20 text-gray-500">
-          <div className="w-12 h-12 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-lg font-medium">Loading your cart...</p>
+        <div className="py-10 px-4 space-y-6">
+          <p className="text-lg font-medium text-gray-500 mb-4">Loading your cart...</p>
+          
+          {[1, 2, 3].map((_, idx) => (
+            <div
+              key={idx}
+              className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-gray-100 dark:bg-gray-800 p-4 rounded-lg animate-pulse"
+            >
+              {/* Image placeholder */}
+              <div className="w-full sm:w-24 h-24 bg-gray-300 dark:bg-gray-700 rounded-lg mb-4 sm:mb-0"></div>
+  
+              {/* Details placeholder */}
+              <div className="flex-1 sm:ml-4 w-full space-y-2">
+                <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-1/2"></div>
+              </div>
+  
+              {/* Price placeholder */}
+              <div className="mt-4 sm:mt-0 w-16 h-4 bg-gray-300 dark:bg-gray-700 rounded"></div>
+            </div>
+          ))}
         </div>
       );
     }
