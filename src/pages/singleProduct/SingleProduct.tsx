@@ -202,12 +202,12 @@ const SingleProduct = () => {
               Similar Products
             </h3>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5 mb-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
               {similarProducts?.map((p) => (
                 <div
                   key={p.id}
                   onClick={() => navigate(`/product/${p.id}`)}
-                  className="bg-white dark:bg-gray-700 rounded-xl shadow hover:shadow-xl transition p-3 cursor-pointer"
+                  className="bg-white dark:bg-gray-700 rounded-xl shadow hover:shadow-xl transition p-3 cursor-pointer mb-3"
                 >
                   <img
                     src={p.imageUrl}
