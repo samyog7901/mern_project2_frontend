@@ -52,11 +52,11 @@ const SingleProduct = () => {
   
     if (availableStock <= 0) return toast.error("Out of stock");
   
-    // // ✅ Make sure Product is fully typed and non-null
-    // const newItem = {
-    //   Product: singleProduct,
-    //   quantity: (existingCartItem?.quantity || 0) + 1
-    // };
+    // ✅ Make sure Product is fully typed and non-null
+    const newItem = {
+      Product: singleProduct,
+      quantity: (existingCartItem?.quantity || 0) + 1
+    };
     if (loading) return; // Prevent multiple clicks
     setLoading(true);
   
