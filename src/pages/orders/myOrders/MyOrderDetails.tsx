@@ -100,7 +100,7 @@ const MyOrderDetails = () => {
         <span className="font-medium text-gray-700 dark:text-gray-200">Back</span>
       </div>
 
-      <div className="pt-28 pb-10 px-4 sm:px-6 lg:px-10 max-w-9xl mx-auto space-y-8 lg:mx-5 sm:mx-2">
+      <div className="pt-28 pb-10 px-4 sm:px-6 lg:px-10 max-w-9xl lg:mx-auto space-y-8  sm:mx-5">
 
         {/* 🌟 Header */}
         <motion.div
