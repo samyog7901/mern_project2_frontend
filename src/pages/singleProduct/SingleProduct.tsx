@@ -6,6 +6,7 @@ import { addToCart, setItems } from "../../store/cartSlice";
 import ProductDescription from "./ProductDescription";
 import { Helmet } from "react-helmet";
 import toast from "react-hot-toast";
+import { Status } from "../../assets/globals/types/types";
 
 const SingleProduct = () => {
 
@@ -13,7 +14,7 @@ const SingleProduct = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { singleProduct, product } = useAppSelector((state) => state.product);
+  const { singleProduct, product,status } = useAppSelector((state) => state.product);
 
   
   const { user } = useAppSelector((state) => state.auth);
@@ -52,11 +53,11 @@ const SingleProduct = () => {
   
     if (availableStock <= 0) return toast.error("Out of stock");
   
-    // ✅ Make sure Product is fully typed and non-null
-    const newItem = {
-      Product: singleProduct,
-      quantity: (existingCartItem?.quantity || 0) + 1
-    };
+    // // ✅ Make sure Product is fully typed and non-null
+    // const newItem = {
+    //   product: singleProduct,
+    //   quantity: (existingCartItem?.quantity || 0) + 1
+    // };
     if (loading) return; // Prevent multiple clicks
     setLoading(true);
   
@@ -86,11 +87,10 @@ const SingleProduct = () => {
   
   
 
-  const handleBuyNow = () => {
+  const handleBuyNow = async() => {
     if (!isLoggedIn) return navigate("/login");
     if (!singleProduct) {
-      toast.error("Product not loaded yet");
-      return;
+      await dispatch(fetchByProductId(productId as string));
     }
     console.log("Navigating with product:", singleProduct);
     navigate("/checkout",{state:{product:singleProduct,quantity:1}});
@@ -168,6 +168,7 @@ const SingleProduct = () => {
 
                 <button
                   onClick={handleBuyNow}
+                  disabled={!singleProduct || status === Status.LOADING}
                   className="w-1/2 bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-full font-bold"
                 >
                   Buy Now
