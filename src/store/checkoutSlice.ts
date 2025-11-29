@@ -84,29 +84,30 @@ const orderSlice = createSlice({
 export const {setItems,setStatus,setKhaltiUrl,setMyOrders,setOrderDetails,setDeleteOrderById, updateOrderStatus, updatePaymentStatus,updateOrderStatusInOrderDetails,updatePaymentStatusInOrderDetails,resetOrderState} = orderSlice.actions
 export default orderSlice.reducer
 
-
-export function orderItem(data:OrderData){
-    return async function orderItemThunk(dispatch:AppDispatch){
-        dispatch(setStatus(Status.LOADING))
-        try{
-            const response = await APIWITHTOKEN.post('/order',data)
-            if(response.status === 200){
-                dispatch(setStatus(Status.SUCCESS))
-                dispatch(setItems(response.data.data))
-                if(response.data.url){
-                    dispatch(setKhaltiUrl(response.data.url))
-                }else{
-                    dispatch(setKhaltiUrl(null))
-                    dispatch(setClearCart())
-                }
-            }else{
-                dispatch(setStatus(Status.ERROR))
-            }
-        }catch(error){
-            dispatch(setStatus(Status.ERROR))
+export function orderItem(data: OrderData) {
+    return async function orderItemThunk(dispatch: AppDispatch) {
+      dispatch(resetOrderState());  // <--- reset before new checkout
+      dispatch(setStatus(Status.LOADING));
+      try {
+        const response = await APIWITHTOKEN.post('/order', data);
+        if (response.status === 200) {
+          dispatch(setStatus(Status.SUCCESS));
+          dispatch(setItems(response.data.data));
+          if (response.data.url) {
+            dispatch(setKhaltiUrl(response.data.url));
+          } else {
+            dispatch(setKhaltiUrl(null));
+            dispatch(setClearCart());
+          }
+        } else {
+          dispatch(setStatus(Status.ERROR));
         }
-    }
-}
+      } catch (error) {
+        dispatch(setStatus(Status.ERROR));
+      }
+    };
+  }
+  
 
 export function fetchMyOrders(){
     return async function fetchMyOrdersThunk(dispatch:AppDispatch){

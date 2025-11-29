@@ -83,22 +83,23 @@ const Checkout = () => {
     dispatch(setStatus(Status.LOADING))
     await dispatch(orderItem(orderData))
   }
+  const [checkoutDone, setCheckoutDone] = useState(false);
 
   useEffect(() => {
-    if (status !== Status.SUCCESS) return;
+    if (status !== Status.SUCCESS || checkoutDone) return;
   
-    // Khalti payment
     if (paymentMethod === PaymentMethod.KHALTI && khaltiUrl) {
       window.location.href = khaltiUrl;
       return;
     }
   
-    // COD payment
     toast.success("Order Placed!");
     navigate("/myOrders");
   
-    dispatch(resetOrderState()); // reset after redirect
-  }, [status, khaltiUrl, paymentMethod, dispatch]);
+    setCheckoutDone(true);       // prevent re-run
+    dispatch(resetOrderState()); // reset redux
+  }, [status, khaltiUrl, paymentMethod, dispatch, checkoutDone]);
+  
   
   
   
