@@ -2,7 +2,7 @@ import { useEffect, useState, type ChangeEvent, type FormEvent } from "react"
 // import Navbar from "../../assets/globals/components/navbar/Navbar"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { PaymentMethod, type ItemDetails, type OrderData } from "../../assets/globals/types/checkoutTypes"
-import { orderItem, setStatus } from "../../store/checkoutSlice"
+import { orderItem, resetOrderState, setStatus } from "../../store/checkoutSlice"
 import { Status } from "../../assets/globals/types/types"
 import { useLocation, useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
@@ -85,21 +85,21 @@ const Checkout = () => {
   }
 
   useEffect(() => {
-    if (status !== Status.SUCCESS) return
-    
-    // ——— KHALTI ———
+    if (status !== Status.SUCCESS) return;
+  
+    // Khalti payment
     if (paymentMethod === PaymentMethod.KHALTI && khaltiUrl) {
-      window.location.href = khaltiUrl
-      return
+      window.location.href = khaltiUrl;
+      return;
     }
   
-    // ——— COD ———
-    toast.success("Order Placed!")
-    navigate("/myOrders")
+    // COD payment
+    toast.success("Order Placed!");
+    navigate("/myOrders");
   
-    // Reset after redirect
-    dispatch(setStatus(Status.IDLE))
-  }, [status, khaltiUrl, paymentMethod, dispatch])
+    dispatch(resetOrderState()); // reset after redirect
+  }, [status, khaltiUrl, paymentMethod, dispatch]);
+  
   
   
   

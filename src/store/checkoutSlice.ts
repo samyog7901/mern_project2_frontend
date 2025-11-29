@@ -32,6 +32,12 @@ const orderSlice = createSlice({
         setStatus(state:OrderResponseData,action:PayloadAction<Status>){
             state.status = action.payload
         },
+        resetOrderState(state){
+            state.status = Status.IDLE;
+            state.items = [];
+            state.khaltiUrl = null;
+
+        },
         setKhaltiUrl(state:OrderResponseData,action:PayloadAction<OrderResponseData['khaltiUrl']>){
             state.khaltiUrl = action.payload
         },
@@ -75,7 +81,7 @@ const orderSlice = createSlice({
     }
 })
 
-export const {setItems,setStatus,setKhaltiUrl,setMyOrders,setOrderDetails,setDeleteOrderById, updateOrderStatus, updatePaymentStatus,updateOrderStatusInOrderDetails,updatePaymentStatusInOrderDetails} = orderSlice.actions
+export const {setItems,setStatus,setKhaltiUrl,setMyOrders,setOrderDetails,setDeleteOrderById, updateOrderStatus, updatePaymentStatus,updateOrderStatusInOrderDetails,updatePaymentStatusInOrderDetails,resetOrderState} = orderSlice.actions
 export default orderSlice.reducer
 
 
