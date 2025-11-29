@@ -87,18 +87,19 @@ const Checkout = () => {
 
   useEffect(() => {
     if (status !== Status.SUCCESS || checkoutDone) return;
-  
+
+    setCheckoutDone(true); // prevent re-run
+
     if (paymentMethod === PaymentMethod.KHALTI && khaltiUrl) {
       window.location.href = khaltiUrl;
       return;
     }
-  
+
     toast.success("Order Placed!");
+    dispatch(resetOrderState());
     navigate("/myOrders");
-  
-    setCheckoutDone(true);       // prevent re-run
-    dispatch(resetOrderState()); // reset redux
-  }, [status, khaltiUrl, paymentMethod, dispatch, checkoutDone]);
+}, [status, khaltiUrl, paymentMethod, dispatch, checkoutDone]);
+
   
   
   
