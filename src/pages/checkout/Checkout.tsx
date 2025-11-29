@@ -89,7 +89,7 @@ const Checkout = () => {
   useEffect(() => {
     if (status !== Status.SUCCESS) return
   
-    if (paymentMethod === PaymentMethod.COD) {
+    if (status === Status.SUCCESS) {
       toast.success("Order Placed!")
       navigate("/myOrders")
     }
