@@ -85,19 +85,22 @@ const Checkout = () => {
   }
 
   useEffect(() => {
-    if (status === Status.SUCCESS) {
-  
-      // For Khalti
-      if (paymentMethod === PaymentMethod.KHALTI && khaltiUrl) {
-        window.location.href = khaltiUrl
-        return
-      }
-  
-      // For COD
-      toast.success("Order Placed!")
-      navigate("/myOrders")
+    if (status !== Status.SUCCESS) return
+    
+    // ——— KHALTI ———
+    if (paymentMethod === PaymentMethod.KHALTI && khaltiUrl) {
+      window.location.href = khaltiUrl
+      return
     }
-  }, [status, khaltiUrl, paymentMethod])
+  
+    // ——— COD ———
+    toast.success("Order Placed!")
+    navigate("/myOrders")
+  
+    // Reset after redirect
+    dispatch(setStatus(Status.IDLE))
+  }, [status, khaltiUrl, paymentMethod, dispatch])
+  
   
   
 
