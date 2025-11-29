@@ -30,6 +30,7 @@ const MyOrderDetails = () => {
   };
 
   useEffect(() => {
+    if (!id) return
     const handleOrderDeleted = (orderId: string) => {
       setIsLoading(true)
       dispatch(setDeleteOrderById({ orderId }));
