@@ -87,21 +87,18 @@ const Checkout = () => {
   const [initialRender, setInitialRender] = useState(true)
 
   useEffect(() => {
-    if (initialRender) {
-      setInitialRender(false)
-      return
-    }
-
-    if (status === Status.SUCCESS && paymentMethod === PaymentMethod.COD) {
-      navigate("/myOrders")
+    if (status !== Status.SUCCESS) return
+  
+    if (paymentMethod === PaymentMethod.COD) {
       toast.success("Order Placed!")
-      dispatch(setStatus(Status.LOADING))
+      navigate("/myOrders")
     }
-
-    if (status === Status.SUCCESS && paymentMethod === PaymentMethod.KHALTI && khaltiUrl) {
+  
+    if (paymentMethod === PaymentMethod.KHALTI && khaltiUrl) {
       window.location.href = khaltiUrl
     }
-  }, [status, khaltiUrl, navigate, paymentMethod, dispatch, initialRender])
+  }, [status])
+  
 
  
 
