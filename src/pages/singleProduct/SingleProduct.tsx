@@ -148,7 +148,7 @@ const SingleProduct = () => {
             <div className="md:w-1/2">
               <div className="bg-gray-300 dark:bg-gray-700 rounded-2xl overflow-y-auto shadow-lg max-h-[480px] md:h-[460px] scrollbar-hidden">
                 <img
-                  className="w-full  object-cover rounded-2xl transition-transform duration-300 hover:scale-105"
+                  className="w-full  object-cover rounded-2xl transition-transform duration-300 hover:scale-105 min-h-[480px]"
                   src={singleProduct?.imageUrl}
                   alt={singleProduct?.productName}
                 />
