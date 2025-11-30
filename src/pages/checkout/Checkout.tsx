@@ -91,19 +91,20 @@ const Checkout = () => {
 
 
   useEffect(() => {
-    if (status !== Status.SUCCESS || checkoutDone) return;
+    if (status === Status.SUCCESS && !checkoutDone) {
+      dispatch(setCheckoutDone(true));
   
-    dispatch(setCheckoutDone(true));
+      if (paymentMethod === PaymentMethod.KHALTI && khaltiUrl) {
+        window.location.href = khaltiUrl;
+      } else {
+        toast.success("Order Placed!");
+        navigate("/myOrders");
+      }
   
-    if (paymentMethod === PaymentMethod.KHALTI && khaltiUrl) {
-      window.location.href = khaltiUrl;
-      return;
+      dispatch(resetOrderState());
     }
+  }, [status, checkoutDone, paymentMethod, khaltiUrl, dispatch, navigate]);
   
-    toast.success("Order Placed!");
-    dispatch(resetOrderState());
-    navigate("/myOrders");
-  }, [status, checkoutDone, paymentMethod, khaltiUrl]);
   
 
   
@@ -317,10 +318,12 @@ const Checkout = () => {
             {/* Buttons */}
             <button
               type="submit"
-              className="mt-4 mb-8 w-full rounded-md bg-green-400 hover:bg-green-700 px-6 py-3 font-medium text-white transition-all duration-200"
+              disabled={status === Status.LOADING}
+              className="bg-indigo-600 text-white rounded-lg px-4 py-2 disabled:opacity-50"
             >
-              Place Order
+              {status === Status.LOADING ? "Placing Order..." : "Place Order"}
             </button>
+
           </div>
         </form>
       </div>
