@@ -10,11 +10,13 @@ const initialState:OrderResponseData= {
     status : Status.LOADING,
     khaltiUrl : null,
     myOrders : [],
-    orderDetails : []
+    orderDetails : [],
+    checkoutDone: false
 }
 interface DeleteOrderById{
     orderId : string
 }
+
 
 const orderSlice = createSlice({
     name:'order',
@@ -36,6 +38,7 @@ const orderSlice = createSlice({
             state.status = Status.IDLE;
             state.items = [];
             state.khaltiUrl = null;
+            state.checkoutDone = false;
 
         },
         setKhaltiUrl(state:OrderResponseData,action:PayloadAction<OrderResponseData['khaltiUrl']>){
@@ -45,6 +48,10 @@ const orderSlice = createSlice({
         setDeleteOrderById: (state, action: PayloadAction<{ orderId: string }>) => {
             state.myOrders = state.myOrders.filter(order => order.id !== action.payload.orderId);
         },
+        setCheckoutDone(state, action) {
+            state.checkoutDone = action.payload;
+          },
+          
 
         updateOrderStatus(state:OrderResponseData, action:PayloadAction<{status:OrderStatus,orderId:string}>){
             const {status, orderId} = action.payload
@@ -81,7 +88,7 @@ const orderSlice = createSlice({
     }
 })
 
-export const {setItems,setStatus,setKhaltiUrl,setMyOrders,setOrderDetails,setDeleteOrderById, updateOrderStatus, updatePaymentStatus,updateOrderStatusInOrderDetails,updatePaymentStatusInOrderDetails,resetOrderState} = orderSlice.actions
+export const {setItems,setStatus,setKhaltiUrl,setMyOrders,setOrderDetails,setDeleteOrderById, updateOrderStatus, updatePaymentStatus,updateOrderStatusInOrderDetails,updatePaymentStatusInOrderDetails,resetOrderState,setCheckoutDone} = orderSlice.actions
 export default orderSlice.reducer
 
 export function orderItem(data: OrderData) {

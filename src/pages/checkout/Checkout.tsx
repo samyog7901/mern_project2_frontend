@@ -2,14 +2,17 @@ import { useEffect, useState, type ChangeEvent, type FormEvent } from "react"
 // import Navbar from "../../assets/globals/components/navbar/Navbar"
 import { useAppDispatch, useAppSelector } from "../../store/hooks"
 import { PaymentMethod, type ItemDetails, type OrderData } from "../../assets/globals/types/checkoutTypes"
-import { orderItem, resetOrderState, setStatus } from "../../store/checkoutSlice"
+import { orderItem, resetOrderState, setCheckoutDone } from "../../store/checkoutSlice"
 import { Status } from "../../assets/globals/types/types"
 import { useLocation, useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
+import type { RootState } from "../../store/store"
 
 const Checkout = () => {
   const { items: cartItems } = useAppSelector((state) => state.carts)
   const { khaltiUrl, status } = useAppSelector((state) => state.orders)
+  const checkoutDone = useAppSelector((state: RootState) => state.orders.checkoutDone);
+
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const location = useLocation()
@@ -18,6 +21,7 @@ const Checkout = () => {
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.COD)
   const [errors, setErrors] = useState({ phoneNumber: "", shippingAddress: "" })
+
 
   // Use either BuyNow product or cart items
   const items = buyNowProduct ? [{ Product: buyNowProduct, quantity: buyNowQuantity }] : cartItems
@@ -80,25 +84,28 @@ const Checkout = () => {
       totalAmount: totalAmount + 100, // include shipping
     }
 
-    dispatch(setStatus(Status.LOADING))
-    await dispatch(orderItem(orderData))
+    dispatch(resetOrderState());
+    dispatch(setCheckoutDone(false));
+    dispatch(orderItem(data));
+
   }
-  const [checkoutDone, setCheckoutDone] = useState(false);
+
 
   useEffect(() => {
     if (status !== Status.SUCCESS || checkoutDone) return;
-
-    setCheckoutDone(true); // prevent re-run
-
+  
+    dispatch(setCheckoutDone(true));
+  
     if (paymentMethod === PaymentMethod.KHALTI && khaltiUrl) {
       window.location.href = khaltiUrl;
       return;
     }
-
+  
     toast.success("Order Placed!");
     dispatch(resetOrderState());
     navigate("/myOrders");
-}, [status, khaltiUrl, paymentMethod, dispatch, checkoutDone]);
+  }, [status, checkoutDone, paymentMethod, khaltiUrl]);
+  
 
   
   

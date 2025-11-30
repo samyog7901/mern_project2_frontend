@@ -51,7 +51,8 @@ export interface OrderResponseData{
     status : Status,
     khaltiUrl : string | null,
     myOrders : MyOrdersData[],
-    orderDetails : OrderDetails[]
+    orderDetails : OrderDetails[],
+    checkoutDone: boolean;
 }
 
 interface UserData{
