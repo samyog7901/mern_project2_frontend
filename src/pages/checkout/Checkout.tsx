@@ -319,9 +319,9 @@ const Checkout = () => {
             <button
               type="submit"
               disabled={status === Status.LOADING}
-              className="bg-indigo-600 text-white rounded-lg px-4 py-2 disabled:opacity-50"
+              className="bg-indigo-600 text-white rounded-lg px-4 py-2 disabled:opacity-50 w-full"
             >
-              {status === Status.LOADING ? "Placing Order..." : "Place Order"}
+              Place Order
             </button>
 
           </div>
