@@ -319,7 +319,7 @@ const Checkout = () => {
             <button
               type="submit"
               // disabled={status === Status.LOADING}
-              className="bg-indigo-600 text-white rounded-lg px-4 py-2 disabled:opacity-50 w-full"
+              className="bg-indigo-600 text-white rounded-lg px-4 py-2 disabled:opacity-50 w-full hover:bg-indigo-800"
             >
               Place Order
             </button>
