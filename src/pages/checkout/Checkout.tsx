@@ -83,7 +83,7 @@ const Checkout = () => {
       totalAmount: totalAmount + 100, // include shipping
     }
 
-    dispatch(setStatus(Status.LOADING))
+   
     dispatch(resetOrderState());
     dispatch(setCheckoutDone(false));
     await dispatch(orderItem(orderData))
