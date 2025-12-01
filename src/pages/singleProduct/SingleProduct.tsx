@@ -146,7 +146,7 @@ const SingleProduct = () => {
           <div className="flex flex-col md:flex-row gap-10">
             {/* LEFT IMAGE + ACTIONS */}
             <div className="md:w-1/2">
-              <div className="bg-gray-300 dark:bg-gray-700 rounded-2xl overflow-y-auto shadow-lg max-h-[480px] md:h-[460px] scrollbar-none">
+              <div className="bg-gray-300 dark:bg-gray-700 rounded-2xl overflow-y-auto shadow-lg max-h-[480px] md:h-[460px] scrollbar-hide">
                 <img
                   className="w-full  object-cover rounded-2xl transition-transform duration-300 hover:scale-105 min-h-[480px]"
                   src={singleProduct?.imageUrl}
