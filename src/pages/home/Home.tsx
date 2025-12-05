@@ -89,7 +89,7 @@ const Home: React.FC = () => {
       setTimeout(() => {
         const section = document.getElementById("featured-products");
         if (section) section.scrollIntoView({ behavior: "instant", block: "start" });
-      }, 150);
+      }, 100);
     }
   }, [location.search])
 
