@@ -80,8 +80,18 @@ const Home: React.FC = () => {
   // Sync search from Navbar (URL) once
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    setSearchTerm(params.get("search") || "");
-  }, [location.search]);
+    const search = params.get("search") || "";
+  
+    setSearchTerm(search);
+  
+    // Scroll to the products section when a search is performed
+    if (search.trim()) {
+      setTimeout(() => {
+        const section = document.getElementById("featured-products");
+        if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 150);
+    }
+  }, [location.search])
 
   // Final products filtered
   const finalProducts = useMemo(() => {
