@@ -88,7 +88,7 @@ const Home: React.FC = () => {
     if (search.trim()) {
       setTimeout(() => {
         const section = document.getElementById("featured-products");
-        if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (section) section.scrollIntoView({ behavior: "instant", block: "start" });
       }, 150);
     }
   }, [location.search])
