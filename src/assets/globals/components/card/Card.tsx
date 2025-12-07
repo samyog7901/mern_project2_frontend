@@ -9,7 +9,7 @@ const Card: React.FC<CardProps> = ({ data }) => {
   return (
     <Link to={`/product/${data.id}`}>
   <div className="w-full max-w-full sm:max-w-[220px] md:max-w-[250px] lg:max-w-[260px]">
-    <div className="bg-white shadow-md rounded-3xl dark:bg-gray-800 dark:border-gray-700 transition-transform duration-300 hover:scale-105 hover:shadow-xl h-[47vh]">
+    <div className="bg-white shadow-md rounded-3xl dark:bg-gray-800 dark:border-gray-700 transition-transform duration-300 hover:scale-105 hover:shadow-xl h-[44vh]">
 
       {/* Image with fixed aspect ratio */}
       <div className="bg-gray-300 dark:bg-gray-700 mb-4 rounded-2xl overflow-hidden aspect-[4/3]">
