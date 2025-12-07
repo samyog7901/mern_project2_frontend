@@ -154,7 +154,8 @@ const Home: React.FC = () => {
             <div className="flex flex-col lg:flex-row gap-8">
 
               {/* Sidebar */}
-              <aside className={`w-full lg:w-1/5 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow-sm lg:top-[8vh] transition-all duration-200 ${sidebarOpen ? "block" : "hidden lg:block"}`}>
+              <aside className={`w-full lg:w-1/5 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg shadow-sm sticky top-24 overflow-y-auto h-[75vh] transition-all duration-200 ${sidebarOpen ? "block" : "hidden lg:block"}`}>
+
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-semibold text-gray-800 dark:text-gray-200">Filter by Category</h3>
                   <button className="lg:hidden text-sm text-gray-600" onClick={() => setSidebarOpen((s) => !s)}>
