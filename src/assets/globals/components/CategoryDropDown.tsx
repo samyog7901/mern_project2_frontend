@@ -33,7 +33,7 @@ const CategoryDropdown = ({ selected, onSelect, className }: Props) => {
   return (
     <div
       ref={ref}
-      className={`relative z-[99999] ${className || ""}`}
+      className={`relative z-[99999]`}
     >
       {/* Button */}
       <button
